@@ -4,39 +4,6 @@ import InputTime from "../../../../recicle/Inputs/tipos/InputTime";
 import InputDate from "../../../../recicle/Inputs/tipos/InputDate";
 
 const DatosGenerales = ({ form, setForm, error }) => {
-  const [datosGenerales, setDatosGenerales] = useState({
-    fecha: form.datosGenerales?.fecha || "",
-    horaIngreso: form.datosGenerales?.horaIngreso || "",
-    recepcionadoPor: form.datosGenerales?.recepcionadoPor || "",
-    dniRecepcionadoPor: form.datosGenerales?.dniRecepcionadoPor || "",
-    responsableEntrega: form.datosGenerales?.responsableEntrega || "",
-    registroOCIP: form.datosGenerales?.registroOCIP || "",
-    estadoActa: form.datosGenerales?.estadoActa || "",
-  });
-
-  useEffect(() => {
-    setDatosGenerales((prev) => {
-      if (JSON.stringify(prev) !== JSON.stringify(form.datosGenerales)) {
-        return form.datosGenerales;
-      }
-      return prev;
-    });
-  }, [form.datosGenerales]);
-
-  useEffect(() => {
-    setForm((prevForm) => {
-      if (
-        JSON.stringify(prevForm.datosGenerales) !==
-        JSON.stringify(datosGenerales)
-      ) {
-        return {
-          ...prevForm,
-          datosGenerales,
-        };
-      }
-      return prevForm;
-    });
-  }, [datosGenerales]);
   const [options, setOptions] = useState([]);
   useEffect(() => {
     if (form.movimiento === "SALIDA") {
@@ -46,51 +13,54 @@ const DatosGenerales = ({ form, setForm, error }) => {
         "DESTRUCCIÓN",
         "EXTRACCIÓN DE MUESTRAS",
       ]);
-      setForm((prev) => ({
-        ...prev,
-        datosGenerales: {
-          ...prev.datosGenerales,
-          estadoActa: "",
-        },
-      }));
+      // //esto provoca el cambio del estado del acta a vacio cuando se cambia el tipo de movimiento
+      // setForm((prev) => ({
+      //   ...prev,
+      //   datosGenerales: {
+      //     ...prev.datosGenerales,
+      //     estadoActa: "",
+      //   },
+      // }));
     } else {
       setOptions([
         "INCAUTACIÓN",
         "TRASLADO INTERNO",
-        "INMOVILIZACIÓN",
+        "INMOVILIZACION",
         "DETECCIÓN DE INFRACCIONES",
         "ACTA DE PROVATORIA",
       ]);
-      setForm((prev) => ({
-        ...prev,
-        datosGenerales: {
-          ...prev.datosGenerales,
-          estadoActa: "",
-        },
-      }));
+      //esto provoca el cambio del estado del acta a vacio cuando se cambia el tipo de movimiento
+      // setForm((prev) => ({
+      //   ...prev,
+      //   datosGenerales: {
+      //     ...prev.datosGenerales,
+      //     estadoActa: "",
+      //   },
+      // }));
     }
   }, [form.movimiento]);
+
   return (
     <form className="w-full flex flex-wrap" autoComplete="off">
       <InputDate
         label="Fecha De Ingreso"
         name="fecha"
-        value={datosGenerales.fecha}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.fecha}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.fecha}
       />
       <InputTime
         label="Hora de Ingreso"
         name="horaIngreso"
-        value={datosGenerales.horaIngreso}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.horaIngreso}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.horaIngreso}
       />
       <Input
         label="Recepcionado Por"
         name="recepcionadoPor"
-        value={datosGenerales.recepcionadoPor}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.recepcionadoPor}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.recepcionadoPor}
       />
       <Input
@@ -101,23 +71,23 @@ const DatosGenerales = ({ form, setForm, error }) => {
             e.preventDefault();
           }
         }}
-        value={datosGenerales.dniRecepcionadoPor}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.dniRecepcionadoPor}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.dniRecepcionadoPor}
       />
       <Input
         label="Responsable Entrega"
         name="responsableEntrega"
-        value={datosGenerales.responsableEntrega}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.responsableEntrega}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.responsableEntrega}
       />
 
       <Input
         label="Registro o CIP"
         name="registroOCIP"
-        value={datosGenerales.registroOCIP}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.registroOCIP}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.registroOCIP}
       />
       <Input
@@ -125,8 +95,8 @@ const DatosGenerales = ({ form, setForm, error }) => {
         name="estadoActa"
         type="select"
         options={options || []}
-        value={datosGenerales.estadoActa}
-        setForm={setDatosGenerales}
+        value={form.datosGenerales.estadoActa}
+        setForm={setForm}
         errorOnclick={error.datosGenerales?.estadoActa}
       />
     </form>

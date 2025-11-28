@@ -10,6 +10,7 @@ import Otros from "../Register/Otros";
 import useValidation from "../Register/Validate";
 import useSendMessage from "../../../../recicle/senMessage";
 import { useSelector } from "react-redux";
+import axios from "../../../../api/axios";
 
 const EditMovimiento = ({ setShowEdit, selected }) => {
   const [form, setForm] = useState({
@@ -17,6 +18,7 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
     contrato: selected.contratoId.cliente,
     productos: selected.descripcionBienes || [],
   });
+  console.log("Formulario inicial:", form);
 
   const contratos = useSelector((state) => state.almacen.allContratos);
   const contratoSede = contratos.filter(
@@ -27,7 +29,7 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
     if (contratos.length === 0) {
       dispatch(getAllContratosAlmacen());
     }
-  }, [contratos.lenght]);
+  }, [contratos.length]);
   const sendMessage = useSendMessage();
   const { error, validateForm } = useValidation(form);
   const [habilitar, setHabilitar] = useState(false);
@@ -35,6 +37,16 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
     setHabilitar(true);
     try {
       console.log("Actualizar movimiento:", selected);
+      const reponse = await axios.patch(
+        `/almacen/movimientos/${selected._id}`,
+        {
+          ...form,
+          contratoId: form.contrato._id,
+        }
+      );
+      console.log("Respuesta de la actualización:", reponse);
+      sendMessage("Movimiento actualizado con éxito", "Éxito");
+      setShowEdit(false);
     } catch (error) {
       console.log("Error al actualizar movimiento:", error);
     } finally {

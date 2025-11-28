@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import ButtonOk from "../../recicle/Buttons/Buttons";
-// Detecta si el objeto de datos es un objeto vacío literal {}
 const isContentEmpty = (obj) => {
   // Si no es un objeto, es null, o es un Array, no lo filtramos.
   if (typeof obj !== "object" || obj === null || Array.isArray(obj))
@@ -41,10 +40,6 @@ const Directorio = (props) => {
       [data]: updatedForms.map((form) => form.initialData),
     }));
   };
-
-  // Directorio.jsx
-
-  // ... (inicio del componente)
 
   useEffect(() => {
     // Mapeamos los datos para obtener solo los 'initialData'

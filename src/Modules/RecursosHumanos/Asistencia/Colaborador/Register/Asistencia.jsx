@@ -68,7 +68,7 @@ const DatosDeAsistencia = ({ setForm, error, form }) => {
         type="select"
         editable={false}
         ancho={"!w-60 !px-2 !p-0"}
-        options={["SAN ISIDRO", "LURIN", "LA VICTORIA", "MOQUEGUA"]}
+        options={["SAN ISIDRO","CHINCHA", "LURIN", "LA VICTORIA", "MOQUEGUA"]}
         value={form.salidaSede}
         setForm={setForm}
         errorOnclick={error.salidaSede}
