@@ -25,7 +25,7 @@ const DatosDeAsistencia = ({ setForm, error, form }) => {
         type="select"
         editable={false}
         ancho={"!w-60 !px-2 !p-0"}
-        options={["SAN ISIDRO", "LURIN", "LA VICTORIA", "MOQUEGUA"]}
+        options={["SAN ISIDRO", "CHINCHA", "LURIN", "LA VICTORIA", "MOQUEGUA"]}
         value={form.ingresoSede}
         setForm={setForm}
         errorOnclick={error.ingresoSede}
@@ -50,7 +50,7 @@ const DatosDeAsistencia = ({ setForm, error, form }) => {
         type="select"
         editable={false}
         ancho={"!w-60 !px-2 !p-0"}
-        options={["SAN ISIDRO", "LURIN", "LA VICTORIA", "MOQUEGUA"]}
+        options={["SAN ISIDRO", "CHINCHA", "LURIN", "LA VICTORIA", "MOQUEGUA"]}
         value={form.almuerzoSede}
         setForm={setForm}
         errorOnclick={error.almuerzoSede}
