@@ -17,6 +17,7 @@ const ListBoletaDePagos = ({
   permissionDelete,
   permissionRead,
   permissionApprove,
+  permissionDisapprove
 }) => {
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
@@ -50,6 +51,7 @@ const ListBoletaDePagos = ({
       permissionEdit={permissionEdit}
       permissionRead={permissionRead}
       permissionApprove={permissionApprove}
+      permissionDisapprove={permissionDisapprove}
       EditItem={EditBoletaDePagos}
       DetailItem={ViewBoletaDePago}
       DeleteItem={DeleteBoletaDePagos}
