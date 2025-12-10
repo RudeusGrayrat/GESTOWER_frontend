@@ -28,18 +28,18 @@ function App() {
 
   const [notifications, setNotifications] = useState([]);
 
-  // Manejar nuevas notificaciones
-  useEffect(() => {
-    socket.on("notification", (data) => {
-      console.log("Notificación recibida:", data);
-      setNotifications((prev) => [data.payload, ...prev]); // Agregar la nueva notificación
-    });
+  // // Manejar nuevas notificaciones
+  // useEffect(() => {
+  //   socket.on("notification", (data) => {
+  //     console.log("Notificación recibida:", data);
+  //     setNotifications((prev) => [data.payload, ...prev]); // Agregar la nueva notificación
+  //   });
 
-    // Limpiar el evento al desmontar el componente
-    return () => {
-      socket.off("notification");
-    };
-  }, []);
+  //   // Limpiar el evento al desmontar el componente
+  //   return () => {
+  //     socket.off("notification");
+  //   };
+  // }, []);
   return (
     <AuthProvider>
       <Provider store={store}>
