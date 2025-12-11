@@ -17,12 +17,12 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   const business = useSelector((state) => state.recursosHumanos.business || []);
   const datosContables = useSelector((state) => state.recursosHumanos.datosContables || []);
 
-  const convertirDate = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    const date = new Date(year, month - 1, day);
-    return date;
-  };
-  console.log("DATOS SELECIONADOS:", selected);
+  // const convertirDate = (dateString) => {
+  //   const [day, month, year] = dateString.split("/");
+  //   const date = new Date(year, month - 1, day);
+  //   return date;
+  // };
+
   useEffect(() => {
     if (!business.length) dispatch(getBusiness());
     if (!datosContables.length) dispatch(getDatosContables());
@@ -38,28 +38,26 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
     const renderDocx = async () => {
       try {
         if (!selected || !findBusiness) return;
-        const colaboradorId = selected.colaborador._id;
-        console.log("COLABORADOR ID:", colaboradorId);
-        const response = await axios.get(
-          `/contract/${colaboradorId}`
-        );
-        console.log("CONTRATOS DEL COLABORADOR:", response.data);
-        const contratosColaborador = response.data;
+        // const response = await axios.get(
+        //   `/contract/${selected.colaborador._id}`
+        // );
+        // const contratosColaborador = response.data;
 
-        const findContrato = contratosColaborador
-          .map((contrato) => ({
-            ...contrato,
-            parsedDateStart: convertirDate(contrato.dateStart),
-          }))
-          .filter((c) => c.parsedDateStart)
-          .sort((a, b) => b.parsedDateStart - a.parsedDateStart)[0];
+        // const findContrato = contratosColaborador
+        //   .map((contrato) => ({
+        //     ...contrato,
+        //     parsedDateStart: convertirDate(contrato.dateStart),
+        //   }))
+        //   .filter((c) => c.parsedDateStart)
+        //   .sort((a, b) => b.parsedDateStart - a.parsedDateStart)[0];
 
         const file = await renderDoc(
           {
             ...selected,
-            codigoSpp: findContrato?.codigoSpp,
-            regimenPension: findContrato?.regimenPension,
-            // regimenPension: selected.colaborador?.regimenPension,
+            // codigoSpp: findContrato?.codigoSpp,
+            // regimenPension: findContrato?.regimenPension,
+            regimenPension: selected.colaborador?.regimenPension || "POR RELLENAR",
+            codigoSpp: selected.colaborador?.codigoSPP || "POR RELLENAR",
           },
           findBusiness,
           datosContables

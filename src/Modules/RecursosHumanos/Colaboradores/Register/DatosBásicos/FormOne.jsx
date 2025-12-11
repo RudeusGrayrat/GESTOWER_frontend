@@ -183,6 +183,27 @@ const FormOne = ({ setForm, error, form }) => {
         errorOnclick={error.type}
       />
       <Input
+        label="Regimen de Pensión"
+        name="regimenPension"
+        type="select"
+        value={form.regimenPension}
+        options={[
+          "AFP INTEGRA",
+          "AFP PRIMA",
+          "AFP HABITAT",
+          "AFP PROFUTURO",
+          "ONP",
+          "SIN REGIMEN",
+        ]}
+        setForm={setForm}
+      />
+      <Input
+        label="Codigo SPP"
+        name="codigoSPP"
+        value={form.codigoSPP}
+        setForm={setForm}
+      />
+      <Input
         label="Asistencia Automática"
         name="asistenciaAutomatica"
         type="select"

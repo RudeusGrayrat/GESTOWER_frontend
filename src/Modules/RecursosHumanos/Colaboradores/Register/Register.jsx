@@ -45,6 +45,8 @@ const Register = () => {
     user: "",
     photo: "",
     password: "",
+    regimenPension: "",
+    codigoSPP: "",
     modules: [
       {
         name: "",
@@ -92,9 +94,8 @@ const Register = () => {
         <FormOne setForm={setFormData} error={error} form={formData} />
         <div className=" flex flex-col mx-3  pl-12">
           <label
-            className={`text-base font-medium ${
-              error.funcion ? "text-red-500" : "text-gray-700"
-            }`}
+            className={`text-base font-medium ${error.funcion ? "text-red-500" : "text-gray-700"
+              }`}
           >
             Función
           </label>
