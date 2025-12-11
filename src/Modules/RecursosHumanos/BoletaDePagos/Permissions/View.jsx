@@ -38,9 +38,12 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
     const renderDocx = async () => {
       try {
         if (!selected || !findBusiness) return;
+        const colaboradorId = selected.colaborador._id;
+        console.log("COLABORADOR ID:", colaboradorId);
         const response = await axios.get(
-          `/contract/${selected.colaborador._id}`
+          `/contract/${colaboradorId}`
         );
+        console.log("CONTRATOS DEL COLABORADOR:", response.data);
         const contratosColaborador = response.data;
 
         const findContrato = contratosColaborador
