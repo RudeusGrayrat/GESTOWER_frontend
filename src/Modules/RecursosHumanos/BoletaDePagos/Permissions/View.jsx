@@ -22,7 +22,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   //   const date = new Date(year, month - 1, day);
   //   return date;
   // };
-
+  console.log("DATOS SELECIONADOS:", selected);
   useEffect(() => {
     if (!business.length) dispatch(getBusiness());
     if (!datosContables.length) dispatch(getDatosContables());
