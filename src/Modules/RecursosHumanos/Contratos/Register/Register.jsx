@@ -33,10 +33,10 @@ const Register = () => {
       charge: "",
       sueldo: "",
     },
-    codigoSPP: "",
-    regimenPension: "",
+    // codigoSPP: "",
+    // regimenPension: "",
   });
-  console.log("Form Data: ", formData);
+  // console.log("Form Data: ", formData);
 
   const { error, validateForm } = useValidation(formData);
   const findColaborador = allColaboradores.find(
@@ -57,7 +57,7 @@ const Register = () => {
   };
 
   const diferencia = deepDiff(findColaboradorSort, formData.colaborador);
-  console.log("Diferencia : ", diferencia);
+  // console.log("Diferencia : ", diferencia);
   const onclick = async () => {
     const formIsValid = validateForm(formData);
     try {
@@ -92,12 +92,12 @@ const Register = () => {
       <CardPlegable title="Datos del colaborador">
         <Colaborador setForm={setFormData} error={error} form={formData} />
       </CardPlegable>
-      {formData.typeContract !== "" &&
+      {/* {formData.typeContract !== "" &&
       formData.typeContract !== "CONTRATO PRIVADO POR LOCACIÓN DE SERVICIOS" ? (
         <CardPlegable title="Datos de fin de contrato">
           <Planilla setForm={setFormData} error={error} form={formData} />
         </CardPlegable>
-      ) : null}
+      ) : null} */}
       <div>
         <ButtonOk type="ok" children="Guardar" onClick={onclick} />
       </div>

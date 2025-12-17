@@ -188,19 +188,23 @@ const FormOne = ({ setForm, error, form }) => {
         type="select"
         value={form.regimenPension}
         options={[
-          "AFP INTEGRA",
-          "AFP PRIMA",
-          "AFP HABITAT",
-          "AFP PROFUTURO",
+          "PRIMA",
+          "PRIMA MIXTA",
           "ONP",
+          "INTEGRA",
+          "INTEGRA MIXTA",
+          "HABITAD",
+          "HABITAD MIXTA",
+          "PROFUTURO",
+          "PROFUTURO MIXTA",
           "SIN REGIMEN",
         ]}
         setForm={setForm}
       />
       <Input
         label="Codigo SPP"
-        name="codigoSPP"
-        value={form.codigoSPP}
+        name="codigoSpp"
+        value={form.codigoSpp}
         setForm={setForm}
       />
       <Input

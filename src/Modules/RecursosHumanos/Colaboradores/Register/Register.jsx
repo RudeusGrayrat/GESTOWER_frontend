@@ -46,7 +46,7 @@ const Register = () => {
     photo: "",
     password: "",
     regimenPension: "",
-    codigoSPP: "",
+    codigoSpp: "",
     modules: [
       {
         name: "",
