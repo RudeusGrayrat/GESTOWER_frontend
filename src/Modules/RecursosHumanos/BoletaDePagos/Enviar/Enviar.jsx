@@ -89,9 +89,9 @@ const Enviar = () => {
   }, [form.empresa, form.fechaBoletaDePago, fetchAllEmployees]);
 
   const enviarCorreo = async (arrayBoletas) => {
-    setDeshabilitar(true);
-    sendMessage("Enviando Correo...", "Espere");
+    await setDeshabilitar(true);
     try {
+      sendMessage("Enviando Correo...", "Espere");
       const formIsValide = validateForm(form);
       if (formIsValide) {
         if (!arrayBoletas || arrayBoletas.length === 0) {
