@@ -91,66 +91,61 @@ const Enviar = () => {
   const showMessage = (message, type) => {
     sendMessage(message, type);
   };
+  console.log("AllBoletas:", allBoletas);
 
   const enviarCorreo = async (arrayBoletas) => {
-    // setDeshabilitar(true);
-    // showMessage("Enviando Correo...", "Espere");
+    setDeshabilitar(true);
+    showMessage("Enviando Correo...", "Espere");
     try {
-      console.log("Formulario:", form);
-      //   const formIsValide = validateForm(form);
-      //   if (formIsValide) {
-      //     if (!arrayBoletas || arrayBoletas.length === 0) {
-      //       showMessage("No hay boletas disponibles", "Error");
-      //       return;
-      //     }
-      // .filter((item) => !item.envio)
-      const datosBoleta = arrayBoletas.map(async (item) => {
-        const newForm = {
-          situacion: "ACTIVO O SUBSIDIADO",
-          tipoT: "EMPLEADO",
-          ...item,
-        };
-        console.log("Procesando boleta", newForm);
-        return newForm;
-      });
-      console.log("Datos de boleta preparados:", datosBoleta);
+      const formIsValide = validateForm(form);
+      if (formIsValide) {
+        if (!arrayBoletas || arrayBoletas.length === 0) {
+          showMessage("No hay boletas disponibles", "Error");
+          return;
+        }
+        // .filter((item) => !item.envio)
+        const datosBoleta = arrayBoletas.map(async (item) => {
+          const newForm = {
+            situacion: "ACTIVO O SUBSIDIADO",
+            tipoT: "EMPLEADO",
+            ...item,
+          };
 
-      //       const findBusiness = business.find(
-      //         (empresa) => empresa.razonSocial === item.colaborador.business
-      //       );
-      //       const docxTranscript = await renderDoc(
-      //         newForm,
-      //         findBusiness,
-      //         datosContables
-      //       );
-      //       const cloudinaryUrl = await documentoCloudinary(docxTranscript);
-      //       await axios.delete("/deleteDocument", {
-      //         data: { public_id: cloudinaryUrl.public_id },
-      //       });
-      //       return {
-      //         archivoUrl: cloudinaryUrl.secure_url,
-      //         email: item.colaborador.email,
-      //         fechaBoletaDePago: item.fechaBoletaDePago,
-      //         empresa: item.colaborador.business,
-      //         colaborador:
-      //           item.colaborador.lastname + " " + item.colaborador.name,
-      //         boletaId: item._id,
-      //       };
-      //   });
+          const findBusiness = business.find(
+            (empresa) => empresa.razonSocial === item.colaborador.business
+          );
+          const docxTranscript = await renderDoc(
+            newForm,
+            findBusiness,
+            datosContables
+          );
+          const cloudinaryUrl = await documentoCloudinary(docxTranscript);
+          await axios.delete("/deleteDocument", {
+            data: { public_id: cloudinaryUrl.public_id },
+          });
+          return {
+            archivoUrl: cloudinaryUrl.secure_url,
+            email: item.colaborador.email,
+            fechaBoletaDePago: item.fechaBoletaDePago,
+            empresa: item.colaborador.business,
+            colaborador:
+              item.colaborador.lastname + " " + item.colaborador.name,
+            boletaId: item._id,
+          };
+        });
 
-      //   const newForm = await Promise.all(datosBoleta);
+        const newForm = await Promise.all(datosBoleta);
 
-      //   const response = await enviarBoletasDePago({
-      //     datosBoleta: newForm,
-      //     business: form.empresa,
-      //   });
-      //   if (!response)
-      //     return showMessage("Error al generar la boleta", "Error");
-      //   showMessage(response, "Ok");
-      // } else {
-      //   showMessage("Complete los campos", "Error");
-      // }
-      console.log("Enviando correo a todos los empleados", arrayBoletas);
+        const response = await enviarBoletasDePago({
+          datosBoleta: newForm,
+          business: form.empresa,
+        });
+        if (!response)
+          return showMessage("Error al generar la boleta", "Error");
+        showMessage(response, "Ok");
+      } else {
+        showMessage("Complete los campos", "Error");
+      }
     } catch (error) {
       showMessage(error, "Error");
     } finally {
