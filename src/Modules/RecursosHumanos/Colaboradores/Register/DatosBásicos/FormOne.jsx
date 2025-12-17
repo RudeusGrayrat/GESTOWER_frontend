@@ -188,15 +188,15 @@ const FormOne = ({ setForm, error, form }) => {
         type="select"
         value={form.regimenPension}
         options={[
-          "PRIMA",
-          "PRIMA MIXTA",
-          "ONP",
-          "INTEGRA",
           "INTEGRA MIXTA",
-          "HABITAD",
-          "HABITAD MIXTA",
-          "PROFUTURO",
+          "INTEGRA",
+          "ONP",
+          "PRIMA MIXTA",
+          "PRIMA",
+          "HABITAT MIXTA",
+          "HABITAT",
           "PROFUTURO MIXTA",
+          "PROFUTURO",
           "SIN REGIMEN",
         ]}
         setForm={setForm}
