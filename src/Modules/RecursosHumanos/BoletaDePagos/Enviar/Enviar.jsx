@@ -88,19 +88,14 @@ const Enviar = () => {
     fetchAllEmployees();
   }, [form.empresa, form.fechaBoletaDePago, fetchAllEmployees]);
 
-  const showMessage = (message, type) => {
-    sendMessage(message, type);
-  };
-  console.log("AllBoletas:", allBoletas);
-
   const enviarCorreo = async (arrayBoletas) => {
     setDeshabilitar(true);
-    showMessage("Enviando Correo...", "Espere");
+    sendMessage("Enviando Correo...", "Espere");
     try {
       const formIsValide = validateForm(form);
       if (formIsValide) {
         if (!arrayBoletas || arrayBoletas.length === 0) {
-          showMessage("No hay boletas disponibles", "Error");
+          sendMessage("No hay boletas disponibles", "Error");
           return;
         }
         // .filter((item) => !item.envio)
@@ -141,13 +136,13 @@ const Enviar = () => {
           business: form.empresa,
         });
         if (!response)
-          return showMessage("Error al generar la boleta", "Error");
-        showMessage(response, "Ok");
+          return sendMessage("Error al generar la boleta", "Error");
+        sendMessage(response, "Ok");
       } else {
-        showMessage("Complete los campos", "Error");
+        sendMessage("Complete los campos", "Error");
       }
     } catch (error) {
-      showMessage(error, "Error");
+      sendMessage(error, "Error");
     } finally {
       setDeshabilitar(false);
     }

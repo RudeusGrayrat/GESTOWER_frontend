@@ -91,7 +91,7 @@ const renderDoc = async (boleta, business, datosContables) => {
         situacion: data.colaborador.state,
         codigoSpp: data.codigoSpp,
         ingreso: data.colaborador.dateStart,
-        regimen: data.regimenPension,
+        regimen: data.colaborador.regimenPension,
         días: parseInt(data.diasTrabajados) || 0,
         horas: parseInt(data.horasTrabajadas) || 0,
         tipoT: data.colaborador.type,
