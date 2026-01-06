@@ -75,6 +75,7 @@ const Directorio = (props) => {
         </div>
       ))}
       <div className=" items-center text-center w-full">
+        
         <ButtonOk
           type="ok"
           children="Añadir"
