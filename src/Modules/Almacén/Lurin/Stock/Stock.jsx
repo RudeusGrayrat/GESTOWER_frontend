@@ -40,10 +40,6 @@ const StockAlmacenLurin = ({
       <Column field="productoId.unidadDeMedida" header="Unidad"></Column>
       <Column field="cantidadTotal" header="Cantidad Total"></Column>
       <Column field="contratoId.cliente" header="Contrato"></Column>
-      <Column
-        field="movimientoId.numeroDeActa"
-        header="Numero de Acta"
-      ></Column>
     </ListPrincipal>
   );
 };
