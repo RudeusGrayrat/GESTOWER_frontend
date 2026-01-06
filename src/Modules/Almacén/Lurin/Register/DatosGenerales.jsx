@@ -39,28 +39,32 @@ const DatosGenerales = ({ form, setForm, error }) => {
       // }));
     }
   }, [form.movimiento]);
+  const [localform, setLocalForm] = useState(form.datosGenerales);
+  useEffect(() => {
+    setForm((prev) => ({ ...prev, datosGenerales: localform }));
+  }, [localform]);
 
   return (
     <form className="w-full flex flex-wrap" autoComplete="off">
       <InputDate
         label="Fecha De Ingreso"
         name="fecha"
-        value={form.datosGenerales.fecha}
-        setForm={setForm}
+        value={localform.fecha}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.fecha}
       />
       <InputTime
         label="Hora de Ingreso"
         name="horaIngreso"
-        value={form.datosGenerales.horaIngreso}
-        setForm={setForm}
+        value={localform.horaIngreso}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.horaIngreso}
       />
       <Input
         label="Recepcionado Por"
         name="recepcionadoPor"
-        value={form.datosGenerales.recepcionadoPor}
-        setForm={setForm}
+        value={localform.recepcionadoPor}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.recepcionadoPor}
       />
       <Input
@@ -71,23 +75,23 @@ const DatosGenerales = ({ form, setForm, error }) => {
             e.preventDefault();
           }
         }}
-        value={form.datosGenerales.dniRecepcionadoPor}
-        setForm={setForm}
+        value={localform.dniRecepcionadoPor}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.dniRecepcionadoPor}
       />
       <Input
         label="Responsable Entrega"
         name="responsableEntrega"
-        value={form.datosGenerales.responsableEntrega}
-        setForm={setForm}
+        value={localform.responsableEntrega}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.responsableEntrega}
       />
 
       <Input
         label="Registro o CIP"
         name="registroOCIP"
-        value={form.datosGenerales.registroOCIP}
-        setForm={setForm}
+        value={localform.registroOCIP}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.registroOCIP}
       />
       <Input
@@ -95,8 +99,8 @@ const DatosGenerales = ({ form, setForm, error }) => {
         name="estadoActa"
         type="select"
         options={options || []}
-        value={form.datosGenerales.estadoActa}
-        setForm={setForm}
+        value={localform.estadoActa}
+        setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.estadoActa}
       />
     </form>

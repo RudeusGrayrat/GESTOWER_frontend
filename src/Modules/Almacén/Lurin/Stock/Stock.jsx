@@ -6,14 +6,14 @@ import DeleteStock from "../Permissions/DeleteStock";
 const StockAlmacenLurin = ({
   permissionRead,
   permissionEdit,
-  permissionDelete,
+  // permissionDelete,
 }) => {
   const fetchStock = async (page, limit, search) => {
     try {
       const response = await axios.get("/getStockAlmacen", {
         params: { page, limit, search },
       });
-
+      console.log("response stock", response);
       return {
         data: response.data?.data,
         total: response.data?.total,
@@ -26,14 +26,14 @@ const StockAlmacenLurin = ({
     <ListPrincipal
       permissionRead={permissionRead}
       permissionEdit={permissionEdit}
-      permissionDelete={permissionDelete}
+      // permissionDelete={permissionDelete}
       DeleteItem={DeleteStock}
       fetchData={fetchStock}
       reload={fetchStock}
     >
       <Column
-        field="movimientoId.codigoIngreso"
-        header="Movimiento de creación"
+        field="movimientoId.numeroDeActa"
+        header="Numero de Acta"
         style={{ paddingLeft: "7vh", maxWidth: "20vh" }}
       ></Column>
       <Column field="productoId.descripcion" header="Producto"></Column>

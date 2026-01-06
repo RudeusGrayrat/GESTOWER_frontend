@@ -74,13 +74,15 @@ const Directorio = (props) => {
           />
         </div>
       ))}
-      <ButtonOk
-        type="ok"
-        children="+"
-        classe="w-full"
-        styles="mt-10 px-8 mx-4"
-        onClick={handleAddForm}
-      />
+      <div className=" items-center text-center w-full">
+        <ButtonOk
+          type="ok"
+          children="Añadir"
+          classe="w-[70%] text-black! min-w-40 bg-linear-to-r from-[#DADCDD]! to-[#DADCDD]!"
+          styles="mt-6 px-8 mx-4"
+          onClick={handleAddForm}
+        />
+      </div>
     </div>
   );
 };

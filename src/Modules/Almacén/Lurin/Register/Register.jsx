@@ -17,7 +17,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
 
   const [habilitar, setHabilitar] = useState(false);
   const { user } = useAuth();
-  const [form, setForm] = useState({
+  const [initialform, setInitialform] = useState({
     movimiento: "INGRESO",
     contrato: "",
     numeroDeActa: "",
@@ -50,6 +50,9 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
     referenciaImagen: "",
     observaciones: "",
     codigoIngreso: "",
+  });
+  const [form, setForm] = useState({
+    ...initialform
   });
 
   useEffect(() => {
@@ -205,9 +208,8 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
           if (error.motivo) {
             mensaje += `${i + 1}. ${error.descripcion} - ${error.motivo}\n`;
           } else {
-            mensaje += `${i + 1}. ${error.descripcion} - Solicitado: ${
-              error.cantidad
-            }, Stock disponible: ${error.stockActual}\n`;
+            mensaje += `${i + 1}. ${error.descripcion} - Solicitado: ${error.cantidad
+              }, Stock disponible: ${error.stockActual}\n`;
           }
         });
         sendMessage(mensaje, "Advertencia");
@@ -299,12 +301,14 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       // 🎉 FIN
       // ========================
       sendMessage("Registrado correctamente", "Bien");
+      resetForm();
+      return;
     } catch (error) {
       return sendMessage(
         error?.response?.data?.message?._message ||
-          error?.response?.data?.message ||
-          error.message ||
-          "Error al registrar el movimiento",
+        error?.response?.data?.message ||
+        error.message ||
+        "Error al registrar el movimiento",
         "Error"
       );
     } finally {
@@ -313,29 +317,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
   };
 
   const resetForm = () => {
-    setForm({
-      movimiento: "INGRESO",
-      contrato: "",
-      productos: [
-        {
-          item: "",
-          cantidad: "",
-          descripcion: "",
-        },
-      ],
-      datosGenerales: {
-        fecha: "",
-        horaIngreso: "",
-        recepcionadoPor: "",
-        dniRecepcionadoPor: "",
-        responsableEntrega: "",
-        registroOCIP: "",
-        estadoActa: "",
-      },
-    });
-    setError({
-      contrato: false,
-    });
+    setForm(initialform);
   };
 
   return (
@@ -371,13 +353,8 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         <ButtonOk
           type="ok"
           onClick={register}
-          classe="!w-32"
+          classe="!w-60"
           children="Registrar"
-        />
-        <ButtonOk
-          children="Cancelar"
-          classe="!w-32"
-          onClick={() => resetForm()}
         />
       </div>
     </div>
