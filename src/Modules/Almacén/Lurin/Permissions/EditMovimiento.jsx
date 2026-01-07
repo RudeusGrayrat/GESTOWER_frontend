@@ -16,7 +16,8 @@ import { useAuth } from "../../../../context/AuthContext";
 
 const EditMovimiento = ({ setShowEdit, selected }) => {
   const idSelected = selected._id;
-  const { patchMovimientoAlmacen, user, patchProductosAlmacen, patchStockAlmacen } = useAuth()
+  const { patchMovimientoAlmacen, user, patchProductosAlmacen, } = useAuth()
+
   const [formInicial, setFormInicial] = useState({
     ...selected,
     contrato: selected.contratoId.cliente,
@@ -98,7 +99,7 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
               cantidadTotal: producto.cantidad
             }
             if (data) {
-              await patchStockAlmacen(newCambios);
+              await axios.patch(`/patchStockAlmacen`, newCambios);
             }
 
 
