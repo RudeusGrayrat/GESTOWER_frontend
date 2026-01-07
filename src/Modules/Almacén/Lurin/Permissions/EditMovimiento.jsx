@@ -108,6 +108,7 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
       }
 
     } catch (error) {
+      console.log("error", error);
       sendMessage(
         error || "Error al actualizar el movimiento",
         "Error"
