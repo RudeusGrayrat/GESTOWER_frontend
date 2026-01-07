@@ -10,15 +10,21 @@ import Otros from "../Register/Otros";
 import useValidation from "../Register/Validate";
 import useSendMessage from "../../../../recicle/senMessage";
 import { useSelector } from "react-redux";
+import { deepDiff } from "../../../validateEdit";
 import axios from "../../../../api/axios";
+import { useAuth } from "../../../../context/AuthContext";
 
 const EditMovimiento = ({ setShowEdit, selected }) => {
-  const [form, setForm] = useState({
+  const idSelected = selected._id;
+  const { patchMovimientoAlmacen, user, patchProductosAlmacen, patchStockAlmacen } = useAuth()
+  const [formInicial, setFormInicial] = useState({
     ...selected,
     contrato: selected.contratoId.cliente,
     productos: selected.descripcionBienes || [],
   });
-  console.log("Formulario inicial:", form);
+  const [form, setForm] = useState({
+    ...formInicial
+  });
 
   const contratos = useSelector((state) => state.almacen.allContratos);
   const contratoSede = contratos.filter(
@@ -33,22 +39,79 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
   const sendMessage = useSendMessage();
   const { error, validateForm } = useValidation(form);
   const [habilitar, setHabilitar] = useState(false);
+
+  const diferencias = deepDiff(formInicial, form);
   const actualizar = async () => {
     setHabilitar(true);
+    if (diferencias.productos) {
+      diferencias.descripcionBienes = diferencias.productos;
+      delete diferencias.productos;
+    }
     try {
-      console.log("Actualizar movimiento:", selected);
-      const reponse = await axios.patch(
-        `/almacen/movimientos/${selected._id}`,
-        {
-          ...form,
-          contratoId: form.contrato._id,
+      if (Object.keys(diferencias).length === 0) {
+        sendMessage("No se realizaron cambios", "Info");
+        return;
+      }
+      if (!idSelected) {
+        sendMessage("ID de movimiento no válido", "Error");
+        return;
+      }
+      if (!user || !user._id) {
+        sendMessage("Usuario no autenticado", "Error");
+        return;
+      }
+      await patchMovimientoAlmacen({
+        actualizadoPor: user._id,
+        _id: idSelected,
+        ...diferencias,
+      })
+      //si se modificio la descripcion, subitem o la unidad de medida se debe actualizar el productoId
+      if (diferencias.descripcionBienes) {
+        for (const producto of diferencias.descripcionBienes) {
+          //verfificar cambios en descripcion, subitem o unidad de medida
+          const cambiosProducto = {};
+          if (producto.descripcion) {
+            cambiosProducto.descripcion = producto.descripcion;
+          }
+          if (producto.subItem) {
+            cambiosProducto.subItem = producto.subItem;
+          }
+          if (producto.unidadDeMedida) {
+            cambiosProducto.unidadDeMedida = producto.unidadDeMedida;
+          }
+          if (producto.cantidad) {
+            cambiosProducto.cantidad = producto.cantidad;
+          }
+          if (Object.keys(cambiosProducto).length > 0 && producto.productoId) {
+            await patchProductosAlmacen({
+              _id: producto.productoId,
+              ...cambiosProducto,
+            });
+            //opcional: actualizar stock del producto
+            const stockProducto = await axios.get(`/getStockByParams`, {
+              params: { productoId: producto.productoId },
+            });
+            const data = stockProducto.data.data[0]
+            const newCambios = {
+              _id: data._id,
+              actualizadoPor: user._id,
+              cantidadTotal: producto.cantidad
+            }
+            if (data) {
+              await patchStockAlmacen(newCambios);
+            }
+
+
+          }
+
         }
-      );
-      console.log("Respuesta de la actualización:", reponse);
-      sendMessage("Movimiento actualizado con éxito", "Éxito");
-      setShowEdit(false);
+      }
+
     } catch (error) {
-      console.log("Error al actualizar movimiento:", error);
+      sendMessage(
+        error || "Error al actualizar el movimiento",
+        "Error"
+      );
     } finally {
       setHabilitar(false);
     }

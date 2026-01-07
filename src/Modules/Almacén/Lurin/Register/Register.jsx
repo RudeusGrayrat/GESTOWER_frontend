@@ -63,7 +63,6 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
             params: { codigoIngreso: form.codigoIngreso },
           });
           const ingreso = res.data;
-          console.log("Ingreso encontrado:", ingreso);
           if (ingreso) {
             setForm((prev) => ({
               ...prev,
@@ -223,10 +222,13 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         item: i + 1,
         productoId: p.productoId, // puede ser null si no existía → se resolverá después
         cantidad: p.cantidad,
+        descripcion: p.descripcion,
         unidadDeMedida: p.unidadDeMedida,
         pesoNeto: p.pesoNeto,
         pesoBruto: p.pesoBruto,
         estadoEnvase: p.estadoEnvase,
+        subItem: p.subItem,
+        observaciones: p.observaciones || "",
       }));
 
       const responseMovimiento = await axios.post("/postMovimientoAlmacen", {

@@ -52,8 +52,6 @@ const WidgetStore = ({ show, colaborador }) => {
 
       await addWidgetPreference(data);
     } catch (error) {
-      console.log("error", error);
-      
       sendMessage(error, "Error");
     } finally {
       setDeshabilitar(false);

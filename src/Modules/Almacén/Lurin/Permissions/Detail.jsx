@@ -17,6 +17,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
     numeroDocumento,
     observaciones,
   } = selected;
+  console.log("selected", selected);
 
   return (
     <Details setShowDetail={setShowDetail}>
@@ -28,39 +29,31 @@ const DetailLurin = ({ setShowDetail, selected }) => {
               key={item._id || index}
               className="mb-4 border-b border-gray-300 pb-2"
             >
-              <h4 className="text-2xl font-semibold mb-2">ITEM #{index + 1}</h4>
+              <h4 className="text-2xl font-semibold mb-2">ITEM {item.item}</h4>
               <PDetail
                 content="PRODUCTO: "
-                value={item.productoId?.descripcion}
+                value={item.descripcion}
               />
-              <PDetail content="CANTIDAD: " value={item.productoId?.cantidad} />
+              <PDetail content="CANTIDAD: " value={item.cantidad} />
               <PDetail
                 content="UNIDAD: "
-                value={item.productoId?.unidadDeMedida}
+                value={item.unidadDeMedida}
               />
-              <PDetail content="ITEM: " value={item.productoId?.item} />
-              <PDetail content="SUBITEM: " value={item.productoId?.subItem} />
+              <PDetail content="SUBITEM: " value={item.subItem} />
               <PDetail
                 content="PESO NETO: "
-                value={item.productoId?.pesoNeto}
+                value={item.pesoNeto}
               />
               <PDetail
                 content="PESO BRUTO: "
-                value={item.productoId?.pesoBruto}
+                value={item.pesoBruto}
               />
               <PDetail
                 content="UBICACIÓN: "
-                value={
-                  item.ubicacionId?.zonaId.nombre +
-                  ", " +
-                  item.ubicacionId?.rack +
-                  ", " +
-                  "SECCION: " +
-                  item.ubicacionId?.nivel +
-                  "-" +
-                  item.ubicacionId?.seccion
-                }
+                value={item.ubicacionId ? `${item.ubicacionId?.zonaId?.nombre || ""}, ${item.ubicacionId?.rack || ""}, SECCION: ${item.ubicacionId?.nivel || ""} - ${item.ubicacionId?.seccion || ""}` : "Aún no asignado"}
               />
+              <PDetail content="ESTADO ENVASE: " value={item.estadoEnvase} />
+              <PDetail content="OBSERVACIONES: " value={item.observaciones || ""} />
             </div>
           ))}
         </div>

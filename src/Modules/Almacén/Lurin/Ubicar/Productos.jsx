@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
-import unidadesDeMedida from "../../../../api/unidadDeMedida";
 import axios from "../../../../api/axios";
 import useSendMessage from "../../../../recicle/senMessage";
 
@@ -22,14 +21,24 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
   useEffect(() => {
     if (initialData && Object.keys(initialData).length > 0) {
       const filledData = {
-        productoId: initialData.productoId?._id,
-        cantidad:
-          initialData.cantidad || initialData.productoId?.cantidad || "",
+        productoId:
+          typeof initialData.productoId === "object"
+            ? initialData.productoId._id
+            : initialData.productoId,
+
+        cantidad: initialData.cantidad || "",
         descripcion:
           initialData.descripcion || initialData.productoId?.descripcion || "",
-        unidadDeMedida: initialData.unidadDeMedida || "UNIDAD",
-        subItem: initialData.subItem || initialData.productoId?.subItem || "",
+        unidadDeMedida:
+          initialData.unidadDeMedida ||
+          initialData.productoId?.unidadDeMedida ||
+          "UNIDAD",
+        subItem:
+          initialData.subItem ||
+          initialData.productoId?.subItem ||
+          "",
       };
+
 
       setData(filledData);
 
@@ -72,29 +81,32 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
     setOptions([]);
     setSearch("");
 
-    // 🔹 Solo notifico al padre lo necesario
     set({
       productoId: newData.productoId,
       cantidad: newData.cantidad,
       cantidadDisponible: newData.cantidad,
       descripcion: newData.descripcion,
+      unidadDeMedida: newData.unidadDeMedida,
+      subItem: newData.subItem,
     });
+
   };
 
   // ✏️ Cambios manuales en inputs
   const handleInputChange = (name, value) => {
     const newData = { ...data, [name]: value };
+    setData(newData);
 
-    setData(newData); // mantiene los inputs funcionando
-
-    if (name === "cantidad") {
-      // 🔹 Solo mando al padre {productoId, cantidad}
-      set({
-        productoId: newData.productoId,
-        cantidad: newData.cantidad,
-      });
-    }
+    // ⬇️ SIEMPRE enviar el objeto completo
+    set({
+      productoId: newData.productoId,
+      cantidad: newData.cantidad,
+      descripcion: newData.descripcion,
+      unidadDeMedida: newData.unidadDeMedida,
+      subItem: newData.subItem,
+    });
   };
+
 
   // 🔹 Adaptador para que funcione con tu Input
   const adaptSetForm = (name) => (updater) => {
@@ -144,7 +156,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
             label="Descripción"
             name="descripcion"
             value={data.descripcion}
-            setForm={() => {}}
+            setForm={() => { }}
             errorOnclick={error?.descripcion}
             disabled
           />
@@ -154,7 +166,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
             name="unidadDeMedida"
             type="select"
             value={data.unidadDeMedida}
-            setForm={() => {}}
+            setForm={() => { }}
             disabled
             errorOnclick={error?.unidadDeMedida}
           />
@@ -165,7 +177,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
             type="select"
             options={["1.1", "1.2", "1.3"]}
             value={data.subItem}
-            setForm={() => {}}
+            setForm={() => { }}
             errorOnclick={error?.subItem}
             disabled
           />

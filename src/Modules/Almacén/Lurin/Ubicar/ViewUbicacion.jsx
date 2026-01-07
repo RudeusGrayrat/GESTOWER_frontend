@@ -7,90 +7,113 @@ import axios from "../../../../api/axios";
 import PDetail from "../../../../recicle/PDtail";
 import ProgressCircle from "../../../../recicle/Otros/ProgressCircle";
 import ProductosUbicacion from "./Productos";
-import { deepDiff } from "../../../validateEdit";
 import { useAuth } from "../../../../context/AuthContext";
+import PopUp from "../../../../recicle/popUps";
 
 const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion }) => {
   const sendMessage = useSendMessage();
+  const [deshabilitar, setDeshabilitar] = useState(false);
   const form = {
     estado: ubicacionSeleccionada?.estado,
     porcentaje: ubicacionSeleccionada?.porcentaje || 0,
     productos:
       ubicacionSeleccionada?.productos?.map((prod) => ({
+        subItem: prod.productoId.subItem,
         productoId: prod.productoId._id,
         cantidad: prod.cantidad,
         descripcion: prod.productoId.descripcion,
+        unidadDeMedida: prod.productoId.unidadDeMedida,
       })) || [],
   };
-
   const { patchUbicacionProducto, user } = useAuth();
-  const [edit, setEdit] = useState({
-    estado: ubicacionSeleccionada?.estado || "",
-    porcentaje: ubicacionSeleccionada?.porcentaje || 0,
-    productos: ubicacionSeleccionada?.productos || [],
-  });
+  const [edit, setEdit] = useState({ ...form });
+  const normalizarProductos = (productos = []) => {
+    const productosNormalizados = productos.map(p => ({
+      productoId: p.productoId?._id || p.productoId,
+      cantidad: Number(p.cantidad || 0),
+      descripcion: p.descripcion || p.productoId?.descripcion,
+    }));
+    return productosNormalizados;
+  }
 
   const editUbicacion = async () => {
+    setDeshabilitar(true);
+    sendMessage("Guardando cambios...", "Info");
+    const inicial = normalizarProductos(form.productos);
+    const actual = normalizarProductos(edit.productos);
+
     try {
-      //poder guardar, quitar o añadir los PRODUCTOS que se movieron de/a la ubicacion
-      // actualizar el estado y porcentaje de la ubicacion
-      // en el edit en productos, solo debería enviarse el id del producto y su cantidad
-      // tambien etidar el stock del almacen con las cantidades disponibles
-
-      const diferencias = deepDiff(form, edit);
-      if (!diferencias || Object.keys(diferencias).length === 0) {
-        sendMessage("No hay cambios para guardar", "Info");
+      const mapInicial = {};
+      for (const p of inicial) {
+        mapInicial[p.productoId] = p.cantidad;
       }
-      if (diferencias.productos || diferencias.productos?.length > 0) {
-        const productosAñadidos = deepDiff(form.productos, edit.productos);
-        const productosSacados = deepDiff(edit.productos, form.productos);
 
-        for (const prod of Object.values(productosAñadidos)) {
-          const cantidadDisponible = prod.cantidadDisponible
-            ? Number(prod.cantidadDisponible)
-            : 0;
-          const cantidadASacar = Number(prod.cantidad);
+      const mapActual = {};
+      for (const p of actual) {
+        mapActual[p.productoId] = p.cantidad;
+      }
 
-          if (cantidadASacar > cantidadDisponible) {
-            sendMessage(
-              `La cantidad a sacar del producto "${prod.descripcion}" (${cantidadASacar}) supera la cantidad disponible (${cantidadDisponible}).`,
-              "Error"
-            );
-            return;
-          }
-          if (cantidadASacar === 0) {
-            sendMessage(
-              `La cantidad a sacar del producto "${prod.descripcion}" no puede ser  0.`,
-              "Error"
-            );
-            return;
-          }
-          await axios.patch("/patchStockAlmacen", {
-            productoId: prod.productoId,
-            cantidadDisponible: cantidadDisponible - cantidadASacar,
-          });
-        }
-        for (const prod of Object.values(productosSacados)) {
-          const cantidadDisponible = prod.cantidadDisponible
-            ? Number(prod.cantidadDisponible)
-            : 0;
-          const cantidadADevolver = Number(prod.cantidad);
+      const ajustes = [];
 
-          await axios.patch("/patchStockAlmacen", {
-            productoId: prod.productoId,
-            cantidadDisponible: cantidadDisponible + cantidadADevolver,
-          });
+      const ids = new Set([
+        ...Object.keys(mapInicial),
+        ...Object.keys(mapActual),
+      ]);
+      for (const productoId of ids) {
+        const antes = mapInicial[productoId] || 0;
+        const ahora = mapActual[productoId] || 0;
+        const diferenciaCantidad = ahora - antes;
+
+        if (diferenciaCantidad !== 0) {
+          ajustes.push({ productoId, diferenciaCantidad });
         }
       }
+      for (const ajuste of ajustes) {
+        if (ajuste.diferenciaCantidad > 0) {
+          const res = await axios.get("/getStockByParams", {
+            params: {
+              productoId: ajuste.productoId,
+            },
+          });
+          const data = res.data;
+
+          const disponible = Number(data.data[0].cantidadDisponible);
+          if (!disponible) {
+            return sendMessage(
+              `No hay stock disponible para el producto ID: ${ajuste.productoId}`,
+              "Error"
+            );
+          }
+          if (disponible < ajuste.diferenciaCantidad) {
+            setDeshabilitar(false);
+            return sendMessage(
+              `Stock insuficiente. Disponible: ${disponible}, requerido: ${ajuste.diferenciaCantidad}`,
+              "Error"
+            );
+          }
+        }
+      }
+      for (const ajuste of ajustes) {
+        await axios.patch("/patchStockAlmacen", {
+          productoId: ajuste.productoId,
+          diferenciaCantidad: -ajuste.diferenciaCantidad, // ojo al signo
+        });
+      }
+
       await patchUbicacionProducto({
         _id: ubicacionSeleccionada._id,
         actualizadoPor: user._id,
-        ...diferencias,
+        estado: edit.estado,
+        porcentaje: edit.porcentaje,
+        productos: actual.map(p => ({
+          productoId: p.productoId,
+          cantidad: p.cantidad,
+        })),
       });
     } catch (error) {
       sendMessage(error?.response?.data?.message, "Error");
     } finally {
-      // setViewUbicacion(false);
+      setDeshabilitar(false);
     }
   };
 
@@ -110,6 +133,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion }) => {
       <div className="  flex justify-center items-start min-h-[85%]  max-h-[90%]">
         <div className="px-6 pt-4 overflow-y-auto mt-6 h-[97%] max-h-[97%] w-[95%] flex flex-col bg-gradient-to-tr from-slate-100 to-white rounded-lg shadow-lg ">
           <div className="  my-2 md:min-h-[60%] 2xl:min-h-[45%] flex justify-evenly w-full">
+            <PopUp deshabilitar={deshabilitar} />
             <div className=" flex flex-col justify-start content-center center w-[40%]">
               <p className="text-3xl mb-5 font-bold">Detalles de Ubicación</p>
               <div className="flex flex-wrap gap-x-6  ">
