@@ -11,9 +11,9 @@ const ListCertificados = ({
   permissionDelete,
 }) => {
   const dispatch = useDispatch();
-  const certificados = useSelector((state) => state.certificados);
+  const certificados = useSelector((state) => state?.certificados);
   useEffect(() => {
-    if (certificados.length === 0) {
+    if (certificados?.length === 0) {
       dispatch(getCertificados());
     }
   }, [certificados, dispatch]);
