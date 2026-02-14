@@ -30,7 +30,7 @@ const ListPermisos = ({ permissionEdit, permissionRead }) => {
         field="lastname"
         header="Apellidos"
         sortable
-        style={{ paddingLeft: "60px" }}
+         
       />
       <Column field="name" header="Nombres" sortable />
       <Column field="charge" header="Cargo" sortable />

@@ -32,7 +32,7 @@ const ListWidgets = (permissionEdit, permissionDelete, permissionRead) => {
     >
       <Column
         field="name"
-        style={{ paddingLeft: "60px" }}
+         
         header="Nombre"
         sortable
       />

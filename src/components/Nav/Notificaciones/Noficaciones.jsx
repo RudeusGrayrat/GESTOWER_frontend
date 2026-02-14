@@ -42,7 +42,7 @@ const Notificaciones = () => {
           <Column
             field="creator"
             header="Usuario"
-            style={{ paddingLeft: "60px" }}
+             
             body={(rowData) => {
               return `${rowData?.creator?.lastname} ${rowData?.creator?.name}`;
             }}

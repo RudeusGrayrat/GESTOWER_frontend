@@ -1,31 +1,38 @@
 import { Column } from "primereact/column";
 import ListPrincipal from "../../../../components/Principal/List/List";
-import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { getSubModule } from "../../../../redux/actions";
 import DeleteSubmodule from "../Permissions/DeleteSubmodule";
+import axios from "../../../../api/axios.js";
 
 const List = ({ permissionEdit, permissionDelete }) => {
-  const subModules = useSelector((state) => state.herramientas.submodules);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (subModules.length === 0) {
-      dispatch(getSubModule());
+  const fetchMyS = async (page, limit, search) => {
+    try {
+
+      const response = await axios.get("/herramientas/getSubmodulesPagination", {
+        params: { page, limit, search },
+      });
+      console.log("response: ", response);
+      return {
+        data: response.data?.data,
+        total: response.data?.total,
+      };
+    } catch (error) {
+      throw new Error(error);
     }
-  }, [dispatch, subModules.length]);
+  }
+
   return (
     <ListPrincipal
       permissionDelete={permissionDelete}
       permissionEdit={permissionEdit}
-      reload={() => dispatch(getSubModule())}
       DeleteItem={DeleteSubmodule}
-      content={subModules}
+      fetchData={fetchMyS}
+      reload={fetchMyS}
     >
       <Column
         field="module"
         header="Modulo"
         sortable
-        style={{ paddingLeft: "60px" }}
+         
       />
       <Column field="name" header="Submodulo" sortable />
     </ListPrincipal>

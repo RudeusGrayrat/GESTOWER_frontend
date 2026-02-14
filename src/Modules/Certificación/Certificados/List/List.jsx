@@ -30,7 +30,7 @@ const ListCertificados = ({
     >
       <Column
         field="name"
-        style={{ paddingLeft: "60px" }}
+         
         header="Nombre"
         sortable
       ></Column>

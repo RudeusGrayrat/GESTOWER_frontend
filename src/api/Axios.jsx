@@ -22,7 +22,6 @@ export const axiosOptions = () => {
         setSubmodules(submodulesResponse.data);
         setEmployees(employeesResponse.data);
       } catch (error) {
-        console.error("Error fetching options:", error);
         setError("Error fetching options");
       }
     };

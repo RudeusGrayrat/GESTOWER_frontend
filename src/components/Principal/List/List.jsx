@@ -348,6 +348,7 @@ const ListPrincipal = ({
           header={header}
           {...OtheProps}
         >
+          <Column style={{width: "60px"}} />
           {children}
           <Column body={actionBodyTemplate} exportable={false}></Column>
         </DataTable>

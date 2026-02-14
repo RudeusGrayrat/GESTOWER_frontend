@@ -33,7 +33,6 @@ const ListNaves = ({ permissionRead, permissionEdit, permissionDelete }) => {
         field="nombre"
         header="Nombre Nave"
         sortable
-        style={{ paddingLeft: "5%" }}
       />
       <Column field="sedeId.nombre" header="Sede" sortable />
     </ListPrincipal>

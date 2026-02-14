@@ -34,7 +34,6 @@ const StockAlmacenLurin = ({
       <Column
         field="movimientoId.numeroDeActa"
         header="Numero de Acta"
-        style={{ paddingLeft: "7vh", maxWidth: "20vh" }}
       ></Column>
       <Column field="productoId.descripcion" header="Producto"></Column>
       <Column field="productoId.unidadDeMedida" header="Unidad"></Column>

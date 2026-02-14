@@ -36,7 +36,7 @@ const ListInventario = ({
     >
       <Column
         field="codigo"
-        style={{ paddingLeft: "60px" }}
+         
         header="Código"
         sortable
       />

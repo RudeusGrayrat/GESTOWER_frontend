@@ -22,6 +22,10 @@ import ContratoAlmacen from "../../Modules/Almacén/Contratos/ContratoAlmacen";
 import SedesAlamcen from "../../Modules/Almacén/Sedes/Sede";
 import Naves from "../../Modules/Almacén/Naves/Naves";
 import ZonasAlmacen from "../../Modules/Almacén/Zonas/Zonas";
+import Manifiestos from "../../Modules/Certificación/Manifiestos/Manifiestos";
+import Generadores from "../../Modules/Certificación/Generadores/Generadores";
+import Plantas from "../../Modules/Certificación/Plantas/Plantas";
+import Ubigeo from "../../Modules/Certificación/Ubigeo/Ubigeo";
 
 const componentMap = {
   "recursos humanos": {
@@ -34,11 +38,14 @@ const componentMap = {
   },
   certificacion: {
     certificados: Certificados,
+    manifiestos: Manifiestos,
+    generadores: Generadores,
+    plantas: Plantas,
+    ubigeo: Ubigeo
   },
   comercial: {
     certificados: Certificados,
     clientes: Clientes,
-    cotización: Cotizacion,
     cotizacion: Cotizacion,
   },
   sistemas: {

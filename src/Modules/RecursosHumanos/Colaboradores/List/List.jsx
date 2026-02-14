@@ -54,7 +54,7 @@ const List = ({
       <Column
         field="lastname"
         header="Apellidos"
-        style={{ paddingLeft: "60px" }}
+         
       ></Column>
       <Column field="name" header="Nombres"></Column>
       <Column field="email" header="Email"></Column>

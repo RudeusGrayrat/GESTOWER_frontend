@@ -32,7 +32,7 @@ const ListSedesAlmacen = ({
       fetchData={recargar}
       reload={recargar}
     >
-      <Column field="_id" header="ID" style={{ paddingLeft: "60px" }} />
+      <Column field="_id" header="ID"   />
       <Column field="nombre" header="Nombre" />
       <Column field="direccion" header="Dirección" />
       <Column field="estado" header="Estado" />

@@ -45,7 +45,7 @@ const ListAColaborador = ({
       <Column
         field="colaborador.lastname"
         header="Apellidos del Colaborador"
-        style={{ paddingLeft: "60px" }}
+         
       />
       <Column field="colaborador.name" header="Nombres del Colaborador" />
 

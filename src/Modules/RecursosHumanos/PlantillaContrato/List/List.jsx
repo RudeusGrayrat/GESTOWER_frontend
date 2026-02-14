@@ -31,7 +31,7 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
     >
       <Column
         field="createdAt"
-        style={{ paddingLeft: "60px" }}
+         
         header="Fecha de Subida"
         sortable
       />

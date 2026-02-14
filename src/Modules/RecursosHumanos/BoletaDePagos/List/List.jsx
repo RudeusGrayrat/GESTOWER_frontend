@@ -63,7 +63,7 @@ const ListBoletaDePagos = ({
       <Column
         field="correlativa"
         header="Correlativa"
-        style={{ paddingLeft: "60px" }}
+         
       />
       <Column
         field="fechaBoletaDePago"

@@ -125,7 +125,7 @@ const ListLurin = ({
             <Column
               field="correlativa"
               header="Código Interno"
-              style={{ paddingLeft: "60px" }}
+               
             />
             <Column field="movimiento" header="Movimiento" />
             <Column field="contribuyente" header="Contribuyente" />

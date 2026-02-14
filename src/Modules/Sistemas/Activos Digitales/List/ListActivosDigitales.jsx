@@ -86,7 +86,7 @@ const ListActivosDigitales = ({
         field="name"
         header="name"
         sortable
-        style={{ paddingLeft: "60px" }}
+         
       />
       <Column field="tipo" header="Tipo" sortable />
       <Column field="clave" header="Clave" sortable />

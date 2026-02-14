@@ -36,7 +36,7 @@ const ListZonas = ({ permissionRead, permissionEdit, permissionDelete }) => {
         field="nombre"
         header="Nombre"
         sortable
-        style={{ paddingLeft: "60px" }}
+         
       />
       <Column field="almacenId.nombre" header="Almacén" sortable />
       <Column field="orientacion" header="Orientación" sortable />

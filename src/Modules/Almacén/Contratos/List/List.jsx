@@ -32,7 +32,7 @@ const ListContratosAlmacen = ({
       fetchData={fetch}
       reload={fetch}
     >
-      <Column field="_id" header="ID" style={{ paddingLeft: "60px" }} />
+      <Column field="_id" header="ID"   />
       <Column field="cliente" header="Cliente" />
       <Column field="fechaInicio" header="Fecha Inicio" />
       <Column field="fechaFin" header="Fecha Fin" />

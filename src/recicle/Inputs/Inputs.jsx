@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Dropdown } from "primereact/dropdown";
 import { Password } from "primereact/password";
 import PhoneInput from "react-phone-number-input";
@@ -6,6 +6,8 @@ import { MultiSelect } from "primereact/multiselect";
 import "react-phone-number-input/style.css";
 import "./stilos.css";
 import "primeicons/primeicons.css";
+import axios from "../../api/axios";
+import { AutoComplete } from "primereact/autocomplete";
 
 const Input = ({
   prueba,
@@ -17,18 +19,29 @@ const Input = ({
   value,
   setError,
   ancho,
+  mayus = true,
+  fetchData,
+  setOptions,
+  otro = true,
+  extraParams = {},
+  disabled = false,
   ...OtherProps
 }) => {
+  if (setForm === undefined) {
+    setForm = () => { };
+  }
   const [error, setErrorState] = useState(false);
   const [animation, setAnimation] = useState(false);
+  const [otroMode, setOtroMode] = useState(false);
+  const [otroValor, setOtroValor] = useState("");
+
   const styleError = "border-red-500 animate-shake";
   const styleNormal = "border-gray-300";
   const styleConstant =
-    "mt-1 px-3 py-2 border min-w-56 !text-base rounded-md shadow-sm sm:text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500";
+    "mt-1 px-3 py-2 border min-w-56 !text-base rounded-md shadow-sm sm:text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 bg-white";
 
-  const estilo = `${styleConstant} ${ancho} ${
-    animation ? styleError : styleNormal
-  }`;
+  const estilo = `${styleConstant} ${ancho} ${animation ? styleError : styleNormal
+    } ${disabled ? "bg-gray-100 cursor-not-allowed" : ""}`;
   const clase = `border !mt-1 !px-1 !py-0 rounded-lg min-w-[250px] ${estilo} ${ancho} `;
 
   const handleAnimation = () => {
@@ -53,23 +66,30 @@ const Input = ({
       setErrorState(false);
       setAnimation(false);
     }
-  }, [value]);
+  }, [value, name, setForm, type]);
 
   const handleChange = (e) => {
     const { value } = e.target;
     let newValue = value;
-    if (name === "email") {
+
+    if (name === "email" || name === "correoElectronico" || name === "username" || name === "correo") {
       newValue = value.toLowerCase();
     } else if (name === "password" || name === "permissions") {
       newValue = value;
+    } else if (type === "autocomplete") {
+      newValue = value;
+    } else if (typeof value === "object") {
+      newValue = value;
     } else {
-      newValue = value.toUpperCase();
+      newValue = mayus ? value.toUpperCase() : value;
     }
+
     if (type === "multiSelect") {
       setForm(e.value);
     } else {
       setForm((prev) => ({ ...prev, [name]: newValue }));
     }
+
     if (value) {
       setErrorState(false);
       setAnimation(false);
@@ -80,13 +100,15 @@ const Input = ({
   };
 
   const handleBlur = () => {
-    if (!value) {
+    if (!value && !disabled) {
       setErrorState(true);
       handleAnimation();
     }
   };
 
   let content;
+  const debounceRef = useRef(null);
+
   switch (type) {
     case "multiSelect":
       content = (
@@ -106,8 +128,9 @@ const Input = ({
         <PhoneInput
           value={value}
           onChange={handleChange}
-          placeholder={label}
           className={clase}
+          placeholder={label}
+          disabled={disabled}
         />
       );
       break;
@@ -119,20 +142,129 @@ const Input = ({
           onChange={handleChange}
           placeholder={label}
           className={estilo}
+          disabled={disabled}
         />
       );
       break;
+    case "autocomplete":
+      let opcionesConOtro = [];
+      if (otro && OtherProps?.options) {
+        opcionesConOtro = [
+          ...OtherProps.options,
+          { [name]: "OTRO", value: "OTRO" }
+        ];
+      } else {
+        opcionesConOtro = [...(OtherProps?.options || [])];
+      }
+
+      content = (
+        <div className="flex items-center gap-2">
+          {!otroMode ? (
+            <AutoComplete
+              value={value}
+              suggestions={opcionesConOtro}
+              completeMethod={(e) => {
+                clearTimeout(debounceRef.current);
+
+                debounceRef.current = setTimeout(() => {
+                  if (e.query === "OTRO") return;
+                  let allParams = {
+                    page: 0,
+                    limit: 10,
+                    search: e.query,
+                  }
+                  if (extraParams) {
+                    allParams = {
+                      ...allParams,
+                      ...extraParams
+                    }
+                  }
+                  axios
+                    .get(fetchData, {
+                      params: allParams
+                    })
+                    .then((res) => {
+                      if (setOptions) {
+                        setOptions(res.data.data);
+                      }
+                    })
+                    .catch(err => console.error("Error fetching autocomplete:", err));
+                }, 500);
+              }}
+              field={name}
+              placeholder={label}
+              dropdown
+              className={estilo + " p-0!"}
+              onChange={(e) => {
+                if (e.value?.value === "OTRO") {
+                  setOtroMode(true);
+                  setForm((prev) => ({ ...prev, [name]: "" }));
+                } else {
+                  handleChange(e);
+                }
+              }}
+              disabled={disabled}
+              {...OtherProps}
+            />
+          ) : (
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                className={estilo}
+                value={otroValor}
+                placeholder="Ingrese otro valor..."
+                onChange={(e) => {
+                  const upper = mayus ? e.target.value.toUpperCase() : e.target.value;
+                  setOtroValor(upper);
+                  setForm((prev) => ({ ...prev, [name]: upper }));
+                }}
+                disabled={disabled}
+              />
+              <button
+                type="button"
+                className="px-2 py-1 bg-red-500 text-white rounded-full text-xs hover:bg-red-600"
+                onClick={() => {
+                  setOtroMode(false);
+                  setOtroValor("");
+                  setForm((prev) => ({ ...prev, [name]: "" }));
+                }}
+              >
+                ✕
+              </button>
+            </div>
+          )}
+        </div>
+      );
+      break;
+
     case "select":
       content = (
         <Dropdown
+          className={estilo + " py-0!"}
           value={value}
           onChange={handleChange}
           options={OtherProps.options}
           placeholder={label}
-          className={estilo}
-          editable
+          editable={OtherProps.editable || true}
+          disabled={disabled}
           {...OtherProps}
         />
+      );
+      break;
+    case "checkbox":
+      content = (
+        <div className="flex items-center mt-2">
+          <input
+            type="checkbox"
+            checked={value || false}
+            onChange={(e) => {
+              setForm((prev) => ({ ...prev, [name]: e.target.checked }));
+            }}
+            className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            disabled={disabled}
+          />
+          <span className="ml-2 text-sm text-gray-600">{OtherProps.checkboxLabel || label}</span>
+        </div>
       );
       break;
     default:
@@ -145,6 +277,7 @@ const Input = ({
           placeholder={error ? "Este campo es obligatorio" : label}
           onChange={handleChange}
           onBlur={handleBlur}
+          disabled={disabled}
           {...OtherProps}
           className={estilo}
         />
@@ -152,11 +285,10 @@ const Input = ({
   }
 
   return (
-    <div className="flex flex-col mx-3 F h-20">
+    <div className="flex flex-col mx-3 F h-20" title={OtherProps.title || ""}>
       <label
-        className={`text-base font-medium ${
-          error ? "text-red-500" : "text-gray-700"
-        }`}
+        className={`text-base font-medium ${error ? "text-red-500" : "text-gray-700"
+          }`}
       >
         {error ? label + " *" : label}
       </label>
