@@ -182,7 +182,7 @@ const RegisterUbigeo = () => {
                 <CardPlegable title="Registro Manual de Ubigeo">
                     <div className="flex flex-wrap">
                         <Input
-                            label="Código (6 dígitos) *"
+                            label="Código (6 dígitos)"
                             name="codigo"
                             value={form.codigo}
                             setForm={setForm}
@@ -195,21 +195,21 @@ const RegisterUbigeo = () => {
                             placeholder="Ej: 150101"
                         />
                         <Input
-                            label="Departamento *"
+                            label="Departamento"
                             name="departamento"
                             value={form.departamento}
                             setForm={setForm}
                             placeholder="Ej: LIMA"
                         />
                         <Input
-                            label="Provincia *"
+                            label="Provincia"
                             name="provincia"
                             value={form.provincia}
                             setForm={setForm}
                             placeholder="Ej: LIMA"
                         />
                         <Input
-                            label="Distrito *"
+                            label="Distrito"
                             name="distrito"
                             value={form.distrito}
                             setForm={setForm}

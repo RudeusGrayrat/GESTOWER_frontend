@@ -20,26 +20,26 @@ const Responsable = ({ form, setForm }) => {
     return (
         <div className="flex flex-wrap">
             <Input
-                label="Nombre del responsable *"
+                label="Nombre del responsable"
                 name="nombre"
                 value={responsable.nombre}
                 setForm={setResponsable}
                 ancho="w-96"
             />
             <Input
-                label="Cargo del responsable *"
+                label="Cargo del responsable"
                 name="cargo"
                 value={responsable.cargo}
                 setForm={setResponsable}
             />
             <Input
-                label="DNI del responsable *"
+                label="DNI del responsable"
                 name="dni"
                 value={responsable.dni}
                 setForm={setResponsable}
             />
             <Input
-                label="Correo del responsable *"
+                label="Correo del responsable"
                 name="correo"
                 value={responsable.correo}
                 setForm={setResponsable}

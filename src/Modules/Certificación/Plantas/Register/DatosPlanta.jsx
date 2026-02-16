@@ -51,7 +51,7 @@ const DatosPlanta = ({ form, setForm }) => {
 
             {/* Denominación de la planta */}
             <Input
-                label="Denominación de la planta *"
+                label="Denominación de la planta"
                 type="text"
                 name="denominacion"
                 value={form.denominacion}
@@ -61,7 +61,7 @@ const DatosPlanta = ({ form, setForm }) => {
 
             {/* Tipo de planta */}
             <Input
-                label="Tipo de planta *"
+                label="Tipo de planta"
                 type="select"
                 name="tipoPlanta"
                 value={form.tipoPlanta}
@@ -74,7 +74,7 @@ const DatosPlanta = ({ form, setForm }) => {
 
             {/* Dirección */}
             <Input
-                label="Dirección *"
+                label="Dirección"
                 type="text"
                 name="direccion"
                 value={form.direccion}
@@ -84,20 +84,17 @@ const DatosPlanta = ({ form, setForm }) => {
 
             {/* Ubigeo - Autocomplete */}
             <Input
-                label="Ubigeo *"
+                label="Ubigeo"
                 type="autocomplete"
                 name="ubigeoId"
                 value={form.ubigeoId}
                 setForm={setForm}
-                fetchData="/certificaciones/getUbigeoPagination"
+                fetchData="/certificaciones/getUbigeoPaginacion"
                 setOptions={setUbigeoOptions}
+                field="distrito"
                 options={ubigeoOptions}
-                optionLabel="nombreCompleto"
-                optionValue="_id"
-                extraParams={{}}
                 placeholder="Buscar distrito..."
             />
-
             {/* Actividad Económica (CIIU) */}
             <Input
                 label="Actividad Económica (CIIU)"

@@ -26,6 +26,8 @@ import Manifiestos from "../../Modules/Certificación/Manifiestos/Manifiestos";
 import Generadores from "../../Modules/Certificación/Generadores/Generadores";
 import Plantas from "../../Modules/Certificación/Plantas/Plantas";
 import Ubigeo from "../../Modules/Certificación/Ubigeo/Ubigeo";
+import Transportistas from "../../Modules/Certificación/Transportistas/Transportistas";
+import Destinos from "../../Modules/Certificación/Destinos/Destinos";
 
 const componentMap = {
   "recursos humanos": {
@@ -41,7 +43,9 @@ const componentMap = {
     manifiestos: Manifiestos,
     generadores: Generadores,
     plantas: Plantas,
-    ubigeo: Ubigeo
+    ubigeo: Ubigeo,
+    transportistas: Transportistas,
+    destinos: Destinos,
   },
   comercial: {
     certificados: Certificados,

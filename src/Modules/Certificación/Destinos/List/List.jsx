@@ -1,13 +1,14 @@
-import { Column } from "primereact/column";
-import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
+import ListPrincipal from "../../../../components/Principal/List/List";
+import { Column } from "primereact/column";
 
-const ListTransportistas = ({
+const ListDestinos = ({
     permissionRead, permissionApprove, permissionEdit, permissionDelete, permissionDisapprove
 }) => {
+
     const fetchData = async (limit, page, search) => {
         try {
-            const response = await axios.get("/certificaciones/getTransportistasPaginacion", {
+            const response = await axios.get("/certificaciones/getDestinosPaginacion", {
                 params: {
                     limit,
                     page,
@@ -15,7 +16,6 @@ const ListTransportistas = ({
                 },
             });
             const data = response.data;
-            console.log("Data recibida del backend:", data);
             return {
                 data: data.data,
                 total: data.total,
@@ -32,12 +32,16 @@ const ListTransportistas = ({
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
             fetchData={fetchData}
-            title="transportistas_certificacion"
+            title="destinos_certificacion"
         >
             <Column field="razonSocial" header="Razón Social" />
             <Column field="ruc" header="RUC" />
-            <Column field="direccion" header="Dirección" />
+            <Column field="codigoRegistroEors" header="Código Registro EORS" />
+            <Column field="autorizacionMunicipal" header="Autorización Municipal" />
+            <Column field="tipoManejo" header="Tipo de Manejo" />
             <Column field="ubigeoId.codigo" header="Ubigeo" />
+            <Column field="representanteLegal.nombre" header="Representante Legal" />
+
             <Column
                 field="estado"
                 header="Estado"
@@ -53,7 +57,7 @@ const ListTransportistas = ({
 
                     return (
                         <div
-                            className={`text-center bg-gradient-to-tr from-white to-gray-100 
+                            className={`text-center bg-gradient-to-tr from-white to-gray-100
                 shadow-inner rounded-xl font-semibold  px-5 py-1  ${color} `}
                         >
                             {rowData.estado}
@@ -65,4 +69,4 @@ const ListTransportistas = ({
     )
 }
 
-export default ListTransportistas;
+export default ListDestinos;

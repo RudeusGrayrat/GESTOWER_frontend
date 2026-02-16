@@ -9,7 +9,9 @@ const ListGeneradores = ({
 }) => {
     const fecthGeneradores = async () => {
         try {
-            const response = await axios.get("/certificaciones/getGeneradoresPaginacion");
+            const response = await axios.get("/certificaciones/getGeneradoresPaginacion", {
+                params: { limit, page, search }
+            });
             const data = response.data;
             return {
                 data: data.data,

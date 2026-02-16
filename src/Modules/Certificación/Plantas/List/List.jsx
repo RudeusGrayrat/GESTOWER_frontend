@@ -2,10 +2,10 @@ import { Column } from "primereact/column";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 
-const ListPlantas = () => {
+const ListPlantas = ({ permissionRead, permissionApprove, permissionEdit, permissionDelete, permissionDisapprove }) => {
     const fetchData = async (limit, page, search) => {
         try {
-            const response = await axios.get("/certificaciones/getManifiestosPaginacion", {
+            const response = await axios.get("/certificaciones/getPlantasPaginacion", {
                 params: {
                     limit,
                     page,
@@ -23,13 +23,18 @@ const ListPlantas = () => {
     }
     return (
         <ListPrincipal
+            permissionRead={permissionRead}
+            permissionEdit={permissionEdit}
+            permissionDelete={permissionDelete}
+            permissionApprove={permissionApprove}
+            permissionDisapprove={permissionDisapprove}
             fetchData={fetchData}
             title="plantas_certificacion"
         >
             <Column field="denominacion" header="Denominación" />
             <Column field="direccion" header="Dirección" />
             <Column field="sector" header="Sector" />
-            <Column field="ubigeo" header="Ubigeo" />
+            <Column field="ubigeoId.codigo" header="Ubigeo" />
             <Column
                 field="estado"
                 header="Estado"
