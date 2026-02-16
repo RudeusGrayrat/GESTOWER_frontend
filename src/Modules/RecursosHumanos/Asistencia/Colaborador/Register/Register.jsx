@@ -53,9 +53,23 @@ const RegisterAsistenciaColaborador = () => {
       sendMessage(error.message, "Error");
     }
   };
-
+  const resetForm = () => {
+    setForm({
+      colaborador: "",
+      fecha: "",
+      ingreso: "",
+      ingresoSede: "",
+      salida: "",
+      salidaSede: "",
+      inicioAlmuerzo: "",
+      finAlmuerzo: "",
+      almuerzoSede: "",
+      observaciones: "",
+      estado: "PRESENTE",
+    });
+  };
   return (
-    <Register registrar={register} validate={() => validateForm(form)}>
+    <Register registrar={register} resetForm={() => resetForm()} validate={() => validateForm(form)}>
       <CardPlegable title="Datos de Asistencia">
         <DatosDeAsistencia setForm={setForm} error={error} form={form} />
       </CardPlegable>

@@ -16,6 +16,7 @@ const Register = ({ validate, registrar, children, resetForm }) => {
         sendMessage("Faltan datos", "Error");
       } else {
         await registrar();
+        if (resetForm) resetForm();
       }
     } catch (error) {
       dispatch(setMessage(error, "Error"));
@@ -29,16 +30,18 @@ const Register = ({ validate, registrar, children, resetForm }) => {
       <PopUp deshabilitar={habilitar} />
       {children}
       <div className="flex justify-center">
+        {resetForm && (
+          <ButtonOk
+            children="Cancelar"
+            classe="!w-32"
+            onClick={() => resetForm()}
+          />
+        )}
         <ButtonOk
           type="ok"
           onClick={enviar}
           classe="!w-32"
           children="Registrar"
-        />
-        <ButtonOk
-          children="Cancelar"
-          classe="!w-32"
-          onClick={() => resetForm()}
         />
       </div>
     </div>

@@ -81,6 +81,7 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
     renderDocx();
   }, [selected, plantillaLimpiaUrl]);
   const convertirAPDF = async () => {
+    setCargandoPDF(true);
     try {
 
       const pdfResponse = await axios.post("/returnPdf", {
@@ -95,6 +96,8 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
 
     } catch (error) {
       console.error("Error convirtiendo a PDF:", error);
+    } finally {
+      setCargandoPDF(false);
     }
   };
   const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(docxContent)}&embedded=true`;
@@ -134,14 +137,18 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
             </ButtonOk>
           </div>
 
-          {/* Vista previa del Word (opcional) */}
-          <div className="mt-4 border rounded-lg overflow-hidden h-full">
-            <iframe
-              src={googleDocsViewerUrl}
-              className="w-full h-full"
-              title="Vista previa del manifiesto"
-            />
-          </div>
+          {cargandoPDF ? (
+            <div className="flex justify-center items-center h-40">
+              <p className="text-gray-500">Convirtiendo a PDF, no cierre o se cancelará...</p>
+            </div>
+          ) : (
+            <div className="mt-4 border rounded-lg overflow-hidden h-full">
+              <iframe
+                src={googleDocsViewerUrl}
+                className="w-full h-full"
+                title="Vista previa del manifiesto"
+              />
+            </div>)}
         </div>
       ) : (
         <div className="flex justify-center items-center h-40">

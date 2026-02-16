@@ -20,23 +20,6 @@ const Register = () => {
         representanteLegal: "",
         dniRepresentante: "",
     });
-    const register = async () => {
-        setDeshabilitar(true);
-        setMessage("Registrando generador...", "Cargando");
-        try {
-            if (Object.values(form).some(value => value === "")) {
-                sendMessage("Por favor, complete todos los campos del formulario.", "Advertencia");
-                return;
-            }
-            const response = await axios.post("/certificaciones/postGenerador", form)
-            const data = response.data;
-            sendMessage(data.message, data.type || "Correcto");
-        } catch (error) {
-            sendMessage(error, error.type || "Error")
-        } finally {
-            setDeshabilitar(false);
-        }
-    }
     const resetForm = () => {
         if (Object.values(form).some(value => value !== "")) {
             setForm({
@@ -50,6 +33,25 @@ const Register = () => {
             });
         }
     }
+    const register = async () => {
+        setDeshabilitar(true);
+        setMessage("Registrando generador...", "Cargando");
+        try {
+            if (Object.values(form).some(value => value === "")) {
+                sendMessage("Por favor, complete todos los campos del formulario.", "Advertencia");
+                return;
+            }
+            const response = await axios.post("/certificaciones/postGenerador", form)
+            const data = response.data;
+            sendMessage(data.message, data.type || "Correcto");
+            resetForm();
+        } catch (error) {
+            sendMessage(error, error.type || "Error")
+        } finally {
+            setDeshabilitar(false);
+        }
+    }
+
     return (
         <div className="w-full p-4">
             <PopUp deshabilitar={deshabilitar} />

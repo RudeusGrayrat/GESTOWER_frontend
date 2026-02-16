@@ -8,7 +8,7 @@ const DatosDestino = ({ formData, setFormData }) => {
     return (
         <div className="flex flex-wrap">
             <Input
-                label="Razón Social *"
+                label="Razón Social"
                 name="razonSocial"
                 value={formData.razonSocial}
                 setForm={setFormData}
@@ -16,7 +16,7 @@ const DatosDestino = ({ formData, setFormData }) => {
             />
 
             <Input
-                label="RUC *"
+                label="RUC"
                 name="ruc"
                 value={formData.ruc}
                 setForm={setFormData}
@@ -30,7 +30,7 @@ const DatosDestino = ({ formData, setFormData }) => {
             />
 
             <Input
-                label="Código Registro EO-RS *"
+                label="Código Registro EO-RS"
                 name="codigoRegistroEors"
                 value={formData.codigoRegistroEors}
                 setForm={setFormData}
@@ -46,7 +46,7 @@ const DatosDestino = ({ formData, setFormData }) => {
             />
 
             <Input
-                label="Dirección *"
+                label="Dirección"
                 name="direccion"
                 value={formData.direccion}
                 setForm={setFormData}
@@ -67,7 +67,7 @@ const DatosDestino = ({ formData, setFormData }) => {
             />
 
             <Input
-                label="Correo Electrónico *"
+                label="Correo Electrónico"
                 name="correoElectronico"
                 type="email"
                 value={formData.correoElectronico}
@@ -76,7 +76,7 @@ const DatosDestino = ({ formData, setFormData }) => {
             />
 
             <Input
-                label="Teléfono *"
+                label="Teléfono"
                 name="telefono"
                 value={formData.telefono}
                 setForm={setFormData}

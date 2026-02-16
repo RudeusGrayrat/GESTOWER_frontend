@@ -35,7 +35,6 @@ const RegisterTransportistas = () => {
         sendMessage("Registrando transportista...", "Cargando");
 
         try {
-            // Validaciones básicas
             const camposObligatorios = [
                 { campo: formData.razonSocial, nombre: "Razón Social" },
                 { campo: formData.ruc, nombre: "RUC" },

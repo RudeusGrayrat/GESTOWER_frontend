@@ -7,7 +7,7 @@ const ListGeneradores = ({
     permissionEdit,
     permissionDelete
 }) => {
-    const fecthGeneradores = async () => {
+    const fecthGeneradores = async ({ limit, page, search }) => {
         try {
             const response = await axios.get("/certificaciones/getGeneradoresPaginacion", {
                 params: { limit, page, search }

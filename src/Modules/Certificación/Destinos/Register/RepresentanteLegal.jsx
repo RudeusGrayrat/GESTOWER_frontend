@@ -14,14 +14,14 @@ const RepresentanteLegal = ({ formData, setFormData }) => {
     return (
         <div className="flex flex-wrap">
             <Input
-                label="Nombre del Representante Legal *"
+                label="Nombre del Representante Legal"
                 value={formData.representanteLegal?.nombre || ""}
                 onChange={(e) => handleChange('nombre', e.target.value.toUpperCase())}
                 placeholder="Nombres y apellidos completos"
             />
 
             <Input
-                label="DNI/CE del Representante Legal *"
+                label="DNI/CE del Representante Legal"
                 value={formData.representanteLegal?.dni || ""}
                 onChange={(e) => {
                     const soloNumeros = e.target.value.replace(/\D/g, '');

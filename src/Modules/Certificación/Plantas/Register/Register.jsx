@@ -34,7 +34,30 @@ const RegisterPlanta = () => {
         numeroResolucionIga: "",
         estado: "ACTIVO"
     });
-
+    const resetForm = () => {
+        setForm({
+            generadorId: "",
+            denominacion: "",
+            tipoPlanta: "",
+            direccion: "",
+            ubigeoId: "",
+            coordenadasUtm: { norte: "", este: "", zona: "" },
+            actividadEconomica: "",
+            sector: "",
+            responsableGestion: {
+                nombre: "",
+                cargo: "",
+                dni: "",
+                correo: "",
+                telefono: ""
+            },
+            tieneIga: false,
+            igaAprobadoPor: "",
+            fechaAprobacionIga: "",
+            numeroResolucionIga: "",
+            estado: "ACTIVO"
+        });
+    };
     const register = async () => {
         setDeshabilitar(true);
         setMessage("Registrando planta...", "Cargando");
@@ -91,30 +114,6 @@ const RegisterPlanta = () => {
         }
     };
 
-    const resetForm = () => {
-        setForm({
-            generadorId: "",
-            denominacion: "",
-            tipoPlanta: "",
-            direccion: "",
-            ubigeoId: "",
-            coordenadasUtm: { norte: "", este: "", zona: "" },
-            actividadEconomica: "",
-            sector: "",
-            responsableGestion: {
-                nombre: "",
-                cargo: "",
-                dni: "",
-                correo: "",
-                telefono: ""
-            },
-            tieneIga: false,
-            igaAprobadoPor: "",
-            fechaAprobacionIga: "",
-            numeroResolucionIga: "",
-            estado: "ACTIVO"
-        });
-    };
     console.log("Renderizando RegisterPlanta con form:", form); // Debug render
 
     return (

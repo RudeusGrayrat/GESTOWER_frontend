@@ -34,6 +34,29 @@ const RegisterDestinos = () => {
         estado: 'ACTIVO'
     });
 
+    const resetForm = () => {
+        setFormData({
+            razonSocial: '',
+            ruc: '',
+            codigoRegistroEors: '',
+            autorizacionMunicipal: '',
+            tipoManejo: 'TRATAMIENTO',
+            direccion: '',
+            ubigeoId: '',
+            correoElectronico: '',
+            telefono: '',
+            representanteLegal: {
+                nombre: '',
+                dni: '',
+            },
+            responsableTecnico: {
+                nombre: '',
+                numeroColegiatura: '',
+            },
+            estado: 'ACTIVO'
+        });
+    };
+
     const register = async () => {
         setDeshabilitar(true);
         setMessage("Registrando destino...", "Cargando");
@@ -86,29 +109,6 @@ const RegisterDestinos = () => {
         } finally {
             setDeshabilitar(false);
         }
-    };
-
-    const resetForm = () => {
-        setFormData({
-            razonSocial: '',
-            ruc: '',
-            codigoRegistroEors: '',
-            autorizacionMunicipal: '',
-            tipoManejo: 'TRATAMIENTO',
-            direccion: '',
-            ubigeoId: '',
-            correoElectronico: '',
-            telefono: '',
-            representanteLegal: {
-                nombre: '',
-                dni: '',
-            },
-            responsableTecnico: {
-                nombre: '',
-                numeroColegiatura: '',
-            },
-            estado: 'ACTIVO'
-        });
     };
 
     return (
