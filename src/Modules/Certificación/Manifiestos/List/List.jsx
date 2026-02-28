@@ -34,11 +34,9 @@ const ListManifiestos = ({
             throw error;
         }
     };
-
     const generadorTemplate = (rowData) => {
         return rowData.generadorId?.razonSocial || 'N/A';
     };
-
     return (
         <ListPrincipal
             permissionRead={permissionRead}
