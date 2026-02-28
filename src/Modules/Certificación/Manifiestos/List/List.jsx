@@ -4,7 +4,7 @@ import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DetailManifiesto from "../Permissions/Detail";
 import AprobarManifiesto from "../Permissions/Aprobar";
-import EditManifiesto from "../Permissions/EditMAnifiesto";
+import EditManifiesto from "../Permissions/EditManifiesto";
 
 const ListManifiestos = ({
     permissionRead,
