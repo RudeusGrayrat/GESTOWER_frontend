@@ -11,7 +11,7 @@ import { useAuth } from "../../../../context/AuthContext";
 import { deepDiff } from "../../../validateEdit";
 import dayjs from "dayjs";
 
-const EditBoletaDePagos = ({ setShowEdit, selected }) => {
+const EditBoletaDePagos = ({ setShowEdit, selected, reload }) => {
   const dispatch = useDispatch();
   const colaboradores = useSelector((state) => state.recursosHumanos.allEmployees);
 
@@ -61,6 +61,8 @@ const EditBoletaDePagos = ({ setShowEdit, selected }) => {
       }
     } catch (error) {
       dispatch(setMessage(error, "Error"));
+    } finally {
+      reload();
     }
   };
   return (

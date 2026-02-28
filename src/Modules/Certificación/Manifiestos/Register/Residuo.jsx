@@ -1,13 +1,7 @@
 import Input from "../../../../recicle/Inputs/Inputs";
 
 const Paso2_Residuo = ({ formData, setFormData }) => {
-    const estadosFisicos = [
-        { value: "SOLIDO", label: "Sólido" },
-        { value: "SEMISOLIDO", label: "Semisólido" },
-        { value: "LIQUIDO", label: "Líquido" },
-        { value: "GAS", label: "Gas" }
-    ];
-
+    const estadosFisicos = ["SOLIDO", "SEMISOLIDO", "LIQUIDO", "GAS"]
     const codigosBasilea = [
         { value: "A1", label: "A1 - Residuos metálicos o que contengan metales" },
         { value: "A2", label: "A2 - Residuos con constituyentes inorgánicos" },
@@ -21,19 +15,6 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
             residuo: {
                 ...prev.residuo,
                 [campo]: valor
-            }
-        }));
-    };
-
-    const handleRecipienteChange = (campo, valor) => {
-        setFormData(prev => ({
-            ...prev,
-            residuo: {
-                ...prev.residuo,
-                recipiente: {
-                    ...prev.residuo.recipiente,
-                    [campo]: valor
-                }
             }
         }));
     };
@@ -72,23 +53,23 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
                 <div className="flex flex-wrap">
                     <Input
                         label="Tipo de recipiente"
-                        value={formData.residuo?.recipiente?.tipo || ""}
-                        onChange={(e) => handleRecipienteChange('tipo', e.target.value.toUpperCase())}
+                        value={formData.residuo?.tipoRecipiente || ""}
+                        onChange={(e) => handleResiduoChange('tipoRecipiente', e.target.value.toUpperCase())}
                         placeholder="Ej: CILINDRO, SACO, TANQUE"
                     />
 
                     <Input
                         label="Material"
-                        value={formData.residuo?.recipiente?.material || ""}
-                        onChange={(e) => handleRecipienteChange('material', e.target.value.toUpperCase())}
+                        value={formData.residuo?.materialRecipiente || ""}
+                        onChange={(e) => handleResiduoChange('materialRecipiente', e.target.value.toUpperCase())}
                         placeholder="Ej: METAL, PLÁSTICO"
                     />
 
                     <Input
                         label="N° de recipientes"
                         type="number"
-                        value={formData.residuo?.recipiente?.numero || 1}
-                        onChange={(e) => handleRecipienteChange('numero', parseInt(e.target.value) || 1)}
+                        value={formData.residuo?.numeroRecipientes || 1}
+                        onChange={(e) => handleResiduoChange('numeroRecipientes', parseInt(e.target.value) || 1)}
                         min="1"
                     />
                 </div>
@@ -98,7 +79,7 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
                 <h3 className="text-lg font-medium text-gray-700 mb-2">Clasificación Convenio Basilea</h3>
                 <div className="flex flex-wrap">
                     <Input
-                        label="Código de clasificación"
+                        label="Código de clasificación *"
                         type="select"
                         value={formData.residuo?.codigoBasilea || ""}
                         onChange={(e) => handleResiduoChange('codigoBasilea', e.target.value)}

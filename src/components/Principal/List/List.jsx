@@ -19,14 +19,15 @@ const ListPrincipal = ({
   permissionRead,
   permissionApprove,
   permissionDisapprove,
+  permissionSent,
   ApproveItem,
   DisapproveItem,
+  EnviarItem,
   DeleteItem,
   EditItem,
   DetailItem,
   contenido,
   children,
-  reload,
   rowClick,
   onSearch,
   fetchData,
@@ -39,6 +40,7 @@ const ListPrincipal = ({
   const [showEdit, setShowEdit] = useState(false);
   const [showApprove, setShowApprove] = useState(false);
   const [showDisapprove, setShowDisapprove] = useState(false);
+  const [showSent, setShowSent] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
   const { setResponse, setErrors } = useAuth();
   const errorForms = useSelector((state) => state.error);
@@ -80,6 +82,11 @@ const ListPrincipal = ({
     searchParams.set("view", item._id); // Añade o actualiza sin eliminar los demás
     navigate(`${location.pathname}?${searchParams.toString()}`);
   };
+  const handleShowSent = (item) => {
+    setSelected(item);
+    setShowSent(true);
+    setSelectedRowId(item._id);
+  }
   const handleClosePopUp = () => {
     dispatch(setMessage("", ""));
     setShowPopUp(false);
@@ -94,7 +101,8 @@ const ListPrincipal = ({
 
   const actionBodyTemplate = (rowData) => {
     const isApproved =
-      rowData.state === "APROBADO" || rowData.state === "ACTIVO";
+      rowData.state === "APROBADO" || rowData.state === "ACTIVO" || rowData.estado === "APROBADO" || rowData.estado === "ACTIVO";
+    const isSent = rowData.estado !== "PENDIENTE" && rowData.estado !== "OBSERVADO";
     return (
       <React.Fragment>
         {permissionRead && (
@@ -104,10 +112,9 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-black rounded-full mx-1 bg-[#f7f6f6bb]  transition-all duration-150 ease-in-out 
-              ${
-                selectedRowId === rowData._id && showDetail
-                  ? "shadow-inner translate-y-[2px]"
-                  : "shadow-xl"
+              ${selectedRowId === rowData._id && showDetail
+                ? "shadow-inner translate-y-[2px]"
+                : "shadow-xl"
               }
               `}
             onClick={() => handleShowDetail(rowData)}
@@ -122,10 +129,9 @@ const ListPrincipal = ({
             className={` text-green-500 rounded-full
               ${isApproved ? "cursor-not-allowed opacity-30" : ""}
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
-              ${
-                selectedRowId === rowData._id && showApprove
-                  ? "shadow-inner translate-y-[2px]"
-                  : "shadow-xl"
+              ${selectedRowId === rowData._id && showApprove
+                ? "shadow-inner translate-y-[2px]"
+                : "shadow-xl"
               }
               `}
             onClick={() => handleShowApprove(rowData)}
@@ -141,10 +147,9 @@ const ListPrincipal = ({
             className={`text-orange-600 rounded-full
               ${!isApproved ? "cursor-not-allowed opacity-30" : ""}
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
-              ${
-                selectedRowId === rowData._id && showDisapprove
-                  ? "shadow-inner translate-y-[2px]"
-                  : "shadow-xl"
+              ${selectedRowId === rowData._id && showDisapprove
+                ? "shadow-inner translate-y-[2px]"
+                : "shadow-xl"
               }
               `}
             onClick={() => handleShowDisapprove(rowData)}
@@ -158,22 +163,43 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-blue-500 rounded-full 
-              ${
-                rowData.state === "APROBADO"
-                  ? "cursor-not-allowed opacity-30"
-                  : ""
+              ${rowData.state === "APROBADO"
+                ? "cursor-not-allowed opacity-30"
+                : ""
               }
               mx-1 bg-[#f7f6f6bb]  transition-all duration-150 ease-in-out 
-              ${
-                selectedRowId === rowData._id && showEdit
-                  ? "shadow-inner translate-y-[2px]"
-                  : "shadow-xl"
+              ${selectedRowId === rowData._id && showEdit
+                ? "shadow-inner translate-y-[2px]"
+                : "shadow-xl"
               }
               `}
             onClick={() => handleShowEdit(rowData)}
             disabled={rowData.state === "APROBADO"}
           />
         )}
+        {
+          permissionSent && (
+            <Button
+              icon="pi pi-send"
+              title="Enviar"
+              rounded
+              outlined
+              className={` text-blue-600 rounded-full
+              ${isSent
+                  ? "cursor-not-allowed opacity-30"
+                  : ""
+                }
+              mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
+              ${selectedRowId === rowData._id && showSent
+                  ? "shadow-inner translate-y-[2px]"
+                  : "shadow-xl"
+                }
+              `}
+              onClick={() => handleShowSent(rowData)}
+              disabled={isSent}
+            />
+          )
+        }
         {permissionDelete && (
           <Button
             icon="pi pi-trash"
@@ -181,16 +207,14 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-red-600 rounded-full 
-              ${
-                rowData.state === "APROBADO"
-                  ? "cursor-not-allowed opacity-30"
-                  : ""
+              ${rowData.state === "APROBADO"
+                ? "cursor-not-allowed opacity-30"
+                : ""
               }
               mx-1 bg-[#f7f6f6bb]  transition-all duration-150 ease-in-out 
-              ${
-                selectedRowId === rowData._id && showDelete
-                  ? "shadow-inner translate-y-[2px]"
-                  : "shadow-xl"
+              ${selectedRowId === rowData._id && showDelete
+                ? "shadow-inner translate-y-[2px]"
+                : "shadow-xl"
               }
               `}
             severity="danger"
@@ -255,12 +279,12 @@ const ListPrincipal = ({
           className="p-2 rounded-xl pl-11 focus:shadow-inner focus:translate-x-[1px] ease-in-out  shadow-lg bg-gradient-to-r from-gray-50 to-gray-100 "
         />
       </IconField>
-      {reload ? (
+      {fetchData ? (
         <Button
           icon="pi pi-refresh"
           className="px-7 p-2 rounded-xl  active:shadow-inner focus:translate-x-[1px] ease-in-out  shadow-lg bg-gradient-to-r from-gray-50 to-gray-100 "
           onClick={() => {
-            reload();
+            fetchAll(pagina, limite, searchTerm);
             useEffectAsync();
           }}
         />
@@ -295,17 +319,26 @@ const ListPrincipal = ({
         <DetailItem setShowDetail={setShowDetail} selected={selected} />
       )}
       {showApprove && (
-        <ApproveItem setShowApprove={setShowApprove} selected={selected} />
+        <ApproveItem reload={() => fetchAll(pagina, limite, searchTerm)} setShowApprove={setShowApprove} selected={selected} />
       )}
       {showDisapprove && (
         <DisapproveItem
+          reload={() => fetchAll(pagina, limite, searchTerm)}
           setShowDisapprove={setShowDisapprove}
+          selected={selected}
+        />
+      )}
+      {showSent && (
+        <EnviarItem
+          reload={() => fetchAll(pagina, limite, searchTerm)}
+          setShowSent={setShowSent}
           selected={selected}
         />
       )}
       {showEdit && (
         <EditItem
           setShowPopUp={setShowPopUp}
+          reload={() => fetchAll(pagina, limite, searchTerm)}
           setShowEdit={setShowEdit}
           selected={selected}
         />
@@ -314,7 +347,7 @@ const ListPrincipal = ({
         <DeleteItem
           setShowDelete={setShowDelete}
           selected={selected}
-          reload={reload}
+          reload={() => fetchAll(pagina, limite, searchTerm)}
         />
       )}
       <div className="w-full border-2 m-2 mt-0 border-gray-100 rounded-xl shadow-lg bg-white">
@@ -348,7 +381,7 @@ const ListPrincipal = ({
           header={header}
           {...OtheProps}
         >
-          <Column style={{width: "60px"}} />
+          <Column style={{ width: "60px" }} />
           {children}
           <Column body={actionBodyTemplate} exportable={false}></Column>
         </DataTable>

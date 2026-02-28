@@ -28,6 +28,16 @@ const Paso3_Peligrosidad = ({ formData, setFormData }) => {
         }));
     };
 
+    const handleOtrosChange = (valor) => {
+        setFormData(prev => ({
+            ...prev,
+            peligrosidad: {
+                ...prev.peligrosidad,
+                otros: valor
+            }
+        }));
+    };
+
     return (
         <div className="flex flex-wrap">
             <div className="w-full mb-4">
@@ -52,7 +62,7 @@ const Paso3_Peligrosidad = ({ formData, setFormData }) => {
             <Input
                 label="Otros (especificar)"
                 value={formData.peligrosidad?.otros || ""}
-                onChange={(e) => handleCheckboxChange('otros', e.target.value)}
+                onChange={(e) => handleOtrosChange(e.target.value)}
                 placeholder="Especifique otras características de peligrosidad"
                 ancho="w-full"
             />

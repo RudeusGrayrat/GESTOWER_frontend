@@ -17,32 +17,32 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
   const [error, setError] = useState(null);
 
   // PASO 1: Limpiar la plantilla al cargar
-  useEffect(() => {
-    const limpiar = async () => {
-      try {
-        console.log("🧹 Limpiando plantilla original...");
-        const url = await limpiarPlantilla(VITE_PLANTILLA_MANIFIESTO_WORD);
-        setPlantillaLimpiaUrl(url);
-        console.log("✅ Plantilla limpia lista");
-      } catch (err) {
-        console.error("❌ Error limpiando plantilla:", err);
-        setError("No se pudo limpiar la plantilla");
-      }
-    };
+  // useEffect(() => {
+  //   const limpiar = async () => {
+  //     try {
+  //       console.log("🧹 Limpiando plantilla original...");
+  //       const url = await limpiarPlantilla(VITE_PLANTILLA_MANIFIESTO_WORD);
+  //       setPlantillaLimpiaUrl(url);
+  //       console.log("✅ Plantilla limpia lista");
+  //     } catch (err) {
+  //       console.error("❌ Error limpiando plantilla:", err);
+  //       setError("No se pudo limpiar la plantilla");
+  //     }
+  //   };
 
-    limpiar();
+  //   limpiar();
 
-    // Cleanup: liberar URL cuando el componente se desmonte
-    return () => {
-      if (plantillaLimpiaUrl) {
-        URL.revokeObjectURL(plantillaLimpiaUrl);
-      }
-    };
-  }, []);
+  //   // Cleanup: liberar URL cuando el componente se desmonte
+  //   return () => {
+  //     if (plantillaLimpiaUrl) {
+  //       URL.revokeObjectURL(plantillaLimpiaUrl);
+  //     }
+  //   };
+  // }, []);
 
   // PASO 2: Generar manifiesto con la plantilla limpia
   useEffect(() => {
-    if (!plantillaLimpiaUrl || !selected || error) return;
+    if (!VITE_PLANTILLA_MANIFIESTO_WORD || !selected || error) return;
 
     const renderDocx = async () => {
       try {
@@ -51,7 +51,7 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
         // Usar la plantilla limpia (URL temporal)
         const archivoWord = await renderManifiesto(
           selected,
-          plantillaLimpiaUrl, // ← URL temporal de la plantilla limpia
+          VITE_PLANTILLA_MANIFIESTO_WORD, // ← URL original de la plantilla
           `Manifiesto_${selected.numeroManifiesto || selected._id}`
         );
 

@@ -1,6 +1,7 @@
 import { Column } from "primereact/column";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
+import DetailGenerador from "../Permissions/Permissions";
 
 const ListGeneradores = ({
     permissionRead,
@@ -26,6 +27,7 @@ const ListGeneradores = ({
             permissionRead={permissionRead}
             permissionEdit={permissionEdit}
             permissionDelete={permissionDelete}
+            DetailItem={DetailGenerador}
             fetchData={fecthGeneradores}
         >
             <Column field="razonSocial" header="Razon Social" />

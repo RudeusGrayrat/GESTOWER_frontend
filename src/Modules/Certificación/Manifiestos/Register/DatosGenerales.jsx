@@ -7,20 +7,20 @@ const Paso1_DatosGenerales = ({ formData, setFormData }) => {
     const [plantaOptions, setPlantaOptions] = useState([]);
 
     // Cargar plantas cuando cambia el generador
-    useEffect(() => {
-        if (formData.generadorId) {
-            fetchPlantas(formData.generadorId);
-        }
-    }, [formData.generadorId]);
+    // useEffect(() => {
+    //     if (formData.generadorId) {
+    //         fetchPlantas(formData.generadorId);
+    //     }
+    // }, [formData.generadorId]);
 
-    const fetchPlantas = async (generadorId) => {
-        try {
-            const response = await axios.get(`/certificaciones/getPlantasByGenerador/${generadorId._id}`);
-            setPlantaOptions(response.data.plantas || []);
-        } catch (error) {
-            console.error("Error fetching plantas:", error);
-        }
-    };
+    // const fetchPlantas = async (generadorId) => {
+    //     try {
+    //         const response = await axios.get(`/certificaciones/getPlantasByGenerador/${generadorId._id}`);
+    //         setPlantaOptions(response.data.plantas || []);
+    //     } catch (error) {
+    //         console.error("Error fetching plantas:", error);
+    //     }
+    // };
 
     return (
         <div className="flex flex-wrap">
@@ -39,15 +39,32 @@ const Paso1_DatosGenerales = ({ formData, setFormData }) => {
 
             <Input
                 label="Planta/Instalación"
-                type="select"
+                type="autocomplete"
                 name="plantaId"
                 value={formData.plantaId}
                 setForm={setFormData}
+                fetchData={`certificaciones/getPlantasByGenerador/${formData?.generadorId?._id}`}
+                setOptions={setPlantaOptions}
                 options={plantaOptions}
-                optionLabel="denominacion"
+                field="direccion"
                 placeholder={formData.generadorId ? "Seleccionar planta" : "Primero seleccione un generador"}
                 disabled={!formData.generadorId}
             />
+            <div className="flex items-center ml-7">
+                <span className="mt-3">Selección de servicio de transporte:</span>
+                <Input
+                    label="Servicio de transporte"
+                    type="select"
+                    name="servicioTransporte"
+                    value={formData.servicioTransporte}
+                    setForm={setFormData}
+                    options={[
+                        "SERVICIO TOWER",
+                        "SERVICIO EO",
+                    ]}
+                    placeholder="Seleccionar servicio de transporte"
+                />
+            </div>
         </div>
     );
 };

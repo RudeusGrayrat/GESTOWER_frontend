@@ -16,8 +16,7 @@ import imageCloudinary from "../../../../api/cloudinaryImage";
 import axios from "../../../../api/axios";
 import { getEmployees } from "../../../../redux/modules/Recursos Humanos/actions";
 
-const EditEmployee = (props) => {
-  const { setShowEdit, selected } = props;
+const EditEmployee = ({ setShowEdit, selected, reload }) => {
   const { updateEmployee } = useAuth();
   const dispatch = useDispatch();
 
@@ -76,6 +75,8 @@ const EditEmployee = (props) => {
         data: { public_id: pathPhoto.public_id },
       });
       dispatch(setMessage("Error en la actualización", "Error"));
+    } finally {
+      reload();
     }
   };
 
@@ -86,9 +87,8 @@ const EditEmployee = (props) => {
         <FormOne error={error} setForm={setEdition} form={edition} />
         <div className=" flex flex-col mx-3  pl-12">
           <label
-            className={`text-base font-medium ${
-              error.funcion ? "text-red-500" : "text-gray-700"
-            }`}
+            className={`text-base font-medium ${error.funcion ? "text-red-500" : "text-gray-700"
+              }`}
           >
             Función
           </label>

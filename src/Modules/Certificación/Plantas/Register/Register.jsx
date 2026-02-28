@@ -29,7 +29,7 @@ const RegisterPlanta = () => {
             telefono: ""
         },
         tieneIga: false,
-        igaAprobadoPor: "", // Cambié de institucionApruebaIga a igaAprobadoPor
+        institucionApruebaIga: "",
         fechaAprobacionIga: "",
         numeroResolucionIga: "",
         estado: "ACTIVO"
@@ -90,7 +90,7 @@ const RegisterPlanta = () => {
 
             // Validar IGA si tiene
             if (form.tieneIga) {
-                if (!form.igaAprobadoPor || !form.fechaAprobacionIga || !form.numeroResolucionIga) {
+                if (!form.institucionApruebaIga || !form.fechaAprobacionIga || !form.numeroResolucionIga) {
                     sendMessage("Complete todos los datos del IGA.", "Advertencia");
                     return;
                 }

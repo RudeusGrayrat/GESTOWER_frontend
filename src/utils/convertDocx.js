@@ -39,7 +39,7 @@ const convertDocx = async (predata, archivo, nameDoc) => {
     if (isDev) {
       const xmlContent = zip.file("word/document.xml").asText();
       const variablesEnPlantilla = xmlContent.match(/{{[^}]+}}/g) || [];
-      console.log(`🔍 Variables encontradas en plantilla: ${variablesEnPlantilla.length}`);
+      console.log(`🔍 Variables encontradas en plantilla: ${variablesEnPlantilla?.length}`);
 
       if (variablesEnPlantilla.length === 0) {
         console.warn("⚠️ La plantilla no contiene variables. Verifica el formato.");

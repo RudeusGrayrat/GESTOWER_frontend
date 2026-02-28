@@ -3,7 +3,7 @@ import { getBoletaDePagos, setMessage } from "../../../../redux/actions";
 import { useAuth } from "../../../../context/AuthContext";
 import Disapprove from "../../../../components/Principal/Permissions/Disapprove";
 
-const DisapproveBoletaDePago = ({ setShowDisapprove, selected }) => {
+const DisapproveBoletaDePago = ({ setShowDisapprove, selected, reload }) => {
   const { updateBoletasDePago } = useAuth();
   const estado = selected.state === "APROBADO" ? "PENDIENTE" : "APROBADO";
   const dispatch = useDispatch();
@@ -14,6 +14,8 @@ const DisapproveBoletaDePago = ({ setShowDisapprove, selected }) => {
       dispatch(getBoletaDePagos());
     } catch (error) {
       dispatch(setMessage(error, "Error"));
+    } finally {
+      reload();
     }
   };
   return (

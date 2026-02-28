@@ -9,7 +9,7 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { simpleDiff } from "../../../../validateEdit";
 import { setMessage } from "../../../../../redux/actions";
 
-const EditAsistenciaColaborador = ({ setShowEdit, selected }) => {
+const EditAsistenciaColaborador = ({ setShowEdit, selected, reload }) => {
   const [form, setForm] = useState({
     ...selected,
     colaborador:
@@ -45,6 +45,8 @@ const EditAsistenciaColaborador = ({ setShowEdit, selected }) => {
       }
     } catch (error) {
       dispatch(setMessage(error.message || error, "Error"));
+    } finally {
+      reload();
     }
   };
   return (

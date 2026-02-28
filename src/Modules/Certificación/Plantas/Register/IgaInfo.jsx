@@ -8,7 +8,7 @@ const IgaInfo = ({ form, setForm }) => {
             tieneIga,
             // Resetear campos si cambia a false
             ...(!tieneIga && {
-                igaAprobadoPor: "",
+                institucionApruebaIga: "",
                 fechaAprobacionIga: "",
                 numeroResolucionIga: ""
             })
@@ -33,8 +33,8 @@ const IgaInfo = ({ form, setForm }) => {
                     <Input
                         label="Institución que aprueba"
                         type="text"
-                        name="igaAprobadoPor"
-                        value={form.igaAprobadoPor}
+                        name="institucionApruebaIga"
+                        value={form.institucionApruebaIga}
                         setForm={setForm}
                         ancho="w-full"
                         required

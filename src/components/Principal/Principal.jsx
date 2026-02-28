@@ -39,6 +39,9 @@ const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule }) => {
   const permissionDisapprove = hasPermission()?.some(
     (permission) => permission === "DESAPROBAR"
   );
+  const permissionSent = hasPermission()?.some(
+    (permission) => permission === "ENVIAR"
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const [change, setChange] = useState(searchParams.get("select") || "");
 
@@ -90,6 +93,7 @@ const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule }) => {
         permissionDelete={permissionDelete}
         permissionApprove={permissionApprove}
         permissionDisapprove={permissionDisapprove}
+        permissionSent={permissionSent}
       />
     );
   } else if (change === "Reporte") {

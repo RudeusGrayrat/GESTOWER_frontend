@@ -7,6 +7,7 @@ import RepresentanteLegal from "./RepresentanteLegal";
 import ResponsableTecnico from "./ResponsableTecnico";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
+import Contingencias from "./Contingencias";
 
 const RegisterTransportistas = () => {
     const [deshabilitar, setDeshabilitar] = useState(false);
@@ -28,7 +29,14 @@ const RegisterTransportistas = () => {
         responsableTecnico: {
             nombre: '',
             numeroColegiatura: '',
-        }
+        },
+        contingencias: {
+            derrame: '',
+            infiltracion: '',
+            incendio: '',
+            explosion: '',
+            otros: ''
+        },
     });
     const register = async () => {
         setDeshabilitar(true);
@@ -99,7 +107,14 @@ const RegisterTransportistas = () => {
             responsableTecnico: {
                 nombre: '',
                 numeroColegiatura: '',
-            }
+            },
+            contingencias: {
+                derrame: '',
+                infiltracion: '',
+                incendio: '',
+                explosion: '',
+                otros: ''
+            },
         });
     }
     console.log("Form Data:", formData);
@@ -108,6 +123,9 @@ const RegisterTransportistas = () => {
             <PopUp deshabilitar={deshabilitar} />
             <CardPlegable title="Datos Básicos del Transportista">
                 <DatosBasicos formData={formData} setFormData={setFormData} />
+            </CardPlegable>
+            <CardPlegable title="Contingencias">
+                <Contingencias formData={formData} setFormData={setFormData} />
             </CardPlegable>
 
             <CardPlegable title="Representante Legal">

@@ -189,7 +189,7 @@ const Input = ({
                       }
                     })
                     .catch(err => console.error("Error fetching autocomplete:", err));
-                }, 500);
+                }, 250);
               }}
               field={name}
               placeholder={label}

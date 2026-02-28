@@ -46,7 +46,6 @@ export const limpiarPlantilla = async (plantillaUrl) => {
                     .replace(/\s+/g, ' ')      // Normalizar espacios
                     .trim();
 
-                console.log(`📝 Entre {{ y }}: "${cleanText}" (longitud: ${cleanText.length})`);
 
                 // Si el texto limpio no está vacío, es una posible variable
                 if (cleanText && cleanText.length > 0 && !cleanText.includes('<')) {
@@ -56,14 +55,12 @@ export const limpiarPlantilla = async (plantillaUrl) => {
 
                     if (possibleVar) {
                         variablesEncontradas.add(possibleVar);
-                        console.log(`✅ Variable candidata: "${possibleVar}"`);
                     }
                 }
             }
         }
 
         console.log(`📋 Total variables candidatas encontradas: ${variablesEncontradas.size}`);
-        console.log("Variables:", Array.from(variablesEncontradas));
 
         if (variablesEncontradas.size === 0) {
             // Último intento: buscar cualquier texto que parezca una variable

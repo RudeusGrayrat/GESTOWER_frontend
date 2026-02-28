@@ -2,6 +2,7 @@ import { Column } from "primereact/column";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DeleteStock from "../Permissions/DeleteStock";
+import DetaiStock from "../Permissions/DetailStock";
 
 const StockAlmacenLurin = ({
   permissionRead,
@@ -27,6 +28,7 @@ const StockAlmacenLurin = ({
       permissionRead={permissionRead}
       permissionEdit={permissionEdit}
       // permissionDelete={permissionDelete}
+      DetailItem={DetaiStock}
       DeleteItem={DeleteStock}
       fetchData={fetchStock}
       reload={fetchStock}

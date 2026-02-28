@@ -3,11 +3,16 @@ import { Tag } from "primereact/tag";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DetailManifiesto from "../Permissions/Detail";
+import AprobarManifiesto from "../Permissions/Aprobar";
+import EditManifiesto from "../Permissions/EditMAnifiesto";
 
 const ListManifiestos = ({
     permissionRead,
     permissionEdit,
-    permissionDelete
+    permissionDelete,
+    permissionApprove,
+    permissionDisapprove,
+    permissionSent
 }) => {
     const fetchManifiestos = async (page, rows, filters, sortField, sortOrder) => {
         try {
@@ -30,26 +35,6 @@ const ListManifiestos = ({
         }
     };
 
-    const estadoTemplate = (rowData) => {
-        const severities = {
-            'REGISTRADO': 'info',
-            'EN_TRANSPORTE': 'warning',
-            'RECIBIDO': 'success',
-            'PROCESADO': 'success',
-            'CERRADO': 'secondary'
-        };
-
-        const labels = {
-            'REGISTRADO': 'Registrado',
-            'EN_TRANSPORTE': 'En Transporte',
-            'RECIBIDO': 'Recibido',
-            'PROCESADO': 'Procesado',
-            'CERRADO': 'Cerrado'
-        };
-
-        return <Tag value={labels[rowData.estado] || rowData.estado} severity={severities[rowData.estado]} />;
-    };
-
     const generadorTemplate = (rowData) => {
         return rowData.generadorId?.razonSocial || 'N/A';
     };
@@ -59,7 +44,12 @@ const ListManifiestos = ({
             permissionRead={permissionRead}
             permissionEdit={permissionEdit}
             permissionDelete={permissionDelete}
+            permissionApprove={permissionApprove}
+            permissionDisapprove={permissionDisapprove}
+            permissionSent={permissionSent}
+            ApproveItem={AprobarManifiesto}
             DetailItem={DetailManifiesto}
+            EditItem={EditManifiesto}
             fetchData={fetchManifiestos}
             editPath="/certificaciones/patchManifiesto"
             deletePath="/certificaciones/deleteManifiesto"
@@ -78,7 +68,47 @@ const ListManifiestos = ({
                 body={(row) => new Date(row.createdAt).toLocaleDateString()}
                 sortable
             />
-            <Column field="estado" header="Estado" body={estadoTemplate} sortable />
+            <Column
+                field="estado"
+                header="Estado"
+                style={{
+                    justifyItems: "center",
+                }}
+                body={(rowData) => {
+                    let color = "";
+                    switch (rowData.estado) {
+                        case "PENDIENTE":
+                            color = "text-yellow-500";
+                            break;
+                        case "RECHAZADO":
+                            color = "text-red-500";
+                            break;
+                        case "APROBADO":
+                            color = "text-green-500";
+                            break;
+                        case "OBSERVADO":
+                            color = "text-orange-500";
+                            break;
+                        case "ENVIADO":
+                            color = "text-blue-500";
+                            break;
+                        case "EN REVISION":
+                            color = "text-purple-500";
+                            break;
+                        default:
+                            color = "text-gray-500";
+                    }
+
+                    return (
+                        <div
+                            className={`text-center bg-gradient-to-tr from-white to-gray-100 
+                            shadow-inner rounded-xl font-medium  px-5 py-1  ${color} `}
+                        >
+                            {rowData.estado}
+                        </div>
+                    );
+                }}
+            />
         </ListPrincipal>
     );
 };

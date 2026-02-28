@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
+import axios from "../../../../api/axios";
 
 const Paso4_Transporte = ({ formData, setFormData }) => {
     const [transportistaOptions, setTransportistaOptions] = useState([]);
@@ -14,23 +15,31 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
         }));
     };
 
+    // Precargar TOWER si es SERVICIO TOWER
+    useEffect(() => {
+        const cargarTowerTransportista = async () => {
+            if (formData.servicioTransporte === "SERVICIO TOWER") {
+                try {
+                    const response = await axios.get("/certificaciones/getTransportistasPaginacion", {
+                        params: { search: "TOWER" }
+                    });
+                    const towerTransportista = response.data?.data?.find(t => t.razonSocial?.includes("TOWER"));
+                    if (towerTransportista) {
+                        setFormData(prev => ({
+                            ...prev,
+                            transportistaId: towerTransportista
+                        }));
+                    }
+                } catch (error) {
+                    console.error("Error cargando transportista TOWER:", error);
+                }
+            }
+        };
+        cargarTowerTransportista();
+    }, [formData.servicioTransporte, setFormData]);
+
     return (
         <div className="flex flex-wrap">
-            <Input
-                label="Nombre del conductor"
-                value={formData.transporte?.nombreConductor}
-                onChange={(e) => handleTransporteChange('nombreConductor', e.target.value.toUpperCase())}
-            />
-            <Input
-                label="Tipo de vehículo"
-                value={formData.transporte?.tipoVehiculo}
-                onChange={(e) => handleTransporteChange('tipoVehiculo', e.target.value)}
-            />
-            <Input
-                label="Placa del vehículo"
-                value={formData.transporte?.placaVehiculo}
-                onChange={(e) => handleTransporteChange('placaVehiculo', e.target.value.toUpperCase())}
-            />
             <Input
                 label="EO-RS Transportista *"
                 type="autocomplete"
@@ -45,14 +54,35 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
             />
 
             <Input
-                label="Fecha de recepción de los residuos *"
+                label="Nombre del conductor *"
+                value={formData.transporte?.nombreConductor || ""}
+                onChange={(e) => handleTransporteChange('nombreConductor', e.target.value.toUpperCase())}
+                placeholder="Nombres y apellidos del conductor"
+            />
+
+            <Input
+                label="Tipo de vehículo *"
+                value={formData.transporte?.tipoVehiculo || ""}
+                onChange={(e) => handleTransporteChange('tipoVehiculo', e.target.value.toUpperCase())}
+                placeholder="Ej: CAMIÓN, CISTERNA"
+            />
+
+            <Input
+                label="Placa del vehículo *"
+                value={formData.transporte?.placaVehiculo || ""}
+                onChange={(e) => handleTransporteChange('placaVehiculo', e.target.value.toUpperCase())}
+                placeholder="Ej: ABC-123"
+            />
+
+            <Input
+                label="Fecha de recepción *"
                 type="date"
                 value={formData.transporte?.fechaRecepcion || ""}
                 onChange={(e) => handleTransporteChange('fechaRecepcion', e.target.value)}
             />
 
             <Input
-                label="Cantidad recibida (toneladas)"
+                label="Cantidad recibida (toneladas) *"
                 type="number"
                 step="0.01"
                 value={formData.transporte?.cantidadRecibida || ""}

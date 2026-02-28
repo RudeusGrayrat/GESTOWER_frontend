@@ -1,9 +1,8 @@
+import dayjs from "dayjs";
 import convertDocx from "../../../../utils/convertDocx";
 
 const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
-    console.log("🔄 renderManifiesto iniciado");
-    console.log("Manifiesto ID:", manifiesto._id);
-    console.log("Número:", manifiesto.numeroManifiesto);
+    console.log("Manifiesto recibido para renderizar:", manifiesto);
 
     try {
         // ============================================
@@ -20,6 +19,11 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
         // Helper para checkboxes (retorna 'X' o '')
         const check = (condition) => condition ? 'X' : '';
 
+        const fechaFormat = (fecha) => {
+            if (!fecha) return "";
+            return dayjs(fecha).format("DD/MM/YYYY");
+        };
+
         // ============================================
         // Extraer datos con paths seguros
         // ============================================
@@ -34,7 +38,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
         const destino = manifiesto.destinoId || {};
         const destinoUbigeo = destino.ubigeoId || {};
         const destinoFinal = manifiesto.destinoFinal || {};
-        const contingencias = manifiesto.contingencias || {};
+        const contingencias = manifiesto.transportistaId?.contingencias || {};
         const otrosManejos = manifiesto.otrosManejos || [];
         const referendoEntrega = manifiesto.referendoEntrega || {};
         const referendoRecepcion = manifiesto.referendoRecepcion || {};
@@ -43,6 +47,8 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
         // ============================================
         // Construir objeto de datos para la plantilla
         // ============================================
+        console.log("Planta :", planta);
+        console.log("Iga:", planta.tieneIga);
         const data = {
             // ===== ENCABEZADO =====
             numero_manifiesto: safe(manifiesto.numeroManifiesto),
@@ -55,13 +61,13 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             correo_generador: safe(generador.correoElectronico),
             telefono_generador: safe(generador.telefono),
             representante_legal_generador: safe(generador.representanteLegal),
-            dni_representante_generador: safe(generador.dniRepresentante),
+            dni_representante_generador: safe(generador?.dniRepresentante),
 
             // ===== PLANTA =====
             denominacion_planta: safe(planta.denominacion),
             tipo_planta: safe(planta.tipoPlanta),
             direccion_planta: safe(planta.direccion),
-            ubigeo_planta: `${safe(plantaUbigeo.departamento)}/${safe(plantaUbigeo.provincia)}/${safe(plantaUbigeo.distrito)}`,
+            ubigeo_planta: `${safe(plantaUbigeo.codigo)}`,
             distrito: safe(plantaUbigeo.distrito),
             provincia: safe(plantaUbigeo.provincia),
             departamento: safe(plantaUbigeo.departamento),
@@ -80,7 +86,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             tiene_iga_si: check(planta.tieneIga === true),
             tiene_iga_no: check(planta.tieneIga === false),
             institucion_aprueba: safe(planta.institucionApruebaIga),
-            fecha_aprobacion: safe(planta.fechaAprobacionIga),
+            fecha_aprobacion_iga: fechaFormat(planta.fechaAprobacionIga),
             numero_resolucion: safe(planta.numeroResolucionIga),
 
             // ===== RESIDUO =====
@@ -114,11 +120,11 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             ecotoxicos: check(peligrosidad.ecotoxicos),
             combustion_espontanea: check(peligrosidad.combustionEspontanea),
             sustancias_infecciosas: check(peligrosidad.sustanciasInfecciosas),
-            sustancias_secundarias: check(peligrosidad.sustanciasSecundarias),
-            gases_inflamables_agua: check(peligrosidad.gasesInflamablesAgua),
-            corrosivos: check(peligrosidad.corrosivos),
+            sustancias_secundarias: "X",
+            gases_inflamables_agua: "X",
+            corrosivos: "X",
             otros_peligros: safe(peligrosidad.otros),
-            check_otros_peligros: check(peligrosidad.otros),
+            otros_otros_peligros: check(peligrosidad.otros !== ''),
 
             // ===== TRANSPORTISTA =====
             razon_social_transportista: safe(transportista.razonSocial),
@@ -138,10 +144,10 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             numero_colegiatura: safe(transportista.responsableTecnico?.numeroColegiatura),
 
             // ===== DATOS DEL VIAJE =====
-            nombre_conductor: safe(transporte.conductor?.nombre),
-            tipo_vehiculo: safe(transporte.vehiculo?.tipo),
-            placa_vehiculo: safe(transporte.vehiculo?.placa),
-            fecha_recepcion: safe(transporte.fechaRecepcion),
+            nombre_conductor: safe(transporte.nombreConductor),
+            tipo_vehiculo: safe(transporte.tipoVehiculo),
+            placa_vehiculo: safe(transporte.placaVehiculo),
+            fecha_recepcion: fechaFormat(transporte.fechaRecepcion),
             cantidad_recibida: safe(transporte.cantidadRecibida),
             observaciones_transporte: safe(transporte.observaciones),
 
@@ -152,7 +158,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             firma_transportista: safe(referendoEntrega.firmaTransportista),
             dni_transportista_firma: safe(referendoEntrega.dniTransportista),
             cargo_transportista_firma: safe(referendoEntrega.cargoTransportista),
-            fecha_hora_entrega: safe(referendoEntrega.fechaHoraEntrega),
+            fecha_hora_entrega: fechaFormat(referendoEntrega.fechaHoraEntrega),
 
             // ===== DESTINO =====
             tratamiento: check(destinoFinal.tipoManejo === 'TRATAMIENTO'),
@@ -180,13 +186,13 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             firma_destino: safe(referendoRecepcion.firmaDestino),
             dni_destino_firma: safe(referendoRecepcion.dniDestino),
             cargo_destino_firma: safe(referendoRecepcion.cargoDestino),
-            fecha_hora_recepcion: safe(referendoRecepcion.fechaHoraRecepcion),
+            fecha_hora_recepcion: fechaFormat(referendoRecepcion.fechaHoraRecepcion),
 
             // ===== 3.3 OTROS =====
             // Asumiendo que otrosManejos es un array, tomamos el primer elemento
-            check_comercializacion: check(otrosManejos[0]?.tipo === 'COMERCIALIZACION'),
-            check_exportacion: check(otrosManejos[0]?.tipo === 'EXPORTACION'),
-            check_otro: check(otrosManejos[0]?.tipo === 'OTROS'),
+            otros_comercializacion: check(otrosManejos[0]?.tipo === 'COMERCIALIZACION'),
+            otros_exportacion: check(otrosManejos[0]?.tipo === 'EXPORTACION'),
+            otros_otro: check(otrosManejos[0]?.tipo === 'OTROS'),
             razon_social_receptor: safe(otrosManejos[0]?.razonSocialReceptor),
             ruc_receptor: safe(otrosManejos[0]?.rucReceptor),
             correo_receptor: safe(otrosManejos[0]?.correoElectronico),
@@ -211,7 +217,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             firma_responsable_generador: safe(devolucion.responsableGenerador?.firma),
             dni_responsable_generador: safe(devolucion.responsableGenerador?.dni),
             cargo_responsable_generador: safe(devolucion.responsableGenerador?.cargo),
-            fecha_devolucion: safe(devolucion.responsableGenerador?.fechaRecepcion),
+            fecha_devolucion: fechaFormat(devolucion.responsableGenerador?.fechaRecepcion),
             hora_devolucion: safe(devolucion.responsableGenerador?.horaRecepcion),
 
             // Valor por defecto para campos faltantes
@@ -227,13 +233,10 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             undefinedKeys.forEach(key => data[key] = '');
         }
 
-        console.log("📊 Datos preparados. Total de variables:", Object.keys(data).length);
-        console.log("🔍 Primeras 10 variables:", Object.keys(data).slice(0, 10));
 
         // ============================================
         // Renderizar documento
         // ============================================
-        console.log("🔄 Llamando a convertDocx...");
         const archivoRenderizado = await convertDocx(
             data,
             plantillaUrl,
@@ -244,7 +247,6 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             throw new Error("No se pudo renderizar el manifiesto");
         }
 
-        console.log("✅ renderManifiesto completado exitosamente");
         return archivoRenderizado;
 
     } catch (error) {

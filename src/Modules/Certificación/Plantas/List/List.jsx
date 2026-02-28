@@ -1,6 +1,7 @@
 import { Column } from "primereact/column";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
+import DetailPlanta from "../Permissions/Details";
 
 const ListPlantas = ({ permissionRead, permissionApprove, permissionEdit, permissionDelete, permissionDisapprove }) => {
     const fetchData = async (limit, page, search) => {
@@ -28,6 +29,7 @@ const ListPlantas = ({ permissionRead, permissionApprove, permissionEdit, permis
             permissionDelete={permissionDelete}
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
+            DetailItem={DetailPlanta}
             fetchData={fetchData}
             title="plantas_certificacion"
         >
