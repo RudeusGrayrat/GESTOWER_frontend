@@ -79,14 +79,13 @@ const ListActivosDigitales = ({
       //   DisapproveItem={Inactive}
       //   EditItem={EditEmployee}
       //   DetailItem={DetailEmployee}
-      content={activosDigitales}
-      //   reload={() => dispatch(getEmployees())}
+      fetchData={() => dispatch(getEmployees())}
     >
       <Column
         field="name"
         header="name"
         sortable
-         
+
       />
       <Column field="tipo" header="Tipo" sortable />
       <Column field="clave" header="Clave" sortable />

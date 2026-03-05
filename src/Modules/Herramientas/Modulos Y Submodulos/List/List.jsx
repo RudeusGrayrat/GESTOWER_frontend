@@ -26,7 +26,6 @@ const List = ({ permissionEdit, permissionDelete }) => {
       permissionEdit={permissionEdit}
       DeleteItem={DeleteSubmodule}
       fetchData={fetchMyS}
-      reload={fetchMyS}
     >
       <Column
         field="module"

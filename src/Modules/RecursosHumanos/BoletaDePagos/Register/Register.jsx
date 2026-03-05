@@ -46,31 +46,31 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
     formInitial
       ? formInitial
       : {
-          colaborador: "",
-          diasTrabajados: "",
-          fechaBoletaDePago: "",
-          diasSubsidiados: "0",
-          horasTrabajadas: "192",
-          diasNoLaborales: "0",
-          remuneraciones: [
-            { datosContables: "0121", monto: "0" },
-            { datosContables: "0201", monto: "0" },
-          ],
-          descuentosAlTrabajador: [
-            { datosContables: "0701", monto: "0" },
-            { datosContables: "0705", monto: "0" },
-            { datosContables: "0601", monto: "0" },
-            { datosContables: "0605", monto: "0" },
-            { datosContables: "0606", monto: "0" },
-            { datosContables: "0608", monto: "0" },
-          ],
-          aportacionesDelEmpleador: [
-            { datosContables: "0803", monto: "0" },
-            { datosContables: "0804", monto: "0" },
-            { datosContables: "0810", monto: "0" },
-            { datosContables: "0814", monto: "0" },
-          ],
-        }
+        colaborador: "",
+        diasTrabajados: "",
+        fechaBoletaDePago: "",
+        diasSubsidiados: "0",
+        horasTrabajadas: "192",
+        diasNoLaborales: "0",
+        remuneraciones: [
+          { datosContables: "0121", monto: "0" },
+          { datosContables: "0201", monto: "0" },
+        ],
+        descuentosAlTrabajador: [
+          { datosContables: "0701", monto: "0" },
+          { datosContables: "0705", monto: "0" },
+          { datosContables: "0601", monto: "0" },
+          { datosContables: "0605", monto: "0" },
+          { datosContables: "0606", monto: "0" },
+          { datosContables: "0608", monto: "0" },
+        ],
+        aportacionesDelEmpleador: [
+          { datosContables: "0803", monto: "0" },
+          { datosContables: "0804", monto: "0" },
+          { datosContables: "0810", monto: "0" },
+          { datosContables: "0814", monto: "0" },
+        ],
+      }
   );
 
   const validateDescuentos = validateVacio(form.descuentosAlTrabajador);
@@ -174,8 +174,7 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
 
       {!setFormEdit && (
         <div className="flex justify-center">
-          <ButtonOk children="Enviar" onClick={enviar} type="ok" />
-          <ButtonOk children="Cancelar" />
+          <ButtonOk children="Enviar" onClick={enviar} classe={"w-60"} type="ok" />
         </div>
       )}
     </div>

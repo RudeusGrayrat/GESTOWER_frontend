@@ -30,7 +30,6 @@ const ListContratosAlmacen = ({
       permissionDelete={permissionDelete}
       DeleteItem={DeleteContratoAlmacen}
       fetchData={fetch}
-      reload={fetch}
     >
       <Column field="_id" header="ID"   />
       <Column field="cliente" header="Cliente" />

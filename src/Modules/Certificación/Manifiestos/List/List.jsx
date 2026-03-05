@@ -49,8 +49,6 @@ const ListManifiestos = ({
             DetailItem={DetailManifiesto}
             EditItem={EditManifiesto}
             fetchData={fetchManifiestos}
-            editPath="/certificaciones/patchManifiesto"
-            deletePath="/certificaciones/deleteManifiesto"
         >
             <Column field="numeroManifiesto" header="N° Manifiesto" sortable />
             <Column field="generadorId" header="Generador" body={generadorTemplate} sortable />

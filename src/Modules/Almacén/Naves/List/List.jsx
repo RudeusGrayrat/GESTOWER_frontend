@@ -27,7 +27,7 @@ const ListNaves = ({ permissionRead, permissionEdit, permissionDelete }) => {
       permissionRead={permissionRead}
       DeleteItem={DeleteNaveAlmacen}
       fetchData={recargar}
-      reload={recargar}
+       
     >
       <Column
         field="nombre"

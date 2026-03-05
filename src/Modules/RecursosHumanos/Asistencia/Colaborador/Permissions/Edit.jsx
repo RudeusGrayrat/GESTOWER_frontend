@@ -6,7 +6,7 @@ import useValidation from "../validateAsistenciaColaborador";
 import CardPlegable from "../../../../../recicle/Divs/CardPlegable";
 import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../../../../context/AuthContext";
-import { simpleDiff } from "../../../../validateEdit";
+import { deepDiff, simpleDiff } from "../../../../validateEdit";
 import { setMessage } from "../../../../../redux/actions";
 
 const EditAsistenciaColaborador = ({ setShowEdit, selected, reload }) => {
@@ -14,6 +14,9 @@ const EditAsistenciaColaborador = ({ setShowEdit, selected, reload }) => {
     ...selected,
     colaborador:
       selected.colaborador.lastname + " " + selected.colaborador.name,
+  });
+  const [formEdit, setFormEdit] = useState({
+    ...form
   });
   const dispatch = useDispatch();
   const colaboradores = useSelector(
@@ -23,9 +26,8 @@ const EditAsistenciaColaborador = ({ setShowEdit, selected, reload }) => {
   const { error } = useValidation();
 
   const updateAsistencia = async () => {
+    const handleChanges = deepDiff(form, formEdit);
     try {
-      const handleChanges = simpleDiff(form, selected);
-
       if (Object.keys(handleChanges).length > 0) {
         const colaboradorId = colaboradores.find(
           (colaborador) =>
@@ -36,10 +38,13 @@ const EditAsistenciaColaborador = ({ setShowEdit, selected, reload }) => {
           dispatch(setMessage("Colaborador no encontrado", "Error"));
           return;
         }
-        await updateAsistenciaColaborador({
-          ...form,
+        const newData = {
+          ...selected,
+          ...handleChanges,
           colaborador: colaboradorId,
-        });
+        };
+        console.log("Datos a actualizar:", newData);
+        await updateAsistenciaColaborador(newData);
       } else {
         dispatch(setMessage("No se realizaron cambios", "Error"));
       }
@@ -52,10 +57,10 @@ const EditAsistenciaColaborador = ({ setShowEdit, selected, reload }) => {
   return (
     <Edit setShowEdit={setShowEdit} upDate={updateAsistencia}>
       <CardPlegable title="Datos de Asistencia">
-        <DatosDeAsistencia setForm={setForm} error={error} form={form} />
+        <DatosDeAsistencia setForm={setFormEdit} error={error} form={formEdit} />
       </CardPlegable>
       <CardPlegable title="Datos del Colaborador">
-        <DatoDeColaborador setForm={setForm} error={error} form={form} />
+        <DatoDeColaborador setForm={setFormEdit} error={error} form={formEdit} />
       </CardPlegable>
     </Edit>
   );

@@ -47,7 +47,6 @@ const List = ({
       ApproveItem={ApproveContrato}
       DisapproveItem={DisapproveContrato}
       fetchData={fetchData}
-      reload={fetchData}
     >
       <Column
         field="colaborador.lastname"

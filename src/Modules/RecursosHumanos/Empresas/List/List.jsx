@@ -4,24 +4,31 @@ import { useDispatch, useSelector } from "react-redux";
 import View from "../Permissions/View";
 import EditBusiness from "../Permissions/Edit";
 import ListPrincipal from "../../../../components/Principal/List/List";
-import { getBusiness } from "../../../../redux/modules/Recursos Humanos/actions";
+import axios from "../../../../api/axios";
 
 const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
-  const dispatch = useDispatch();
 
-  const employees = useSelector((state) => state.recursosHumanos.business);
-  useEffect(() => {
-    if (employees.length === 0) dispatch(getBusiness());
-  }, [employees, dispatch]);
-
+  const fetchData = async ({ page, limit, search }) => {
+    try {
+      const response = await axios("/rrhh/getBusinessPaginacion",
+        { params: { page, limit, search } }
+      )
+      const data = response.data
+      return {
+        data: data.data,
+        total: data.total
+      }
+    } catch (error) {
+      throw error;
+    }
+  }
   return (
     <ListPrincipal
       permissionEdit={permissionEdit}
       permissionRead={permissionRead}
       EditItem={EditBusiness}
       DetailItem={View}
-      content={employees}
-      reload={() => dispatch(getBusiness())}
+      fetchData={fetchData}
     >
       <Column
         field="ruc"

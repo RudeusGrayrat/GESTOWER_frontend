@@ -35,9 +35,13 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
     );
   }, [business, selected?.colaborador?.business]);
   useEffect(() => {
+    if (!selected || !findBusiness) {
+      {
+        return;
+      }
+    }
     const renderDocx = async () => {
       try {
-        if (!selected || !findBusiness) return;
         // const response = await axios.get(
         //   `/contract/${selected.colaborador._id}`
         // );
@@ -81,7 +85,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
       }
     };
     renderDocx();
-  }, [findBusiness, selected, datosContables]);
+  }, [findBusiness, selected]);
 
   const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
     docxContent

@@ -30,7 +30,7 @@ const ListSedesAlmacen = ({
       permissionEdit={permissionEdit}
       DeleteItem={DeleteSedeAlmacen}
       fetchData={recargar}
-      reload={recargar}
+       
     >
       <Column field="_id" header="ID"   />
       <Column field="nombre" header="Nombre" />

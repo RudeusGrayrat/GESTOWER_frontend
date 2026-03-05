@@ -47,9 +47,9 @@ const ListBoletaDePagos = ({
 
   return (
     <ListPrincipal
+      permissionRead={permissionRead}
       permissionDelete={permissionDelete}
       permissionEdit={permissionEdit}
-      permissionRead={permissionRead}
       permissionApprove={permissionApprove}
       permissionDisapprove={permissionDisapprove}
       EditItem={EditBoletaDePagos}
@@ -58,12 +58,10 @@ const ListBoletaDePagos = ({
       ApproveItem={ApproveBoletaDePago}
       DisapproveItem={DisapproveBoletaDePago}
       fetchData={recargar}
-      reload={recargar}
     >
       <Column
         field="correlativa"
         header="Correlativa"
-         
       />
       <Column
         field="fechaBoletaDePago"

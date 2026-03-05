@@ -25,14 +25,13 @@ const ListWidgets = (permissionEdit, permissionDelete, permissionRead) => {
       DeleteItem={DeleteWidget}
       EditItem={EditWidget}
       DetailItem={null}
-      content={allWidgets}
-      reload={() => dispatch(getAllWidgets())}
+      fetchData={() => dispatch(getAllWidgets())}
       sortField="createdAt"
       sortOrder={-1}
     >
       <Column
         field="name"
-         
+
         header="Nombre"
         sortable
       />

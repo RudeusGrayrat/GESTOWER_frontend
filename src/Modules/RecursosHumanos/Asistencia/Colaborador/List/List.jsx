@@ -40,7 +40,6 @@ const ListAColaborador = ({
       EditItem={EditAsistenciaColaborador}
       DetailItem={DetailAsistenciaColaborador}
       fetchData={fetchBoletas}
-      reload={fetchBoletas}
     >
       <Column
         field="colaborador.lastname"

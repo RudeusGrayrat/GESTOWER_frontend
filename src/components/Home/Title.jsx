@@ -28,6 +28,8 @@ import Plantas from "../../Modules/Certificación/Plantas/Plantas";
 import Ubigeo from "../../Modules/Certificación/Ubigeo/Ubigeo";
 import Transportistas from "../../Modules/Certificación/Transportistas/Transportistas";
 import Destinos from "../../Modules/Certificación/Destinos/Destinos";
+import Permisos from "../../Modules/RecursosHumanos/Permisos/Permisos";
+import HorasExtras from "../../Modules/RecursosHumanos/HorasExtras/HorasExtras";
 
 const componentMap = {
   "recursos humanos": {
@@ -37,6 +39,8 @@ const componentMap = {
     "plantillas contrato": PlantillaContrato, //voy a volverlo solo plantillas y añadiré las plantillas de excel y word de asistencias boletas de pago y más
     asistencia: AsistenciaColaborador,
     "boleta de pagos": BoletaDePagos,
+    permisos: Permisos,
+    "horas extras": HorasExtras,
   },
   certificacion: {
     certificados: Certificados,

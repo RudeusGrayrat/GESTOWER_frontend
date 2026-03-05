@@ -30,7 +30,7 @@ const ListZonas = ({ permissionRead, permissionEdit, permissionDelete }) => {
       permissionDelete={permissionDelete}
       DeleteItem={DeleteZonaAlmacen}
       fetchData={recargar}
-      reload={recargar}
+       
     >
       <Column
         field="nombre"

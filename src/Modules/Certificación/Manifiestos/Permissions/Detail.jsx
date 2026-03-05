@@ -13,7 +13,6 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
   const [showDoc, setShowDoc] = useState(false);
   const [docxContent, setDocxContent] = useState("");
   const [cargandoPDF, setCargandoPDF] = useState(false);
-  const [plantillaLimpiaUrl, setPlantillaLimpiaUrl] = useState(null);
   const [error, setError] = useState(null);
 
   // PASO 1: Limpiar la plantilla al cargar
@@ -79,7 +78,7 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
     };
 
     renderDocx();
-  }, [selected, plantillaLimpiaUrl]);
+  }, [selected]);
   const convertirAPDF = async () => {
     setCargandoPDF(true);
     try {

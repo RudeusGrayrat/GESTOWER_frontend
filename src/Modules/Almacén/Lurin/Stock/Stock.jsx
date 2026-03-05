@@ -31,7 +31,6 @@ const StockAlmacenLurin = ({
       DetailItem={DetaiStock}
       DeleteItem={DeleteStock}
       fetchData={fetchStock}
-      reload={fetchStock}
     >
       <Column
         field="movimientoId.numeroDeActa"

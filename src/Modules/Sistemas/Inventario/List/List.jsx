@@ -32,11 +32,10 @@ const ListInventario = ({
       EditItem={EditInventario}
       DetailItem={null}
       fetchData={fetchData}
-      reload={fetchData}
     >
       <Column
         field="codigo"
-         
+
         header="Código"
         sortable
       />

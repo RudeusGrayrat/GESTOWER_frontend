@@ -4,7 +4,7 @@ const DatosBasicos = ({ form, setForm, error, colaboradores }) => {
   return (
     <div className="flex flex-wrap">
       <Input
-        label="Apellidos y nombres"
+        label="Colaborador"
         type="select"
         name="colaborador"
         options={colaboradores}

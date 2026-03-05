@@ -49,7 +49,6 @@ const List = ({
       EditItem={EditEmployee}
       DetailItem={DetailEmployee}
       fetchData={fetchData}
-      reload={fetchData}
     >
       <Column
         field="lastname"

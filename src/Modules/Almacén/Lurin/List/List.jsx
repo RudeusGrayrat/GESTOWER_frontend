@@ -119,13 +119,13 @@ const ListLurin = ({
             permissionDelete={permissionDelete}
             permissionRead={permissionRead}
             fetchData={recargar}
-            reload={recargar}
+
             key={`${form.contrato}-${form.movimiento}`}
           >
             <Column
               field="correlativa"
               header="Código Interno"
-               
+
             />
             <Column field="movimiento" header="Movimiento" />
             <Column field="contribuyente" header="Contribuyente" />

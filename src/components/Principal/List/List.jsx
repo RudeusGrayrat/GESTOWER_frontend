@@ -120,6 +120,27 @@ const ListPrincipal = ({
             onClick={() => handleShowDetail(rowData)}
           />
         )}
+        {permissionSent && (
+          <Button
+            icon="pi pi-send"
+            title="Enviar"
+            rounded
+            outlined
+            className={` text-blue-600 rounded-full
+              ${isSent
+                ? "cursor-not-allowed opacity-30"
+                : ""
+              }
+              mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
+              ${selectedRowId === rowData._id && showSent
+                ? "shadow-inner translate-y-[2px]"
+                : "shadow-xl"
+              }
+              `}
+            onClick={() => handleShowSent(rowData)}
+            disabled={isSent}
+          />
+        )}
         {permissionApprove && (
           <Button
             icon={"pi pi-check"}
@@ -177,29 +198,6 @@ const ListPrincipal = ({
             disabled={rowData.state === "APROBADO"}
           />
         )}
-        {
-          permissionSent && (
-            <Button
-              icon="pi pi-send"
-              title="Enviar"
-              rounded
-              outlined
-              className={` text-blue-600 rounded-full
-              ${isSent
-                  ? "cursor-not-allowed opacity-30"
-                  : ""
-                }
-              mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
-              ${selectedRowId === rowData._id && showSent
-                  ? "shadow-inner translate-y-[2px]"
-                  : "shadow-xl"
-                }
-              `}
-              onClick={() => handleShowSent(rowData)}
-              disabled={isSent}
-            />
-          )
-        }
         {permissionDelete && (
           <Button
             icon="pi pi-trash"
@@ -318,29 +316,33 @@ const ListPrincipal = ({
       {showDetail && (
         <DetailItem setShowDetail={setShowDetail} selected={selected} />
       )}
+      {showSent && (
+        <EnviarItem
+          setShowSent={setShowSent}
+          selected={selected}
+          reload={() => fetchAll(pagina, limite, searchTerm)}
+        />
+      )}
       {showApprove && (
-        <ApproveItem reload={() => fetchAll(pagina, limite, searchTerm)} setShowApprove={setShowApprove} selected={selected} />
+        <ApproveItem
+          setShowApprove={setShowApprove}
+          selected={selected}
+          reload={() => fetchAll(pagina, limite, searchTerm)}
+        />
       )}
       {showDisapprove && (
         <DisapproveItem
-          reload={() => fetchAll(pagina, limite, searchTerm)}
           setShowDisapprove={setShowDisapprove}
           selected={selected}
-        />
-      )}
-      {showSent && (
-        <EnviarItem
           reload={() => fetchAll(pagina, limite, searchTerm)}
-          setShowSent={setShowSent}
-          selected={selected}
         />
       )}
       {showEdit && (
         <EditItem
           setShowPopUp={setShowPopUp}
-          reload={() => fetchAll(pagina, limite, searchTerm)}
           setShowEdit={setShowEdit}
           selected={selected}
+          reload={() => fetchAll(pagina, limite, searchTerm)}
         />
       )}
       {showDelete && (

@@ -19,8 +19,7 @@ const ListPermisos = ({ permissionEdit, permissionRead }) => {
     <ListPrincipal
       permissionEdit={permissionEdit}
       permissionRead={permissionRead}
-      content={colaboradores}
-      reload={() => {
+      fetchData={() => {
         dispatch(getEmployees());
       }}
       EditItem={EditPermisos}
@@ -30,7 +29,7 @@ const ListPermisos = ({ permissionEdit, permissionRead }) => {
         field="lastname"
         header="Apellidos"
         sortable
-         
+
       />
       <Column field="name" header="Nombres" sortable />
       <Column field="charge" header="Cargo" sortable />
