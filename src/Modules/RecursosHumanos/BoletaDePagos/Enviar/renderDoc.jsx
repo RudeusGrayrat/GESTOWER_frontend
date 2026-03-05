@@ -110,7 +110,7 @@ const renderDoc = async (boleta, business, datosContables) => {
     console.log("Datos formateados:", formExcel);
 
     const archivo = PLANTILLA_DOCUMENT;
-    if (!archivo) throw new Error("No se encontró la plantilla del documento");
+    if (!archivo) { return new Error("No se encontró la plantilla del documento") }
 
     const convertir = await convertDocx(formExcel, archivo, "Boleta_de_Pago");
     if (!convertir)
