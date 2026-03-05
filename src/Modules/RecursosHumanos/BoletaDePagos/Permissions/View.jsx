@@ -37,7 +37,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   useEffect(() => {
     if (!selected || !findBusiness) {
       {
-        return;
+        return sendMessage("Faltan datos para generar la boleta de pago", "Error");
       }
     }
     const renderDocx = async () => {
