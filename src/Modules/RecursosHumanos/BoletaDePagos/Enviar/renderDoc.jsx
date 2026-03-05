@@ -29,6 +29,7 @@ const renderDoc = async (boleta, business, datosContables) => {
       PLANTILLA_DOCUMENT = VITE_PLANTILLA_TOWERANDTOWER;
       break;
   }
+  console.log("Plantilla seleccionada:", PLANTILLA_DOCUMENT);
   try {
     const transformData = (data) => {
       const ingresos = data.remuneraciones.map((remuneracion, index) => {
@@ -106,6 +107,7 @@ const renderDoc = async (boleta, business, datosContables) => {
       return formattedData;
     };
     const formExcel = transformData(boleta);
+    console.log("Datos formateados:", formExcel);
 
     const archivo = PLANTILLA_DOCUMENT;
     if (!archivo) throw new Error("No se encontró la plantilla del documento");

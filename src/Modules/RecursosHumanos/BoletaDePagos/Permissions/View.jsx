@@ -66,21 +66,25 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
           findBusiness,
           datosContables
         );
+        console.log("Archivo generado:", file);
         if (!file) {
           sendMessage("Error al cargar el archivo", "Error");
           return;
         }
         const fechaConGuion = selected.fechaBoletaDePago.replace(/\//g, "-");
+        console.log("Fecha con guiones:", fechaConGuion);
         const pathCloudinary = await documentoCloudinary(
           file,
           `${selected.colaborador?.lastname}_${selected.colaborador?.name}_${fechaConGuion}`
         );
+        console.log("Respuesta de Cloudinary:", pathCloudinary);
         setDocxContent(pathCloudinary.secure_url);
         setShowDoc(true);
         await axios.delete("/deleteDocument", {
           data: { public_id: pathCloudinary.public_id },
         });
       } catch (error) {
+        console.error("Error generando o subiendo el documento:", error);
         sendMessage(error, "Error");
       }
     };
