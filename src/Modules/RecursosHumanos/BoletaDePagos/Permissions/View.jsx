@@ -35,13 +35,9 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
     );
   }, [business, selected?.colaborador?.business]);
   useEffect(() => {
-    if (!selected || !findBusiness) {
-      {
-        return sendMessage("Faltan datos para generar la boleta de pago", "Error");
-      }
-    }
     const renderDocx = async () => {
       try {
+        if (!selected || !findBusiness) return;
         // const response = await axios.get(
         //   `/contract/${selected.colaborador._id}`
         // );
@@ -66,30 +62,26 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
           findBusiness,
           datosContables
         );
-        console.log("Archivo generado:", file);
         if (!file) {
           sendMessage("Error al cargar el archivo", "Error");
           return;
         }
         const fechaConGuion = selected.fechaBoletaDePago.replace(/\//g, "-");
-        console.log("Fecha con guiones:", fechaConGuion);
         const pathCloudinary = await documentoCloudinary(
           file,
           `${selected.colaborador?.lastname}_${selected.colaborador?.name}_${fechaConGuion}`
         );
-        console.log("Respuesta de Cloudinary:", pathCloudinary);
         setDocxContent(pathCloudinary.secure_url);
         setShowDoc(true);
         await axios.delete("/deleteDocument", {
           data: { public_id: pathCloudinary.public_id },
         });
       } catch (error) {
-        console.error("Error generando o subiendo el documento:", error);
         sendMessage(error, "Error");
       }
     };
     renderDocx();
-  }, [findBusiness, selected]);
+  }, [findBusiness, selected, datosContables]);
 
   const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
     docxContent
