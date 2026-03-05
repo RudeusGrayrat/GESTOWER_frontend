@@ -19,8 +19,9 @@ const convertDocx = async (predata, archivo, nameDoc) => {
 
     const response = await axios.get(archivo, {
       responseType: "arraybuffer",
-    });
-
+    })
+    if (!response)
+      throw new Error("No se pudo descargar la plantilla del documento");
     let content = response.data;
 
     if (!content || !(content instanceof ArrayBuffer)) {
