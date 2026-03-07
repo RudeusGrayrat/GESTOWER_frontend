@@ -24,7 +24,11 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
         numeroManifiesto: `MRSP-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
         año: new Date().getFullYear(),
         mes: new Date().getMonth() + 1,
-
+        //PASO1 generador y planta
+        plantaId: '',
+        generadorId: '',
+        servicioTransporte: "SERVICIO TOWER",
+        //PASO2 datos del residuo
 
         estado: 'PENDIENTE'
     });

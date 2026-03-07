@@ -151,7 +151,7 @@ const Input = ({
       if (otro && OtherProps?.options) {
         opcionesConOtro = [
           ...OtherProps.options,
-          { [name]: "OTRO", value: "OTRO" }
+          { [name]: "OTRO", value: "OTRO", label: "OTRO" }
         ];
       } else {
         opcionesConOtro = [...(OtherProps?.options || [])];
@@ -191,7 +191,15 @@ const Input = ({
                     .catch(err => console.error("Error fetching autocomplete:", err));
                 }, 250);
               }}
-              field={name}
+              field={typeof OtherProps.field === 'function' ? 'label' : (OtherProps.field || name)}
+              itemTemplate={(item) => {
+                // Template personalizado para mostrar correctamente los items
+                if (item.value === "OTRO") return "OTRO";
+                if (typeof OtherProps.field === 'function') {
+                  return OtherProps.field(item);
+                }
+                return item[OtherProps.field || name];
+              }}
               placeholder={label}
               dropdown
               className={estilo + " p-0!"}
@@ -200,7 +208,13 @@ const Input = ({
                   setOtroMode(true);
                   setForm((prev) => ({ ...prev, [name]: "" }));
                 } else {
-                  handleChange(e);
+                  // Aquí también necesitas manejar correctamente el valor
+                  if (typeof OtherProps.field === 'function' && e.value) {
+                    // Si es un objeto completo, guárdalo así
+                    setForm((prev) => ({ ...prev, [name]: e.value }));
+                  } else {
+                    handleChange(e);
+                  }
                 }
               }}
               disabled={disabled}

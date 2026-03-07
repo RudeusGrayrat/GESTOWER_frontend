@@ -12,7 +12,7 @@ const ListManifiestos = ({
     permissionDelete,
     permissionApprove,
     permissionDisapprove,
-    permissionSent
+    permissionSend
 }) => {
     const fetchManifiestos = async (page, rows, filters, sortField, sortOrder) => {
         try {
@@ -44,7 +44,7 @@ const ListManifiestos = ({
             permissionDelete={permissionDelete}
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
-            permissionSent={permissionSent}
+            permissionSend={permissionSend}
             ApproveItem={AprobarManifiesto}
             DetailItem={DetailManifiesto}
             EditItem={EditManifiesto}

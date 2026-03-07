@@ -35,6 +35,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
     );
   }, [business, selected?.colaborador?.business]);
   useEffect(() => {
+    if (docxContent) return;
     const renderDocx = async () => {
       try {
         if (!selected || !findBusiness) return;
@@ -56,8 +57,8 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
             ...selected,
             // codigoSpp: findContrato?.codigoSpp,
             // regimenPension: findContrato?.regimenPension,
-            regimenPension: selected.colaborador?.regimenPension || "POR RELLENAR",
-            codigoSpp: selected.colaborador?.codigoSPP || "POR RELLENAR",
+            regimenPension: selected.colaborador?.regimenPension || "",
+            codigoSpp: selected.colaborador?.codigoSPP || "",
           },
           findBusiness,
           datosContables
@@ -76,6 +77,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
         await axios.delete("/deleteDocument", {
           data: { public_id: pathCloudinary.public_id },
         });
+        return
       } catch (error) {
         sendMessage(error, "Error");
       }

@@ -19,7 +19,7 @@ const ListPrincipal = ({
   permissionRead,
   permissionApprove,
   permissionDisapprove,
-  permissionSent,
+  permissionSend,
   ApproveItem,
   DisapproveItem,
   EnviarItem,
@@ -120,7 +120,7 @@ const ListPrincipal = ({
             onClick={() => handleShowDetail(rowData)}
           />
         )}
-        {permissionSent && (
+        {permissionSend && (
           <Button
             icon="pi pi-send"
             title="Enviar"
