@@ -20,7 +20,7 @@ const ListPermisos = ({
                     search
                 }
             });
-            const data = response.data;
+            const data = response.data || { data: [], total: 0 };
             return {
                 data: data.data,
                 total: data.total
