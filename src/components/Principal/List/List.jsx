@@ -100,8 +100,12 @@ const ListPrincipal = ({
   }, [errorForms]);
 
   const actionBodyTemplate = (rowData) => {
+    const isActivated =
+      rowData.state === "ACTIVO" || rowData.estado === "ACTIVO";
     const isApproved =
-      rowData.state === "APROBADO" || rowData.state === "ACTIVO" || rowData.estado === "APROBADO" || rowData.estado === "ACTIVO";
+      rowData.state === "APROBADO" || rowData.estado === "APROBADO";
+    const isRejected =
+      rowData.state === "RECHAZADO" || rowData.estado === "RECHAZADO";
     const isSent = rowData.estado !== "PENDIENTE" && rowData.estado !== "OBSERVADO";
     return (
       <React.Fragment>
@@ -148,7 +152,7 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-green-500 rounded-full
-              ${isApproved ? "cursor-not-allowed opacity-30" : ""}
+              ${(isApproved || isActivated) ? "cursor-not-allowed opacity-30" : ""}
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
               ${selectedRowId === rowData._id && showApprove
                 ? "shadow-inner translate-y-[2px]"
@@ -156,7 +160,7 @@ const ListPrincipal = ({
               }
               `}
             onClick={() => handleShowApprove(rowData)}
-            disabled={isApproved}
+            disabled={isApproved || isActivated}
           />
         )}
         {permissionDisapprove && (
@@ -166,7 +170,7 @@ const ListPrincipal = ({
             title="Desaprobar o Desactivar"
             outlined
             className={`text-orange-600 rounded-full
-              ${!isApproved ? "cursor-not-allowed opacity-30" : ""}
+              ${(isRejected && !isActivated) ? "cursor-not-allowed opacity-30" : ""}
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
               ${selectedRowId === rowData._id && showDisapprove
                 ? "shadow-inner translate-y-[2px]"
@@ -174,7 +178,7 @@ const ListPrincipal = ({
               }
               `}
             onClick={() => handleShowDisapprove(rowData)}
-            disabled={!isApproved}
+            disabled={isRejected && !isActivated}
           />
         )}
         {permissionEdit && (
@@ -184,7 +188,7 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-blue-500 rounded-full 
-              ${rowData.state === "APROBADO"
+              ${isApproved
                 ? "cursor-not-allowed opacity-30"
                 : ""
               }
@@ -195,7 +199,7 @@ const ListPrincipal = ({
               }
               `}
             onClick={() => handleShowEdit(rowData)}
-            disabled={rowData.state === "APROBADO"}
+            disabled={isApproved}
           />
         )}
         {permissionDelete && (
@@ -205,7 +209,7 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-red-600 rounded-full 
-              ${rowData.state === "APROBADO"
+              ${isApproved
                 ? "cursor-not-allowed opacity-30"
                 : ""
               }
@@ -217,7 +221,7 @@ const ListPrincipal = ({
               `}
             severity="danger"
             onClick={() => handleShowDelete(rowData)}
-            disabled={rowData.state === "APROBADO"}
+            disabled={isApproved}
           />
         )}
       </React.Fragment>

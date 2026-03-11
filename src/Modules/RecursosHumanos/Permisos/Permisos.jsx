@@ -7,6 +7,7 @@ const Permisos = () => {
         <ReadOrCreate
             ItemList={ListPermisos}
             ItemRegister={RegisterPermisos}
+            module={"RECURSOS HUMANOS"}
             submodule={"PERMISOS"}
         />
     )

@@ -1,11 +1,11 @@
 import { useState } from "react";
-import Approve from "../../../../components/Principal/Permissions/Approve"
-import { useAuth } from "../../../../context/AuthContext";
-import PopUp from "../../../../recicle/popUps"
-import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
+import Approve from "../../../../components/Principal/Permissions/Approve"
+import PopUp from "../../../../recicle/popUps";
+import useSendMessage from "../../../../recicle/senMessage";
+import { useAuth } from "../../../../context/AuthContext";
 
-const ApproveHorasExtras = ({ setShowApprove, selected, reload }) => {
+const ApprovePermisos = ({ setShowApprove, selected, reload }) => {
     const sendMessage = useSendMessage();
     const { user } = useAuth();
     const [deshabilitar, setDeshabilitar] = useState(false);
@@ -13,14 +13,14 @@ const ApproveHorasExtras = ({ setShowApprove, selected, reload }) => {
         setDeshabilitar(true);
         try {
             if (selected.estado === "APROBADO") {
-                sendMessage("Las horas extras ya han sido aprobadas.", "Advertencia");
+                sendMessage("El permiso ya ha sido aprobado.", "Advertencia");
                 return;
             }
             if (!selected.colaborador) {
-                sendMessage("No se encontró el colaborador asociado a las horas extras.", "Error");
+                sendMessage("No se encontró el colaborador asociado al permiso.", "Error");
                 return;
             }
-            const response = await axios.patch(`/rrhh/patchHorasExtras/`,
+            const response = await axios.patch(`/rrhh/patchPermiso/`,
                 {
                     _id: selected._id,
                     estado: "APROBADO",
@@ -28,7 +28,7 @@ const ApproveHorasExtras = ({ setShowApprove, selected, reload }) => {
                 }
             );
             if (response.data.type === "Correcto") {
-                sendMessage("Horas extras aprobadas exitosamente.", "Correcto");
+                sendMessage("Permiso aprobado exitosamente.", "Correcto");
             }
             reload();
         } catch (error) {
@@ -40,10 +40,11 @@ const ApproveHorasExtras = ({ setShowApprove, selected, reload }) => {
     }
 
     return (
-        <Approve setShowApprove={setShowApprove} onclick={handleApprove} >
+        <Approve setShowApprove={setShowApprove} onclick={handleApprove}
+        >
             <PopUp deshabilitar={deshabilitar} />
         </Approve>
     )
 }
 
-export default ApproveHorasExtras
+export default ApprovePermisos

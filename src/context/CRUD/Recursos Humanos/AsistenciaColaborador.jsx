@@ -7,7 +7,7 @@ const create_AsistenciaColaborador = async (
 ) => {
   try {
     const response = await axios.post(
-      "/postAsistenciaColaborador",
+      "/postAsistenciaErp",
       AsistenciaColaborador
     );
     const data = response.data;

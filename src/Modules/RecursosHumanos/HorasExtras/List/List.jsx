@@ -2,6 +2,7 @@ import { Column } from "primereact/column"
 import ListPrincipal from "../../../../components/Principal/List/List"
 import axios from "../../../../api/axios";
 import DetailHorasExtras from "../Permissions/Detail";
+import ApproveHorasExtras from "../Permissions/Approve";
 
 const ListHorasExtras = ({
     permissionRead,
@@ -39,6 +40,7 @@ const ListHorasExtras = ({
             permissionEdit={permissionEdit}
             permissionSend={permissionSend}
             DetailItem={DetailHorasExtras}
+            ApproveItem={ApproveHorasExtras}
             fetchData={fetchData}
             title="horas_etxras_list"
         >
@@ -50,6 +52,37 @@ const ListHorasExtras = ({
                 body={(rowData) => {
                     const minutosTotales = rowData.minutosTotales || 0;
                     return `${minutosTotales} minutos`;
+                }}
+            />
+            <Column
+                field="estado"
+                header="Estado"
+                style={{
+                    justifyItems: "center",
+                }}
+                body={(rowData) => {
+                    let color = "";
+                    switch (rowData.estado) {
+                        case "PENDIENTE":
+                            color = "text-red-500";
+                            break;
+                        case "APROBADO":
+                            color = "text-green-600";
+                            break;
+                        case "RECHAZADO":
+                            color = "text-gray-500";
+                            break;
+                        default:
+                            color = "text-gray-900";
+                    }
+                    return (
+                        <div
+                            className={`text-center bg-gradient-to-tr from-white to-gray-100
+                shadow-inner rounded-xl font-semibold  px-5 py-1  ${color} `}
+                        >
+                            {rowData.estado}
+                        </div>
+                    );
                 }}
             />
         </ListPrincipal>

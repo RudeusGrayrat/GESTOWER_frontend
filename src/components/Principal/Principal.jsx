@@ -3,21 +3,21 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import RadioOption from "../../recicle/Otros/Radio";
 
-const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule }) => {
+const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule, module }) => {
   const { user } = useAuth();
 
   const hasPermission = () => {
     if (user) {
       const { modules } = user;
-
-      const hasPermission1 = modules?.filter(
-        (module) => module.submodule?.name === submodule
+      const hasPermission1 = modules?.filter((mod) =>
+        module
+          ? mod.name === module && mod.submodule?.name === submodule
+          : mod.submodule?.name === submodule
       );
       const hasPermission2 = hasPermission1[0]?.submodule?.permissions;
       return hasPermission2;
     }
   };
-
   const permissionCreate = hasPermission()?.some(
     (permission) => permission === "CREAR"
   );
@@ -67,15 +67,11 @@ const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule }) => {
 
   const [options, setOptions] = useState([]);
   useEffect(() => {
-    if (permissionRead) {
-      setOptions((prev) => [...prev, "Listar"]);
-    }
-    if (permissionCreate) {
-      setOptions((prev) => [...prev, "Crear"]);
-    }
-    if (permissionReport) {
-      setOptions((prev) => [...prev, "Reporte"]);
-    }
+    const newOptions = [];                          // array fresco cada vez
+    if (permissionRead) newOptions.push("Listar");
+    if (permissionCreate) newOptions.push("Crear");
+    if (permissionReport) newOptions.push("Reporte");
+    setOptions(newOptions);                         // reemplaza, no acumula
   }, [permissionRead, permissionCreate, permissionReport]);
   const handleOptionClick = (option) => {
     setChange(option);

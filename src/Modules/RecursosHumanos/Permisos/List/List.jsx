@@ -2,6 +2,7 @@ import { Column } from "primereact/column"
 import ListPrincipal from "../../../../components/Principal/List/List"
 import axios from "../../../../api/axios"
 import DetailPermisos from "../Permissions/Detail"
+import ApprovePermisos from "../Permissions/Approve"
 
 const ListPermisos = ({
     permissionApprove,
@@ -11,6 +12,7 @@ const ListPermisos = ({
     permissionRead,
     permissionSend
 }) => {
+
     const fetchData = async (page, limit, search) => {
         try {
             const response = await axios.get("/rrhh/getPermisosPaginacion", {
@@ -20,7 +22,7 @@ const ListPermisos = ({
                     search
                 }
             });
-            const data = response.data || { data: [], total: 0 };
+            const data = response.data;
             return {
                 data: data.data,
                 total: data.total
@@ -31,13 +33,14 @@ const ListPermisos = ({
     }
     return (
         <ListPrincipal
-            permissionApprove={permissionApprove}
-            permissionDelete={permissionDelete}
-            permissionDisapprove={permissionDisapprove}
             permissionEdit={permissionEdit}
+            permissionDelete={permissionDelete}
             permissionRead={permissionRead}
+            permissionApprove={permissionApprove}
+            permissionDisapprove={permissionDisapprove}
             permissionSend={permissionSend}
             DetailItem={DetailPermisos}
+            ApproveItem={ApprovePermisos}
             fetchData={fetchData}
             title="permisos_list_rrhh"
         >
@@ -45,8 +48,40 @@ const ListPermisos = ({
             <Column field="colaborador.lastname" header="Apellidos" />
             <Column field="fechaInicio" header="Fecha Inicio" />
             <Column field="fechaFin" header="Fecha Fin" />
-            <Column field="duracionHoras" header="Duración en Horas" />
-            <Column field="estado" header="Estado" />
+            <Column field="duracionHoras" header="Duración"
+                body={(rowData) => `${rowData.duracionHoras} horas`}
+            />
+            <Column
+                field="estado"
+                header="Estado"
+                style={{
+                    justifyItems: "center",
+                }}
+                body={(rowData) => {
+                    let color = "";
+                    switch (rowData.estado) {
+                        case "PENDIENTE":
+                            color = "text-red-500";
+                            break;
+                        case "APROBADO":
+                            color = "text-green-600";
+                            break;
+                        case "RECHAZADO":
+                            color = "text-gray-500";
+                            break;
+                        default:
+                            color = "text-gray-900";
+                    }
+                    return (
+                        <div
+                            className={`text-center bg-gradient-to-tr from-white to-gray-100
+                shadow-inner rounded-xl font-semibold  px-5 py-1  ${color} `}
+                        >
+                            {rowData.estado}
+                        </div>
+                    );
+                }}
+            />
         </ListPrincipal>
     )
 }
