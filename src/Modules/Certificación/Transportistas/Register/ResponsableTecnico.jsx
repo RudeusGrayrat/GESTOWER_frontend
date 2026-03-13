@@ -14,6 +14,7 @@ const ResponsableTecnico = ({ formData, setFormData }) => {
     return (
         <div className="flex flex-wrap">
             <Input
+                ancho="!w-96"
                 label="Nombre del Responsable Técnico"
                 value={formData.responsableTecnico?.nombre || ""}
                 onChange={(e) => handleChange('nombre', e.target.value.toUpperCase())}

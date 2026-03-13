@@ -1,6 +1,6 @@
-const PDetail = ({ content, value }) => {
+const PDetail = ({ content, value, tamaño }) => {
   return (
-    <p className="text-xl  text-gray-700 my-2">
+    <p className={`${tamaño ? tamaño : "text-xl"}  text-gray-700 my-2`}>
       <strong className="text-sky-600 mr-2">{content}</strong>
       {value}
     </p>

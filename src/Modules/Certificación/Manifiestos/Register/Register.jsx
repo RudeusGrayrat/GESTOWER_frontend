@@ -24,26 +24,45 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
         numeroManifiesto: `MRSP-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
         año: new Date().getFullYear(),
         mes: new Date().getMonth() + 1,
-        //PASO1 generador y planta
+        //PASO1 Datos Generales
+        transportistaId: '',
         plantaId: '',
         generadorId: '',
-        servicioTransporte: "SERVICIO TOWER",
         //PASO2 datos del residuo
-
+        residuo: {
+            descripcion: '',
+            cantidadTotal: '',
+            estadoFisico: 'SOLIDO',
+            tipoRecipiente: '',
+            materialRecipiente: '',
+            numeroRecipientes: 1,
+            codigoBasilea: '',
+            subcodigoBasilea: '',
+            informacionAdicional: '',
+        },
+        peligrosidad: {
+            explosivos: false, oxidantes: false, gasesToxicos: false,
+            liquidosInflamables: false, peroxidosOrganicos: false,
+            toxicosCronicos: false, solidosInflamables: false,
+            toxicosAgudos: false, ecotoxicos: false,
+            combustionEspontanea: false, sustanciasInfecciosas: false,
+            sustanciasSecundarias: false, gasesInflamablesAgua: false,
+            corrosivos: false, otros: ''
+        },
         estado: 'PENDIENTE'
     });
 
     const pasos = [
         { id: 1, nombre: "Datos generales", componente: Paso1_DatosGenerales },
         { id: 2, nombre: "Residuos peligroso", componente: Paso2_Residuo },
-        { id: 3, nombre: "Manejo de residuo", componente: Paso3_Peligrosidad },
+        { id: 3, nombre: "Características de peligrosidad", componente: Paso3_Peligrosidad },
+        //manejo de residuos debe ser del eo, o sea operador externo, pero en este caso será tower and tower
         { id: 4, nombre: "Otras Observaciones", componente: Paso4_OtrasObligaciones },
     ];
 
     const PasoComponente = pasos[pasoActual - 1]?.componente;
     const resetForm = () => {
         setFormData({
-            numeroManifiesto: `MRSP-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
             año: new Date().getFullYear(),
             mes: new Date().getMonth() + 1,
             generadorId: '',
@@ -126,14 +145,12 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
                 resetForm();
             }
         } catch (error) {
-            console.error("Error:", error);
             sendMessage(error.response?.data?.message || "Error al registrar manifiesto", "Error");
         } finally {
             setDeshabilitar(false);
         }
     };
 
-    console.log("FormData actual:", formData); // Agrega este log para depuración
     return (
         <div className="w-full p-4">
             <PopUp deshabilitar={deshabilitar} />
@@ -156,7 +173,6 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
                     onClick={() => setPasoActual(prev => Math.max(1, prev - 1))}
                     disabled={pasoActual === 1 || deshabilitar}
                 />
-
                 <div className="flex space-x-4">
                     <ButtonOk
                         children="Cancelar"
@@ -164,7 +180,6 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
                         onClick={editCancel !== null ? editCancel : resetForm}
                         disabled={deshabilitar}
                     />
-
                     {pasoActual < pasos.length ? (
                         <ButtonOk
                             type="ok"

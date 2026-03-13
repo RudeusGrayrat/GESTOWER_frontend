@@ -28,7 +28,6 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
                 placeholder="Describa el residuo peligroso"
                 ancho="w-full"
             />
-
             <Input
                 label="Cantidad total (toneladas) *"
                 type="number"

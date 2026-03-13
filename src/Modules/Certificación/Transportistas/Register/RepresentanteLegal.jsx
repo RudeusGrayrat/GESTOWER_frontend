@@ -17,6 +17,7 @@ const RepresentanteLegal = ({ formData, setFormData }) => {
                 label="Nombre del Representante Legal"
                 value={formData.representanteLegal?.nombre || ""}
                 onChange={(e) => handleChange('nombre', e.target.value.toUpperCase())}
+                ancho="!w-96"
                 placeholder="Nombres y apellidos completos"
             />
 

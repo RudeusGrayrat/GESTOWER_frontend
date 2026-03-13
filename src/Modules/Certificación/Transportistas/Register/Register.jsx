@@ -8,6 +8,8 @@ import ResponsableTecnico from "./ResponsableTecnico";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
 import Contingencias from "./Contingencias";
+import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
+import GeneradoresTransportistas from "./Generadores";
 
 const RegisterTransportistas = () => {
     const [deshabilitar, setDeshabilitar] = useState(false);
@@ -38,6 +40,40 @@ const RegisterTransportistas = () => {
             otros: ''
         },
     });
+    const resetForm = () => {
+        setFormData({
+            razonSocial: '',
+            ruc: '',
+            registroEors: '',
+            autorizacionMunicipal: '',
+            documentoRuta: '',
+            direccion: '',
+            ubigeoId: '',
+            correoElectronico: '',
+            telefono: '',
+            representanteLegal: {
+                nombre: '',
+                dni: '',
+            },
+            responsableTecnico: {
+                nombre: '',
+                numeroColegiatura: '',
+            },
+            contingencias: {
+                derrame: '',
+                infiltracion: '',
+                incendio: '',
+                explosion: '',
+                otros: ''
+            },
+            generadores: [
+                {
+                    _id: "",
+                    razonSocial: "",
+                }
+            ]
+        });
+    }
     const register = async () => {
         setDeshabilitar(true);
         sendMessage("Registrando transportista...", "Cargando");
@@ -73,8 +109,11 @@ const RegisterTransportistas = () => {
                 sendMessage("El RUC debe tener 11 dígitos numéricos", "Advertencia");
                 return;
             }
-
-            const response = await axios.post("/certificaciones/postTransportista", formData);
+            const newData = {
+                ...formData,
+                generadores: formData.generadores.map(gen => gen._id) // Enviar solo los IDs de los generadores
+            }
+            const response = await axios.post("/certificaciones/postTransportista", newData);
             const data = response.data;
 
             sendMessage(data.message, data.type || "Correcto");
@@ -89,34 +128,7 @@ const RegisterTransportistas = () => {
             setDeshabilitar(false);
         }
     };
-    const resetForm = () => {
-        setFormData({
-            razonSocial: '',
-            ruc: '',
-            registroEors: '',
-            autorizacionMunicipal: '',
-            documentoRuta: '',
-            direccion: '',
-            ubigeoId: '',
-            correoElectronico: '',
-            telefono: '',
-            representanteLegal: {
-                nombre: '',
-                dni: '',
-            },
-            responsableTecnico: {
-                nombre: '',
-                numeroColegiatura: '',
-            },
-            contingencias: {
-                derrame: '',
-                infiltracion: '',
-                incendio: '',
-                explosion: '',
-                otros: ''
-            },
-        });
-    }
+
     console.log("Form Data:", formData);
     return (
         <div className="w-full p-4">
@@ -131,11 +143,18 @@ const RegisterTransportistas = () => {
             <CardPlegable title="Representante Legal">
                 <RepresentanteLegal formData={formData} setFormData={setFormData} />
             </CardPlegable>
-
             <CardPlegable title="Responsable Técnico">
                 <ResponsableTecnico formData={formData} setFormData={setFormData} />
             </CardPlegable>
-
+            <CardPlegable title="Generadores">
+                <Directorio
+                    estilos=" flex justify-center items-center"
+                    data="generadores"
+                    setForm={setFormData}
+                    directory={formData.generadores}
+                    ItemComponent={GeneradoresTransportistas}
+                />
+            </CardPlegable>
             <div className="flex justify-center mt-6">
                 <ButtonOk
                     children="Cancelar"
