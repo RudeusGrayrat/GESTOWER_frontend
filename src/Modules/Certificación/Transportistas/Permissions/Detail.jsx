@@ -16,6 +16,7 @@ const DetailTransportista = ({ setShowDetail, selected }) => {
         estado,
         contingencias,
         generadores,
+        conductores,
         ubigeoId
     } = selected;
     console.log("Selected Transportista:", selected);
@@ -74,7 +75,6 @@ const DetailTransportista = ({ setShowDetail, selected }) => {
                 </div>
 
                 <div className="flex flex-col gap-8">
-
                     {(generadores?.length === 0 && responsableTecnico) && (
                         <div className="flex flex-col">
                             <h3 className="text-3xl font-bold text-[#026DCC]">RESPONSABLE TÉCNICO</h3>
@@ -97,6 +97,17 @@ const DetailTransportista = ({ setShowDetail, selected }) => {
                                 <div key={index} className="border p-3 rounded-lg">
                                     <PDetail content="RAZÓN SOCIAL: " tamaño={"text-lg !my-0"} value={gen.razonSocial} />
                                     <PDetail content="RUC: " tamaño={"text-lg !my-0"} value={gen.ruc} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                    {conductores && conductores?.length > 0 && (
+                        <div className="flex flex-col">
+                            <h3 className="text-3xl font-bold text-[#026DCC]">CONDUCTORES ASOCIADOS</h3>
+                            {conductores.map((conductor, index) => (
+                                <div key={index} className="border p-3 rounded-lg">
+                                    <PDetail content="NOMBRE COMPLETO: " tamaño={"text-lg !my-0"} value={conductor.nombre} />
+                                    <PDetail content="LICENCIA: " tamaño={"text-lg !my-0"} value={conductor.licencia} />
                                 </div>
                             ))}
                         </div>

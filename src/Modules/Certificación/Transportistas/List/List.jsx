@@ -2,6 +2,7 @@ import { Column } from "primereact/column";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DetailTransportista from "../Permissions/Detail";
+import EditTransportistas from "../Permissions/Edit";
 
 const ListTransportistas = ({
     permissionRead, permissionApprove, permissionEdit, permissionDelete, permissionDisapprove
@@ -34,6 +35,7 @@ const ListTransportistas = ({
             permissionDisapprove={permissionDisapprove}
             DetailItem={DetailTransportista}
             fetchData={fetchData}
+            EditItem={EditTransportistas}
             title="transportistas_certificacion"
         >
             <Column field="razonSocial" header="Razón Social" />

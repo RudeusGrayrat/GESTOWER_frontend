@@ -2,42 +2,50 @@ import { useState, useEffect } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 
 const Contingencias = ({ formData, setFormData }) => {
-    const [ubigeoOptions, setUbigeoOptions] = useState([]);
+    const handleChangeContingencias = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            contingencias: {
+                ...prev.contingencias,
+                [field]: value
+            }
+        }));
+    };
 
     return (
         <div className="flex flex-wrap">
             <Input
                 label="Derrame"
-                name="derrame"
-                value={formData.derrame}
-                setForm={setFormData}
+                name="contingencias.derrame"
+                value={formData.contingencias?.derrame}
+                onChange={(e) => handleChangeContingencias('derrame', e.target.value.toUpperCase())}
             />
 
             <Input
                 label="Infiltración"
-                name="infiltracion"
-                value={formData.infiltracion}
-                setForm={setFormData}
+                name="contingencias.infiltracion"
+                value={formData.contingencias?.infiltracion}
+                onChange={(e) => handleChangeContingencias('infiltracion', e.target.value.toUpperCase())}
             />
 
             <Input
                 label="Incendio"
-                name="incendio"
-                value={formData.incendio}
-                setForm={setFormData}
+                name="contingencias.incendio"
+                value={formData.contingencias?.incendio}
+                onChange={(e) => handleChangeContingencias('incendio', e.target.value.toUpperCase())}
             />
 
             <Input
                 label="Explosión"
-                name="explosion"
-                value={formData.explosion}
-                setForm={setFormData}
+                name="contingencias.explosion"
+                value={formData.contingencias?.explosion}
+                onChange={(e) => handleChangeContingencias('explosion', e.target.value.toUpperCase())}
             />
             <Input
                 label="Otros Accidentes"
-                name="otros"
-                value={formData.otros}
-                setForm={setFormData}
+                name="contingencias.otros"
+                value={formData.contingencias?.otros}
+                onChange={(e) => handleChangeContingencias('otros', e.target.value.toUpperCase())}
             />
         </div>
     );

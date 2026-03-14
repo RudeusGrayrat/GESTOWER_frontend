@@ -1,17 +1,19 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PopUp from "../../../../recicle/popUps";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable";
 import DatosBasicos from "./DatosBasicos";
-import RepresentanteLegal from "./RepresentanteLegal";
-import ResponsableTecnico from "./ResponsableTecnico";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
 import Contingencias from "./Contingencias";
 import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import GeneradoresTransportistas from "./Generadores";
+import Responsable_y_Representante from "./Responsable_Y_Representante";
+import Conductores from "./Conductores";
 
-const RegisterTransportistas = () => {
+const RegisterTransportistas = ({
+    editData, setFormEdit
+}) => {
     const [deshabilitar, setDeshabilitar] = useState(false);
     const sendMessage = useSendMessage();
     const [formData, setFormData] = useState({
@@ -39,6 +41,18 @@ const RegisterTransportistas = () => {
             explosion: '',
             otros: ''
         },
+        generadores: [
+            {
+                _id: "",
+                razonSocial: "",
+            }
+        ],
+        conductores: [
+            {
+                nombre: "",
+                licencia: "",
+            }
+        ]
     });
     const resetForm = () => {
         setFormData({
@@ -70,6 +84,12 @@ const RegisterTransportistas = () => {
                 {
                     _id: "",
                     razonSocial: "",
+                }
+            ],
+            conductores: [
+                {
+                    nombre: "",
+                    licencia: "",
                 }
             ]
         });
@@ -128,34 +148,37 @@ const RegisterTransportistas = () => {
             setDeshabilitar(false);
         }
     };
-
-    console.log("Form Data:", formData);
     return (
         <div className="w-full p-4">
             <PopUp deshabilitar={deshabilitar} />
             <CardPlegable title="Datos Básicos del Transportista">
-                <DatosBasicos formData={formData} setFormData={setFormData} />
+                <DatosBasicos formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
             <CardPlegable title="Contingencias">
-                <Contingencias formData={formData} setFormData={setFormData} />
+                <Contingencias formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
-
-            <CardPlegable title="Representante Legal">
-                <RepresentanteLegal formData={formData} setFormData={setFormData} />
-            </CardPlegable>
-            <CardPlegable title="Responsable Técnico">
-                <ResponsableTecnico formData={formData} setFormData={setFormData} />
+            <CardPlegable title="Responsable Tecnico y Representante Legal">
+                <Responsable_y_Representante formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
             <CardPlegable title="Generadores">
                 <Directorio
-                    estilos=" flex justify-center items-center"
+                    estilos="flex justify-center items-center"
                     data="generadores"
-                    setForm={setFormData}
-                    directory={formData.generadores}
+                    setForm={setFormEdit ? setFormEdit : setFormData}
+                    directory={editData ? editData.generadores : formData.generadores}
                     ItemComponent={GeneradoresTransportistas}
                 />
             </CardPlegable>
-            <div className="flex justify-center mt-6">
+            <CardPlegable title="Conductores">
+                <Directorio
+                    estilos="flex justify-center items-center"
+                    data="conductores"
+                    setForm={setFormEdit ? setFormEdit : setFormData}
+                    directory={editData ? editData.conductores : formData.conductores}
+                    ItemComponent={Conductores}
+                />
+            </CardPlegable>
+            {!editData && (<div className="flex justify-center mt-6">
                 <ButtonOk
                     children="Cancelar"
                     classe="!w-32 mr-4"
@@ -170,6 +193,7 @@ const RegisterTransportistas = () => {
                     disabled={deshabilitar}
                 />
             </div>
+            )}
         </div >
     )
 

@@ -11,6 +11,7 @@ import axios from "../../../../api/axios";
 import { useAuth } from "../../../../context/AuthContext";
 import Paso4_OtrasObligaciones from "./OtrasObligaciones";
 import { ProgressBar } from "primereact/progressbar";
+import Paso4_Transporte from "./Transporte";
 
 const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) => {
 
@@ -56,8 +57,8 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
         { id: 1, nombre: "Datos generales", componente: Paso1_DatosGenerales },
         { id: 2, nombre: "Residuos peligroso", componente: Paso2_Residuo },
         { id: 3, nombre: "Características de peligrosidad", componente: Paso3_Peligrosidad },
-        //manejo de residuos debe ser del eo, o sea operador externo, pero en este caso será tower and tower
-        { id: 4, nombre: "Otras Observaciones", componente: Paso4_OtrasObligaciones },
+        { id: 4, nombre: "Transporte", componente: Paso4_Transporte },
+        // { id: 4, nombre: "Otras Observaciones", componente: Paso4_OtrasObligaciones },
     ];
 
     const PasoComponente = pasos[pasoActual - 1]?.componente;

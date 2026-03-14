@@ -47,62 +47,53 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
                 optionValue="value"
             />
 
-            <div className="w-full mt-4">
-                <h3 className="text-lg font-medium text-gray-700 mb-2">Características del recipiente</h3>
-                <div className="flex flex-wrap">
-                    <Input
-                        label="Tipo de recipiente"
-                        value={formData.residuo?.tipoRecipiente || ""}
-                        onChange={(e) => handleResiduoChange('tipoRecipiente', e.target.value.toUpperCase())}
-                        placeholder="Ej: CILINDRO, SACO, TANQUE"
-                    />
+            <Input
+                label="Tipo de recipiente"
+                value={formData.residuo?.tipoRecipiente || ""}
+                onChange={(e) => handleResiduoChange('tipoRecipiente', e.target.value.toUpperCase())}
+                placeholder="Ej: CILINDRO, SACO, TANQUE"
+            />
 
-                    <Input
-                        label="Material"
-                        value={formData.residuo?.materialRecipiente || ""}
-                        onChange={(e) => handleResiduoChange('materialRecipiente', e.target.value.toUpperCase())}
-                        placeholder="Ej: METAL, PLÁSTICO"
-                    />
+            <Input
+                label="Material"
+                value={formData.residuo?.materialRecipiente || ""}
+                onChange={(e) => handleResiduoChange('materialRecipiente', e.target.value.toUpperCase())}
+                placeholder="Ej: METAL, PLÁSTICO"
+            />
 
-                    <Input
-                        label="N° de recipientes"
-                        type="number"
-                        value={formData.residuo?.numeroRecipientes || 1}
-                        onChange={(e) => handleResiduoChange('numeroRecipientes', parseInt(e.target.value) || 1)}
-                        min="1"
-                    />
-                </div>
-            </div>
+            <Input
+                label="N° de recipientes"
+                type="number"
+                value={formData.residuo?.numeroRecipientes || 1}
+                onChange={(e) => handleResiduoChange('numeroRecipientes', parseInt(e.target.value) || 1)}
+                min="1"
+            />
 
-            <div className="w-full mt-4">
-                <h3 className="text-lg font-medium text-gray-700 mb-2">Clasificación Convenio Basilea</h3>
-                <div className="flex flex-wrap">
-                    <Input
-                        label="Código de clasificación *"
-                        type="select"
-                        value={formData.residuo?.codigoBasilea || ""}
-                        onChange={(e) => handleResiduoChange('codigoBasilea', e.target.value)}
-                        options={codigosBasilea}
-                        optionLabel="label"
-                        optionValue="value"
-                    />
+            <Input
+                label="Código de clasificación *"
+                type="select"
+                value={formData.residuo?.codigoBasilea || ""}
+                onChange={(e) => handleResiduoChange('codigoBasilea', e.target.value)}
+                options={codigosBasilea}
+                optionLabel="label"
+                optionValue="value"
+            />
 
-                    <Input
-                        label="Subcódigo (A-...)"
-                        value={formData.residuo?.subcodigoBasilea || ""}
-                        onChange={(e) => handleResiduoChange('subcodigoBasilea', e.target.value.toUpperCase())}
-                        placeholder="Ej: A1010"
-                    />
+            <Input
+                label="Subcódigo (A-...)"
+                value={formData.residuo?.subcodigoBasilea || ""}
+                onChange={(e) => handleResiduoChange('subcodigoBasilea', e.target.value.toUpperCase())}
+                placeholder="Ej: A1010"
+            />
 
-                    <Input
-                        label="Información adicional"
-                        value={formData.residuo?.informacionAdicional || ""}
-                        onChange={(e) => handleResiduoChange('informacionAdicional', e.target.value)}
-                        placeholder="Información complementaria"
-                        ancho="w-full"
-                    />
-                </div>
-            </div>
+            <Input
+                label="Información adicional"
+                value={formData.residuo?.informacionAdicional || ""}
+                onChange={(e) => handleResiduoChange('informacionAdicional', e.target.value)}
+                placeholder="Información complementaria"
+                ancho="w-full"
+            />
+
         </div>
     );
 };

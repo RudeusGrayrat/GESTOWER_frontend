@@ -4,7 +4,7 @@ import Input from "../../../../recicle/Inputs/Inputs"
 const GeneradoresTransportistas = ({ set, initialData }) => {
     const [generadorOptions, setGeneradorOptions] = useState()
     const [formData, setFormData] = useState({
-        razonSocial: initialData?.generador || "",
+        razonSocial: initialData || initialData?.generador || "",
     })
 
     useEffect(() => {

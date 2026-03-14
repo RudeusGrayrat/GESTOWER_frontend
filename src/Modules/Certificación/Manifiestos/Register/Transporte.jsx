@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
-import axios from "../../../../api/axios";
 
 const Paso4_Transporte = ({ formData, setFormData }) => {
     const [transportistaOptions, setTransportistaOptions] = useState([]);
-
+    const [conductoresOptions, setConductoresOptions] = useState([]);
+    useEffect(() => {
+        if (formData.transportistaId) {
+            const transportistaSeleccionado = formData?.transportistaId;
+            const conductores = transportistaSeleccionado?.conductores || [];
+            const allConductores = conductores?.map(c => c.nombre)
+            setConductoresOptions(allConductores);
+        }
+    }, [formData.transportistaId]);
     const handleTransporteChange = (campo, valor) => {
         setFormData(prev => ({
             ...prev,
@@ -14,29 +21,6 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
             }
         }));
     };
-
-    // Precargar TOWER si es SERVICIO TOWER
-    useEffect(() => {
-        const cargarTowerTransportista = async () => {
-            if (formData.servicioTransporte === "SERVICIO TOWER") {
-                try {
-                    const response = await axios.get("/certificaciones/getTransportistasPaginacion", {
-                        params: { search: "TOWER" }
-                    });
-                    const towerTransportista = response.data?.data?.find(t => t.razonSocial?.includes("TOWER"));
-                    if (towerTransportista) {
-                        setFormData(prev => ({
-                            ...prev,
-                            transportistaId: towerTransportista
-                        }));
-                    }
-                } catch (error) {
-                    console.error("Error cargando transportista TOWER:", error);
-                }
-            }
-        };
-        cargarTowerTransportista();
-    }, [formData.servicioTransporte, setFormData]);
 
     return (
         <div className="flex flex-wrap">
@@ -55,7 +39,9 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
 
             <Input
                 label="Nombre del conductor *"
+                type="select"
                 value={formData.transporte?.nombreConductor || ""}
+                options={conductoresOptions}
                 onChange={(e) => handleTransporteChange('nombreConductor', e.target.value.toUpperCase())}
                 placeholder="Nombres y apellidos del conductor"
             />
