@@ -5,9 +5,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
     console.log("Manifiesto recibido para renderizar:", manifiesto);
 
     try {
-        // ============================================
-        // Helper para manejar valores undefined/null
-        // ============================================
+        // Helpers
         const safe = (value) => {
             if (value === undefined || value === null) return "";
             if (typeof value === 'string') return value;
@@ -15,40 +13,31 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             if (typeof value === 'boolean') return value ? 'X' : '';
             return String(value);
         };
-
-        // Helper para checkboxes (retorna 'X' o '')
         const check = (condition) => condition ? 'X' : '';
+        const fechaFormat = (fecha) => fecha ? dayjs(fecha).format("DD/MM/YYYY") : "";
 
-        const fechaFormat = (fecha) => {
-            if (!fecha) return "";
-            return dayjs(fecha).format("DD/MM/YYYY");
-        };
-
-        // ============================================
-        // Extraer datos con paths seguros
-        // ============================================
+        // Extraer referencias pobladas (asumiendo que vienen con populate)
         const generador = manifiesto.generadorId || {};
         const planta = manifiesto.plantaId || {};
         const plantaUbigeo = planta.ubigeoId || {};
-        const residuo = manifiesto.residuo || {};
-        const peligrosidad = manifiesto.peligrosidad || {};
         const transportista = manifiesto.transportistaId || {};
         const transportistaUbigeo = transportista.ubigeoId || {};
-        const transporte = manifiesto.transporte || {};
         const destino = manifiesto.destinoId || {};
         const destinoUbigeo = destino.ubigeoId || {};
+
+        // Datos principales
+        const residuo = manifiesto.residuo || {};
+        const peligrosidad = manifiesto.peligrosidad || {};
+        const transporte = manifiesto.transporte || {};
         const destinoFinal = manifiesto.destinoFinal || {};
-        const contingencias = manifiesto.transportistaId?.contingencias || {};
-        const otrosManejos = manifiesto.otrosManejos || [];
         const referendoEntrega = manifiesto.referendoEntrega || {};
         const referendoRecepcion = manifiesto.referendoRecepcion || {};
-        const devolucion = manifiesto.devolucionManifiesto || {};
+        const otrosManejos = manifiesto.otrosManejos || {}; // OBJETO
+        const otrasObligaciones = manifiesto.otrasObligaciones || {};
 
-        // ============================================
-        // Construir objeto de datos para la plantilla
-        // ============================================
-        console.log("Planta :", planta);
-        console.log("Iga:", planta.tieneIga);
+        // Contingencias (si existen en transportista)
+        const contingencias = transportista.contingencias || {};
+
         const data = {
             // ===== ENCABEZADO =====
             numero_manifiesto: safe(manifiesto.numeroManifiesto),
@@ -60,14 +49,14 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             ruc_generador: safe(generador.ruc),
             correo_generador: safe(generador.correoElectronico),
             telefono_generador: safe(generador.telefono),
-            representante_legal_generador: safe(generador.representanteLegal),
-            dni_representante_generador: safe(generador?.dniRepresentante),
+            representante_legal_generador: safe(generador.representanteLegal?.nombre),
+            dni_representante_generador: safe(generador.representanteLegal?.dni),
 
             // ===== PLANTA =====
             denominacion_planta: safe(planta.denominacion),
             tipo_planta: safe(planta.tipoPlanta),
             direccion_planta: safe(planta.direccion),
-            ubigeo_planta: `${safe(plantaUbigeo.codigo)}`,
+            ubigeo_planta: safe(plantaUbigeo.codigo),
             distrito: safe(plantaUbigeo.distrito),
             provincia: safe(plantaUbigeo.provincia),
             departamento: safe(plantaUbigeo.departamento),
@@ -103,12 +92,12 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             // ===== BASILEA =====
             basilea_a1: check(residuo.codigoBasilea === 'A1'),
             basilea_a2: check(residuo.codigoBasilea === 'A2'),
-            basilea_a3: check(residuo.codigoBasilea === 'A3'), // ¡CORREGIDO!
+            basilea_a3: check(residuo.codigoBasilea === 'A3'),
             basilea_a4: check(residuo.codigoBasilea === 'A4'),
             subcodigo_basilea: safe(residuo.subcodigoBasilea),
             informacion_adicional: safe(residuo.informacionAdicional),
 
-            // ===== PELIGROSIDAD (Checkboxes) =====
+            // ===== PELIGROSIDAD =====
             explosivos: check(peligrosidad.explosivos),
             oxidantes: check(peligrosidad.oxidantes),
             gases_toxicos: check(peligrosidad.gasesToxicos),
@@ -120,11 +109,11 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             ecotoxicos: check(peligrosidad.ecotoxicos),
             combustion_espontanea: check(peligrosidad.combustionEspontanea),
             sustancias_infecciosas: check(peligrosidad.sustanciasInfecciosas),
-            sustancias_secundarias: "X",
-            gases_inflamables_agua: "X",
-            corrosivos: "X",
+            sustancias_secundarias: check(peligrosidad.sustanciasSecundarias),
+            gases_inflamables_agua: check(peligrosidad.gasesInflamablesAgua),
+            corrosivos: check(peligrosidad.corrosivos),
             otros_peligros: safe(peligrosidad.otros),
-            otros_otros_peligros: check(peligrosidad.otros !== ''),
+            otros_otros_peligros: check(peligrosidad.otros && peligrosidad.otros !== ''),
 
             // ===== TRANSPORTISTA =====
             razon_social_transportista: safe(transportista.razonSocial),
@@ -152,18 +141,19 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             observaciones_transporte: safe(transporte.observaciones),
 
             // ===== REFERENDO ENTREGA =====
-            nombre_generador_firma: safe(referendoEntrega.nombreGenerador),
+            nombre_generador_firma: safe(referendoEntrega.generadorResponsableManejo),
             firma_generador: safe(referendoEntrega.firmaGenerador),
-            nombre_transportista_firma: safe(referendoEntrega.nombreTransportista),
-            firma_transportista: safe(referendoEntrega.firmaTransportista),
-            dni_transportista_firma: safe(referendoEntrega.dniTransportista),
-            cargo_transportista_firma: safe(referendoEntrega.cargoTransportista),
-            fecha_hora_entrega: fechaFormat(referendoEntrega.fechaHoraEntrega),
+            nombre_transportista_firma: safe(referendoEntrega.responsableEors),
+            firma_transportista: safe(referendoEntrega.firmaResponsableEors),
+            dni_transportista_firma: safe(referendoEntrega.dniResponsableEors),
+            cargo_transportista_firma: safe(referendoEntrega.cargoResponsableEors),
+            fecha_hora_entrega: fechaFormat(referendoEntrega.fechaHora),
 
-            // ===== DESTINO =====
-            tratamiento: check(destinoFinal.tipoManejo === 'TRATAMIENTO'),
-            valorizacion: check(destinoFinal.tipoManejo === 'VALORIZACION'),
-            disposicion_final: check(destinoFinal.tipoManejo === 'DISPOSICION_FINAL'),
+            // ===== DESTINO (tipo de manejo) =====
+            tratamiento: check(manifiesto.tipoManejo === 'TRATAMIENTO'),   // nivel superior
+            valorizacion: check(manifiesto.tipoManejo === 'VALORIZACION'),
+            disposicion_final: check(manifiesto.tipoManejo === 'DISPOSICION_FINAL'),
+
             razon_social_destino: safe(destino.razonSocial),
             ruc_destino: safe(destino.ruc),
             codigo_registro_eors_destino: safe(destino.codigoRegistroEors),
@@ -182,76 +172,64 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             observaciones_destino: safe(destinoFinal.observaciones),
 
             // ===== REFERENDO RECEPCIÓN =====
-            nombre_destino_firma: safe(referendoRecepcion.nombreDestino),
-            firma_destino: safe(referendoRecepcion.firmaDestino),
-            dni_destino_firma: safe(referendoRecepcion.dniDestino),
-            cargo_destino_firma: safe(referendoRecepcion.cargoDestino),
-            fecha_hora_recepcion: fechaFormat(referendoRecepcion.fechaHoraRecepcion),
+            nombre_destino_firma: safe(referendoRecepcion.responsableEorsDestino),
+            firma_destino: safe(referendoRecepcion.firmaGenerador), // el campo se llama firmaGenerador en el modelo
+            dni_destino_firma: safe(referendoRecepcion.dniResponsableEorsDestino),
+            cargo_destino_firma: safe(referendoRecepcion.cargoResponsableEorsDestino),
+            fecha_hora_recepcion: fechaFormat(referendoRecepcion.fechaHora),
 
-            // ===== 3.3 OTROS =====
-            // Asumiendo que otrosManejos es un array, tomamos el primer elemento
-            otros_comercializacion: check(otrosManejos[0]?.tipo === 'COMERCIALIZACION'),
-            otros_exportacion: check(otrosManejos[0]?.tipo === 'EXPORTACION'),
-            otros_otro: check(otrosManejos[0]?.tipo === 'OTROS'),
-            razon_social_receptor: safe(otrosManejos[0]?.razonSocialReceptor),
-            ruc_receptor: safe(otrosManejos[0]?.rucReceptor),
-            correo_receptor: safe(otrosManejos[0]?.correoElectronico),
-            telefono_receptor: safe(otrosManejos[0]?.telefono),
-            tipo_manejo_otro: safe(otrosManejos[0]?.tipoManejoRealizado),
-            direccion_destino_otro: safe(otrosManejos[0]?.direccionDestino),
-            documento_aprueba: safe(otrosManejos[0]?.documentoAprueba),
+            // ===== 3.3 OTROS (objeto otrosManejos) =====
+            otros_comercializacion: check(otrosManejos.comercializacion),
+            otros_exportacion: check(otrosManejos.exportacion),
+            otros_otro: check(otrosManejos.otro),
+            razon_social_receptor: safe(otrosManejos.razonSocialReceptor),
+            ruc_receptor: safe(otrosManejos.rucReceptor),
+            correo_receptor: safe(otrosManejos.correoReceptor),
+            telefono_receptor: safe(otrosManejos.telefonoReceptor),
+            tipo_manejo_otro: safe(otrosManejos.tipoManejo),
+            direccion_destino_otro: safe(otrosManejos.direccionDestino),
+            documento_aprueba: safe(otrosManejos.documentoAprueba),
 
-            // ===== CONTINGENCIAS =====
+            // ===== CONTINGENCIAS (desde transportista) =====
             derrame: safe(contingencias.derrame),
             infiltracion: safe(contingencias.infiltracion),
             incendio: safe(contingencias.incendio),
             explosion: safe(contingencias.explosion),
             otros_accidentes: safe(contingencias.otrosAccidentes),
 
-            // ===== DEVOLUCIÓN =====
-            nombre_representante_eors: safe(devolucion.representanteEors?.nombre),
-            firma_representante_eors: safe(devolucion.representanteEors?.firma),
-            dni_representante_eors: safe(devolucion.representanteEors?.dni),
-            cargo_representante_eors: safe(devolucion.representanteEors?.cargo),
-            nombre_responsable_generador: safe(devolucion.responsableGenerador?.nombre),
-            firma_responsable_generador: safe(devolucion.responsableGenerador?.firma),
-            dni_responsable_generador: safe(devolucion.responsableGenerador?.dni),
-            cargo_responsable_generador: safe(devolucion.responsableGenerador?.cargo),
-            fecha_devolucion: fechaFormat(devolucion.responsableGenerador?.fechaRecepcion),
-            hora_devolucion: safe(devolucion.responsableGenerador?.horaRecepcion),
+            // ===== OTRAS OBLIGACIONES (antes "devolución") =====
+            nombre_representante_eors: safe(otrasObligaciones.representanteEors),
+            firma_representante_eors: safe(otrasObligaciones.firmaRepresentanteEors),
+            dni_representante_eors: safe(otrasObligaciones.dniRepresentanteEors),
+            cargo_representante_eors: safe(otrasObligaciones.cargoRepresentanteEors),
+            nombre_responsable_generador: safe(otrasObligaciones.generadorResponsableManejo),
+            firma_responsable_generador: safe(otrasObligaciones.firmaGeneradorResponsableManejo),
+            dni_responsable_generador: safe(otrasObligaciones.dniGeneradorResponsableManejo),
+            cargo_responsable_generador: safe(otrasObligaciones.cargoGeneradorResponsableManejo),
+            fecha_devolucion: fechaFormat(otrasObligaciones.fecha),
+            hora_devolucion: safe(otrasObligaciones.hora),
 
-            // Valor por defecto para campos faltantes
             missingKey: "N/A"
         };
 
-        // ============================================
-        // Verificar variables undefined
-        // ============================================
+        // Verificar undefined
         const undefinedKeys = Object.keys(data).filter(key => data[key] === undefined);
         if (undefinedKeys.length > 0) {
-            console.warn(`⚠️ Variables undefined encontradas:`, undefinedKeys);
+            console.warn(`⚠️ Variables undefined:`, undefinedKeys);
             undefinedKeys.forEach(key => data[key] = '');
         }
 
-
-        // ============================================
-        // Renderizar documento
-        // ============================================
         const archivoRenderizado = await convertDocx(
             data,
             plantillaUrl,
             nombreArchivo || `Manifiesto_${manifiesto.numeroManifiesto || 'documento'}`
         );
 
-        if (!archivoRenderizado) {
-            throw new Error("No se pudo renderizar el manifiesto");
-        }
-
+        if (!archivoRenderizado) throw new Error("No se pudo renderizar el manifiesto");
         return archivoRenderizado;
 
     } catch (error) {
-        console.error("❌ Error en renderManifiesto:", error.message);
-        console.error("Stack:", error.stack);
+        console.error("❌ Error en renderManifiesto:", error);
         throw error;
     }
 };

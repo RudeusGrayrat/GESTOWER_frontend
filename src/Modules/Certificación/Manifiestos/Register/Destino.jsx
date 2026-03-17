@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
-import axios from "../../../../api/axios";
 
 const Paso5_Destino = ({ formData, setFormData }) => {
     const [destinoOptions, setDestinoOptions] = useState([]);
-
     const tipoManejoOptions = ["TRATAMIENTO", "DISPOSICIÓN FINAL", "VALORIZACIÓN"];
 
     const handleDestinoChange = (campo, valor) => {
@@ -17,6 +15,16 @@ const Paso5_Destino = ({ formData, setFormData }) => {
         }));
     };
 
+
+    const handleReferendo = (campo, valor) => {
+        setFormData(prev => ({
+            ...prev,
+            referendoRecepcion: {
+                ...prev.referendoRecepcion,
+                [campo]: valor
+            }
+        }));
+    }
     const handleOtrosManejosChange = (campo, valor) => {
         setFormData(prev => ({
             ...prev,
@@ -27,51 +35,86 @@ const Paso5_Destino = ({ formData, setFormData }) => {
         }));
     };
 
-    // Función para manejar el cambio de comercializable
-    const handleComercializableChange = (checked) => {
-        setFormData(prev => ({
-            ...prev,
-            comercializable: checked,
-            // Si se desactiva, resetear todos los campos de otrosManejos
-            otrosManejos: checked ? prev.otrosManejos : {
-                razonSocialReceptor: '',
-                rucReceptor: '',
-                correoReceptor: '',
-                telefonoReceptor: '',
+    const clearOtrosManejosFields = () => ({
+        razonSocialReceptor: "",
+        rucReceptor: "",
+        correoReceptor: "",
+        telefonoReceptor: "",
+        tipoManejo: "",
+        direccionDestino: "",
+        documentoAprueba: ""
+    });
+
+    // Función para llenar los campos desde transportistaId
+    const fillFromTransportista = (transportista) => ({
+        razonSocialReceptor: transportista?.razonSocial || "",
+        rucReceptor: transportista?.ruc || "",
+        correoReceptor: transportista?.correoElectronico || "",
+        telefonoReceptor: transportista?.telefono || "",
+        direccionDestino: transportista?.direccion || "",
+        documentoAprueba: transportista?.registroEors || "",
+        // Estos campos no se llenan automáticamente
+        tipoManejo: ""
+    });
+
+    const handleCheckboxChange = (nombre) => {
+        setFormData(prev => {
+            const otros = prev.otrosManejos || {};
+            const transportista = prev.transportistaId;
+
+            // Si el checkbox clickeado ya estaba activo, lo desactivamos y limpiamos campos
+            if (otros[nombre]) {
+                return {
+                    ...prev,
+                    otrosManejos: {
+                        ...clearOtrosManejosFields(),
+                        comercializacion: false,
+                        exportacion: false,
+                        otro: false
+                    }
+                };
+            }
+
+            // Si no estaba activo, lo activamos y desactivamos los otros
+            const nuevosValores = {
                 comercializacion: false,
                 exportacion: false,
                 otro: false,
-                tipoManejo: '',
-                direccionDestino: '',
-                documentoAprueba: '',
+                [nombre]: true
+            };
+
+            // Según cuál se activó, llenamos o limpiamos campos
+            let camposAdicionales = {};
+            if (nombre === "comercializacion") {
+                camposAdicionales = fillFromTransportista(transportista);
+            } else {
+                // exportacion u otro: limpiamos campos
+                camposAdicionales = clearOtrosManejosFields();
             }
-        }));
+
+            return {
+                ...prev,
+                otrosManejos: {
+                    ...prev.otrosManejos,
+                    ...nuevosValores,
+                    ...camposAdicionales
+                }
+            };
+        });
     };
 
-    // Si es SERVICIO TOWER, precargar datos de TOWER
+    // Efecto para actualizar campos si transportistaId cambia mientras comercializacion está activo
     useEffect(() => {
-        const cargarTowerDestino = async () => {
-            if (formData.servicioTransporte === "SERVICIO TOWER") {
-                try {
-                    const response = await axios.get("/certificaciones/getDestinosPaginacion", {
-                        params: { search: "TOWER" }
-                    });
-                    const towerDestino = response.data?.data?.find(t => t.razonSocial?.includes("TOWER"));
-                    if (towerDestino) {
-                        setFormData(prev => ({
-                            ...prev,
-                            destinoId: towerDestino
-                        }));
-                    }
-                } catch (error) {
-                    console.error("Error cargando destino TOWER:", error);
+        if (formData.otrosManejos?.comercializacion) {
+            setFormData(prev => ({
+                ...prev,
+                otrosManejos: {
+                    ...prev.otrosManejos,
+                    ...fillFromTransportista(prev.transportistaId)
                 }
-            }
-        };
-        cargarTowerDestino();
-    }, [formData.servicioTransporte, setFormData]);
-
-    const isTowerService = formData.servicioTransporte === "SERVICIO TOWER";
+            }));
+        }
+    }, [formData.transportistaId]);
 
     return (
         <div className="flex flex-wrap">
@@ -86,7 +129,6 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                 options={destinoOptions}
                 field="razonSocial"
                 placeholder="Buscar destino por RUC o razón social"
-                disabled={isTowerService}
             />
 
             <Input
@@ -117,236 +159,147 @@ const Paso5_Destino = ({ formData, setFormData }) => {
             />
 
             <div className="w-full mt-4 border-t pt-4">
-                <h3 className="text-lg font-medium text-gray-700 mb-3">Sección 3.3 - Otros Manejos</h3>
+                <div className="flex flex-col gap-4 ">
+                    <div className="flex items-center mt-4 m-2">
+                        <input
+                            type="checkbox"
+                            checked={formData.referendoRecepcion?.referendo || false}
+                            onChange={(e) => handleReferendo('referendo', e.target.checked)}
+                            className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                        />
+                        <span className="ml-2 text-md text-gray-600">Referendo</span>
+                    </div>
+                    {formData.referendoRecepcion?.referendo && (
+                        <div className="flex flex-wrap">
 
-                <div className="flex items-center mt-2">
-                    <input
-                        type="checkbox"
-                        checked={formData.comercializable || false}
-                        onChange={(e) => handleComercializableChange(e.target.checked)}
-                        className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                    />
-                    <span className="ml-2 text-sm text-gray-600">¿Es para comercialización?</span>
+                            <Input
+                                label="Responsable EO-RS del destino final"
+                                value={formData.referendoRecepcion?.responsableEorsDestino || ""}
+                                onChange={(e) => handleReferendo('responsableEorsDestino', e.target.value.toUpperCase())}
+                                placeholder="Nombre del responsable EO-RS del destino final"
+                                ancho="w-full"
+                            />
+                            <Input
+                                label="Firma del generador"
+                                value={formData.referendoRecepcion?.firmaGenerador || ""}
+                                onChange={(e) => handleReferendo('firmaGenerador', e.target.value.toUpperCase())}
+                                placeholder="Por el momento de forma manual"
+                                ancho="w-full"
+                                disabled
+                            />
+                            <Input
+                                label="DNI"
+                                value={formData.referendoRecepcion?.dniResponsableEorsDestino || ""}
+                                onChange={(e) => handleReferendo('dniResponsableEorsDestino', e.target.value)}
+                                placeholder="DNI del responsable EO-RS del destino final"
+                            />
+                            <Input
+                                label="Cargo"
+                                value={formData.referendoRecepcion?.cargoResponsableEorsDestino || ""}
+                                onChange={(e) => handleReferendo('cargoResponsableEorsDestino', e.target.value.toUpperCase())}
+                                placeholder="Cargo del responsable EO-RS del destino final"
+                            />
+                            <Input
+                                label="Fecha y hora"
+                                type="datetime-local"
+                                value={formData.referendoRecepcion?.fechaHora || ""}
+                                onChange={(e) => handleReferendo('fechaHora', e.target.value)}
+                                placeholder="Fecha y hora del referendo"
+                            />
+                        </div>
+                    )}
                 </div>
-
-                {formData.comercializable && (
-                    <div className="flex flex-wrap gap-4 mt-4 p-4 bg-gray-50 rounded-lg">
-                        <Input
-                            label="Razón Social del Receptor"
-                            value={formData.otrosManejos?.razonSocialReceptor || ""}
-                            onChange={(e) => handleOtrosManejosChange('razonSocialReceptor', e.target.value.toUpperCase())}
-                            placeholder="Razón social del receptor"
-                        />
-
-                        <Input
-                            label="RUC del Receptor"
-                            value={formData.otrosManejos?.rucReceptor || ""}
-                            onChange={(e) => handleOtrosManejosChange('rucReceptor', e.target.value)}
-                            placeholder="RUC"
-                        />
-
-                        <Input
-                            label="Correo Electrónico"
-                            type="email"
-                            value={formData.otrosManejos?.correoReceptor || ""}
-                            onChange={(e) => handleOtrosManejosChange('correoReceptor', e.target.value.toLowerCase())}
-                            placeholder="correo@ejemplo.com"
-                        />
-
-                        <Input
-                            label="Teléfono"
-                            value={formData.otrosManejos?.telefonoReceptor || ""}
-                            onChange={(e) => handleOtrosManejosChange('telefonoReceptor', e.target.value)}
-                            placeholder="Teléfono"
-                        />
-
-                        <div className="col-span-2 grid grid-cols-3 gap-4">
-                            <div className="flex items-center mt-2">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.otrosManejos?.comercializacion || false}
-                                    onChange={(e) => handleOtrosManejosChange('comercializacion', e.target.checked)}
-                                    className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                />
-                                <span className="ml-2 text-sm text-gray-600">Comercialización</span>
-                            </div>
-
-                            <div className="flex items-center mt-2">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.otrosManejos?.exportacion || false}
-                                    onChange={(e) => handleOtrosManejosChange('exportacion', e.target.checked)}
-                                    className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                />
-                                <span className="ml-2 text-sm text-gray-600">Exportación</span>
-                            </div>
-
-                            <div className="flex items-center mt-2">
-                                <input
-                                    type="checkbox"
-                                    checked={formData.otrosManejos?.otro || false}
-                                    onChange={(e) => handleOtrosManejosChange('otro', e.target.checked)}
-                                    className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                                />
-                                <span className="ml-2 text-sm text-gray-600">Otro</span>
-                            </div>
+                <div className="w-full mt-4 border-t pt-4 ">
+                    <span className="text-lg font-semibold">Otros Manejos</span>
+                    <div className="flex gap-8 mt-3">
+                        <div className="flex items-center mt-2">
+                            <input
+                                type="checkbox"
+                                checked={formData.otrosManejos?.comercializacion || false}
+                                onChange={(e) => handleCheckboxChange('comercializacion', e.target.checked)}
+                                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-600">Comercialización</span>
                         </div>
 
-                        <Input
-                            label="Tipo de Manejo Realizado"
-                            value={formData.otrosManejos?.tipoManejo || ""}
-                            onChange={(e) => handleOtrosManejosChange('tipoManejo', e.target.value.toUpperCase())}
-                            placeholder="Especifique el tipo de manejo"
-                            ancho="w-full"
-                        />
+                        <div className="flex items-center mt-2">
+                            <input
+                                type="checkbox"
+                                checked={formData.otrosManejos?.exportacion || false}
+                                onChange={(e) => handleCheckboxChange('exportacion', e.target.checked)}
+                                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-600">Exportación</span>
+                        </div>
 
-                        <Input
-                            label="Dirección de Destino / País"
-                            value={formData.otrosManejos?.direccionDestino || ""}
-                            onChange={(e) => handleOtrosManejosChange('direccionDestino', e.target.value.toUpperCase())}
-                            placeholder="Dirección o país de destino"
-                            ancho="w-full"
-                        />
-
-                        <Input
-                            label="Documento que Aprueba"
-                            value={formData.otrosManejos?.documentoAprueba || ""}
-                            onChange={(e) => handleOtrosManejosChange('documentoAprueba', e.target.value.toUpperCase())}
-                            placeholder="N° de resolución o documento"
-                            ancho="w-full"
-                        />
-                    </div>
-                )}
-            </div>
-
-            <div className="w-full mt-4 border-t pt-4">
-                <h3 className="text-lg font-medium text-gray-700 mb-3">Sección 4.2 - Devolución del Manifiesto</h3>
-
-                <div className="grid">
-                    <h4 className="font-medium mb-2">Representante EO-RS (entrega)</h4>
-                    <div className="border flex flex-wrap rounded-lg p-3">
-                        <Input
-                            label="Nombre"
-                            value={formData.devolucionManifiesto?.representanteEors?.nombre || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    representanteEors: {
-                                        ...prev.devolucionManifiesto?.representanteEors,
-                                        nombre: e.target.value.toUpperCase()
-                                    }
-                                }
-                            }))}
-                        />
-                        <Input
-                            label="DNI"
-                            value={formData.devolucionManifiesto?.representanteEors?.dni || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    representanteEors: {
-                                        ...prev.devolucionManifiesto?.representanteEors,
-                                        dni: e.target.value
-                                    }
-                                }
-                            }))}
-                        />
-                        <Input
-                            label="Cargo"
-                            value={formData.devolucionManifiesto?.representanteEors?.cargo || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    representanteEors: {
-                                        ...prev.devolucionManifiesto?.representanteEors,
-                                        cargo: e.target.value.toUpperCase()
-                                    }
-                                }
-                            }))}
-                        />
-                    </div>
-
-                    <h4 className="font-medium mb-2">Responsable Generador (recibe)</h4>
-                    <div className="border flex flex-wrap rounded-lg p-3">
-                        <Input
-                            label="Nombre"
-                            value={formData.devolucionManifiesto?.responsableGenerador?.nombre || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    responsableGenerador: {
-                                        ...prev.devolucionManifiesto?.responsableGenerador,
-                                        nombre: e.target.value.toUpperCase()
-                                    }
-                                }
-                            }))}
-                        />
-                        <Input
-                            label="DNI"
-                            value={formData.devolucionManifiesto?.responsableGenerador?.dni || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    responsableGenerador: {
-                                        ...prev.devolucionManifiesto?.responsableGenerador,
-                                        dni: e.target.value
-                                    }
-                                }
-                            }))}
-                        />
-                        <Input
-                            label="Cargo"
-                            value={formData.devolucionManifiesto?.responsableGenerador?.cargo || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    responsableGenerador: {
-                                        ...prev.devolucionManifiesto?.responsableGenerador,
-                                        cargo: e.target.value.toUpperCase()
-                                    }
-                                }
-                            }))}
-                        />
-                        <Input
-                            label="Fecha de Devolución"
-                            type="date"
-                            value={formData.devolucionManifiesto?.responsableGenerador?.fechaDevolucion || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    responsableGenerador: {
-                                        ...prev.devolucionManifiesto?.responsableGenerador,
-                                        fechaDevolucion: e.target.value
-                                    }
-                                }
-                            }))}
-                        />
-                        <Input
-                            label="Hora de Devolución"
-                            type="time"
-                            value={formData.devolucionManifiesto?.responsableGenerador?.horaDevolucion || ""}
-                            onChange={(e) => setFormData(prev => ({
-                                ...prev,
-                                devolucionManifiesto: {
-                                    ...prev.devolucionManifiesto,
-                                    responsableGenerador: {
-                                        ...prev.devolucionManifiesto?.responsableGenerador,
-                                        horaDevolucion: e.target.value
-                                    }
-                                }
-                            }))}
-                        />
+                        <div className="flex items-center mt-2">
+                            <input
+                                type="checkbox"
+                                checked={formData.otrosManejos?.otro || false}
+                                onChange={(e) => handleCheckboxChange('otro', e.target.checked)}
+                                className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                            />
+                            <span className="ml-2 text-sm text-gray-600">Otro</span>
+                        </div>
                     </div>
                 </div>
+                <div className="flex flex-wrap gap-4 mt-4  bg-gray-50 rounded-lg">
+                    <Input
+                        label="Razón Social del Receptor"
+                        onChange={(e) => handleOtrosManejosChange('razonSocialReceptor', e.target.value.toUpperCase())}
+                        placeholder="Razón social del receptor"
+                        value={formData.otrosManejos?.razonSocialReceptor || ""}
+                    />
+
+                    <Input
+                        label="RUC del Receptor"
+                        value={formData.otrosManejos?.rucReceptor || ""}
+                        onChange={(e) => handleOtrosManejosChange('rucReceptor', e.target.value)}
+                        placeholder="RUC"
+                    />
+
+                    <Input
+                        label="Correo Electrónico"
+                        type="email"
+                        value={formData.otrosManejos?.correoReceptor || ""}
+                        onChange={(e) => handleOtrosManejosChange('correoReceptor', e.target.value.toLowerCase())}
+                        placeholder="correo@ejemplo.com"
+                    />
+
+                    <Input
+                        label="Teléfono"
+                        value={formData.otrosManejos?.telefonoReceptor || ""}
+                        onChange={(e) => handleOtrosManejosChange('telefonoReceptor', e.target.value)}
+                        placeholder="Teléfono"
+                    />
+
+
+                    <Input
+                        label="Tipo de Manejo Realizado"
+                        value={formData.otrosManejos?.tipoManejo || ""}
+                        onChange={(e) => handleOtrosManejosChange('tipoManejo', e.target.value.toUpperCase())}
+                        placeholder="Especifique el tipo de manejo"
+                        ancho="w-full"
+                    />
+
+                    <Input
+                        label="Dirección de Destino / País"
+                        value={formData.otrosManejos?.direccionDestino || ""}
+                        onChange={(e) => handleOtrosManejosChange('direccionDestino', e.target.value.toUpperCase())}
+                        placeholder="Dirección o país de destino"
+                        ancho="w-full"
+                    />
+
+                    <Input
+                        label="Documento que Aprueba"
+                        value={formData.otrosManejos?.documentoAprueba || ""}
+                        onChange={(e) => handleOtrosManejosChange('documentoAprueba', e.target.value.toUpperCase())}
+                        placeholder="N° de resolución o documento"
+                        ancho="w-full"
+                    />
+                </div>
             </div>
-        </div>
+        </div >
     );
 };
 

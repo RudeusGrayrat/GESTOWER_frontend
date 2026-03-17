@@ -4,6 +4,7 @@ import Input from "../../../../recicle/Inputs/Inputs";
 const Paso4_Transporte = ({ formData, setFormData }) => {
     const [transportistaOptions, setTransportistaOptions] = useState([]);
     const [conductoresOptions, setConductoresOptions] = useState([]);
+    console.log("FormData Transporte:", formData);
     useEffect(() => {
         if (formData.transportistaId) {
             const transportistaSeleccionado = formData?.transportistaId;
@@ -21,68 +22,176 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
             }
         }));
     };
+    const handleReferendo = (campo, valor) => {
+        setFormData(prev => ({
+            ...prev,
+            referendoEntrega: {
+                ...prev.referendoEntrega,
+                [campo]: valor
+            }
+        }));
+    };
 
+    useEffect(() => {
+        if (formData.referendoEntrega?.referendo && formData.transportistaId) {
+            setFormData(prev => ({
+                ...prev,
+                referendoEntrega: {
+                    ...prev.referendoEntrega,
+                    // generadorResponsableManejo: formData.generadorId?.representanteLegal,
+                    responsableEors: formData.transportistaId?.representanteLegal?.nombre,
+                    dniResponsableEors: formData.transportistaId?.representanteLegal?.dni,
+                    fechaHora: formData.transporte?.fechaRecepcion
+                }
+            }));
+        }
+        if (!formData.referendoEntrega?.referendo) {
+            setFormData(prev => ({
+                ...prev,
+                referendoEntrega: {
+                    generadorResponsableManejo: '',
+                    firmaGenerador: '',
+                    responsableEors: '',
+                    firmaResponsableEors: '',
+                    dniResponsableEors: '',
+                    cargoResponsableEors: '',
+                    fechaHora: ''
+                }
+            }));
+        }
+    }, [formData.transportistaId, formData.referendoEntrega?.referendo]);
     return (
-        <div className="flex flex-wrap">
-            <Input
-                label="EO-RS Transportista *"
-                type="autocomplete"
-                name="transportistaId"
-                value={formData.transportistaId}
-                setForm={setFormData}
-                fetchData="/certificaciones/getTransportistasPaginacion"
-                setOptions={setTransportistaOptions}
-                options={transportistaOptions}
-                field="razonSocial"
-                placeholder="Buscar transportista por RUC o razón social"
-            />
+        <div className="gap-4">
+            <div className="flex flex-wrap">
+                <Input
+                    label="EO-RS Transportista *"
+                    type="autocomplete"
+                    name="transportistaId"
+                    value={formData.transportistaId}
+                    setForm={setFormData}
+                    fetchData="/certificaciones/getTransportistasPaginacion"
+                    setOptions={setTransportistaOptions}
+                    options={transportistaOptions}
+                    field="razonSocial"
+                    placeholder="Buscar transportista por RUC o razón social"
+                    disabled
+                />
 
-            <Input
-                label="Nombre del conductor *"
-                type="select"
-                value={formData.transporte?.nombreConductor || ""}
-                options={conductoresOptions}
-                onChange={(e) => handleTransporteChange('nombreConductor', e.target.value.toUpperCase())}
-                placeholder="Nombres y apellidos del conductor"
-            />
+                <Input
+                    label="Nombre del conductor *"
+                    type="select"
+                    value={formData.transporte?.nombreConductor || ""}
+                    options={conductoresOptions}
+                    onChange={(e) => handleTransporteChange('nombreConductor', e.target.value.toUpperCase())}
+                    placeholder="Nombres y apellidos del conductor"
+                />
 
-            <Input
-                label="Tipo de vehículo *"
-                value={formData.transporte?.tipoVehiculo || ""}
-                onChange={(e) => handleTransporteChange('tipoVehiculo', e.target.value.toUpperCase())}
-                placeholder="Ej: CAMIÓN, CISTERNA"
-            />
+                <Input
+                    label="Tipo de vehículo *"
+                    value={formData.transporte?.tipoVehiculo || ""}
+                    onChange={(e) => handleTransporteChange('tipoVehiculo', e.target.value.toUpperCase())}
+                    placeholder="Ej: CAMIÓN, CISTERNA"
+                />
 
-            <Input
-                label="Placa del vehículo *"
-                value={formData.transporte?.placaVehiculo || ""}
-                onChange={(e) => handleTransporteChange('placaVehiculo', e.target.value.toUpperCase())}
-                placeholder="Ej: ABC-123"
-            />
+                <Input
+                    label="Placa del vehículo *"
+                    value={formData.transporte?.placaVehiculo || ""}
+                    onChange={(e) => handleTransporteChange('placaVehiculo', e.target.value.toUpperCase())}
+                    placeholder="Ej: ABC-123"
+                />
 
-            <Input
-                label="Fecha de recepción *"
-                type="date"
-                value={formData.transporte?.fechaRecepcion || ""}
-                onChange={(e) => handleTransporteChange('fechaRecepcion', e.target.value)}
-            />
+                <Input
+                    label="Fecha de recepción *"
+                    type="date"
+                    value={formData.transporte?.fechaRecepcion || ""}
+                    onChange={(e) => handleTransporteChange('fechaRecepcion', e.target.value)}
+                />
 
-            <Input
-                label="Cantidad recibida (toneladas) *"
-                type="number"
-                step="0.01"
-                value={formData.transporte?.cantidadRecibida || ""}
-                onChange={(e) => handleTransporteChange('cantidadRecibida', e.target.value)}
-                placeholder="Ej: 15.5"
-            />
+                <Input
+                    label="Cantidad recibida (toneladas) *"
+                    type="number"
+                    step="0.01"
+                    value={formData.transporte?.cantidadRecibida || ""}
+                    onChange={(e) => handleTransporteChange('cantidadRecibida', e.target.value)}
+                    placeholder="Ej: 15.5"
+                />
 
-            <Input
-                label="Observaciones"
-                value={formData.transporte?.observaciones || ""}
-                onChange={(e) => handleTransporteChange('observaciones', e.target.value)}
-                placeholder="Observaciones del transporte"
-                ancho="w-full"
-            />
+                <Input
+                    label="Observaciones"
+                    value={formData.transporte?.observaciones || ""}
+                    onChange={(e) => handleTransporteChange('observaciones', e.target.value)}
+                    placeholder="Observaciones del transporte"
+                    ancho="w-full"
+                />
+
+            </div>
+            <div className="flex flex-col gap-4 mt-4">
+                <div className="flex items-center mt-4 m-2">
+                    <input
+                        type="checkbox"
+                        checked={formData.referendoEntrega?.referendo || false}
+                        onChange={(e) => handleReferendo('referendo', e.target.checked)}
+                        className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                    />
+                    <span className="ml-2 text-md text-gray-600">Referendo</span>
+                </div>
+                {formData.referendoEntrega?.referendo && (
+                    <div className="flex flex-wrap">
+
+                        <Input
+                            label="Generador - Responsable del manejo"
+                            value={formData.referendoEntrega?.generadorResponsableManejo || ""}
+                            onChange={(e) => handleReferendo('generadorResponsableManejo', e.target.value.toUpperCase())}
+                            placeholder="Nombre del generador - responsable del manejo"
+                            ancho="w-full"
+                        />
+                        <Input
+                            label="Firma del generador"
+                            value={formData.referendoEntrega?.firmaGenerador || ""}
+                            onChange={(e) => handleReferendo('firmaGenerador', e.target.value.toUpperCase())}
+                            placeholder="Por el momento de forma manual"
+                            ancho="w-full"
+                            disabled
+                        />
+                        <Input
+                            label="Responsable EORS"
+                            value={formData.referendoEntrega?.responsableEors || ""}
+                            onChange={(e) => handleReferendo('responsableEors', e.target.value.toUpperCase())}
+                            placeholder="Nombre del responsable EORS"
+                            ancho="w-full"
+                        />
+                        <Input
+                            label="Firma del responsable EORS"
+                            value={formData.referendoEntrega?.firmaResponsableEors || ""}
+                            onChange={(e) => handleReferendo('firmaResponsableEors', e.target.value.toUpperCase())}
+                            placeholder="Por el momento de forma manual"
+                            ancho="w-full"
+                            disabled
+                        />
+                        <Input
+                            label="DNI del responsable EORS"
+                            value={formData.referendoEntrega?.dniResponsableEors || ""}
+                            onChange={(e) => handleReferendo('dniResponsableEors', e.target.value)}
+                            placeholder="DNI del responsable EORS"
+                            ancho="w-full"
+                        />
+                        <Input
+                            label="Cargo del responsable EORS"
+                            value={formData.referendoEntrega?.cargoResponsableEors || ""}
+                            onChange={(e) => handleReferendo('cargoResponsableEors', e.target.value.toUpperCase())}
+                            placeholder="Cargo del responsable EORS"
+                            ancho="w-full"
+                        />
+                        <Input
+                            label="Fecha y hora del referendo"
+                            type="date"
+                            value={formData.referendoEntrega?.fechaHora || ""}
+                            onChange={(e) => handleReferendo('fechaHora', e.target.value)}
+                            ancho="w-full"
+                        />
+                    </div>
+                )}
+            </div>
         </div>
     );
 };

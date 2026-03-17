@@ -6,23 +6,22 @@ import Paso3_Peligrosidad from "./Peligrosidad";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
 import PopUp from "../../../../recicle/popUps";
-import { setMessage } from "../../../../redux/actions";
 import axios from "../../../../api/axios";
 import { useAuth } from "../../../../context/AuthContext";
-import Paso4_OtrasObligaciones from "./OtrasObligaciones";
 import { ProgressBar } from "primereact/progressbar";
 import Paso4_Transporte from "./Transporte";
+import Paso5_Destino from "./Destino";
+import Paso6_OtrasObligaciones from "./OtrasObligaciones";
 
-const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) => {
+const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) => {
 
     const sendMessage = useSendMessage();
     const [deshabilitar, setDeshabilitar] = useState(false);
     const [pasoActual, setPasoActual] = useState(1);
     const { user } = useAuth();
 
-    const [formData, setFormData] = useState(formEdit || {
+    const [formData, setFormData] = useState({
         // Autogenerado
-        numeroManifiesto: `MRSP-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 10000)).padStart(4, '0')}`,
         año: new Date().getFullYear(),
         mes: new Date().getMonth() + 1,
         //PASO1 Datos Generales
@@ -50,6 +49,44 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
             sustanciasSecundarias: false, gasesInflamablesAgua: false,
             corrosivos: false, otros: ''
         },
+        //PASO3 Manejo del residuo
+        transporte: {
+            nombreConductor: '',
+            fechaRecepcion: '', cantidadRecibida: '', observaciones: '', tipoVehiculo: '', placaVehiculo: ''
+        },
+        referendoEntrega: { referendo: false, generadorResponsableManejo: '', firmaGenerador: '', responsableEors: '', firmaResponsableEors: '', dniResponsableEors: '', cargoResponsableEors: '', fechaHora: '' },
+        //3.2 EoRs del Destino final
+        destinoId: '',
+        destinoFinal: { cantidadEntregada: '', observaciones: '' },
+        referendoRecepcion: {
+            referendo: false,
+            responsableEorsDestino: '',
+            firmaGenerador: '',
+            dniResponsableEorsDestino: '',
+            cargoResponsableEorsDestino: '',
+            fechaHora: ''
+        },
+        //3.3 Otros
+        otrosManejos: {
+            razonSocialReceptor: '',
+            rucReceptor: '',
+            correoReceptor: '',
+            telefonoReceptor: '',
+            comercializacion: false,
+            exportacion: false,
+            otro: false,
+            tipoManejo: '',
+            direccionDestino: '',
+            documentoAprueba: '',
+        },
+        //PASO4 Otras obligaciones
+        //representante de la eo
+        otrasObligaciones: {
+            representanteEors: '', cargoRepresentanteEors: '', dniRepresentanteEors: '', firmaRepresentanteEors: '',
+            //datos del generador responsable del manejo
+            generadorResponsableManejo: '', cargoGeneradorResponsableManejo: '', dniGeneradorResponsableManejo: '', firmaGeneradorResponsableManejo: '', fecha: '', hora: ''
+        },
+
         estado: 'PENDIENTE'
     });
 
@@ -58,7 +95,8 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
         { id: 2, nombre: "Residuos peligroso", componente: Paso2_Residuo },
         { id: 3, nombre: "Características de peligrosidad", componente: Paso3_Peligrosidad },
         { id: 4, nombre: "Transporte", componente: Paso4_Transporte },
-        // { id: 4, nombre: "Otras Observaciones", componente: Paso4_OtrasObligaciones },
+        { id: 5, nombre: "Destino final", componente: Paso5_Destino },
+        { id: 6, nombre: "Otras obligaciones", componente: Paso6_OtrasObligaciones },
     ];
 
     const PasoComponente = pasos[pasoActual - 1]?.componente;
@@ -66,8 +104,10 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
         setFormData({
             año: new Date().getFullYear(),
             mes: new Date().getMonth() + 1,
+            //PASO1 Datos Generales
             generadorId: '',
             plantaId: '',
+            //PASO2 datos del residuo
             residuo: {
                 descripcion: '',
                 cantidadTotal: '',
@@ -88,18 +128,51 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
                 sustanciasSecundarias: false, gasesInflamablesAgua: false,
                 corrosivos: false, otros: ''
             },
+            //PASO3 Manejo del residuo
             transportistaId: '',
-            transporte: { fechaRecepcion: '', cantidadRecibida: '', observaciones: '' },
+            transporte: {
+                nombreConductor: "",
+                fechaRecepcion: '', cantidadRecibida: '', observaciones: '', tipoVehiculo: '', placaVehiculo: ''
+            },
+            referendoEntrega: { referendo: false, generadorResponsableManejo: '', firmaGenerador: '', responsableEors: '', firmaResponsableEors: '', dniResponsableEors: '', cargoResponsableEors: '', fechaHora: '' },
+            //3.2 Destino final
             destinoId: '',
             destinoFinal: { cantidadEntregada: '', observaciones: '' },
-            referendoEntrega: { firmaGenerador: '', nombreGenerador: '', firmaTransportista: '', nombreTransportista: '', dniTransportista: '', cargoTransportista: '', fechaHora: '' },
-            referendoRecepcion: { firmaDestino: '', nombreDestino: '', dniDestino: '', cargoDestino: '', fechaHora: '' },
+            referendoRecepcion: {
+                referendo: false,
+                responsableEorsDestino: '',
+                firmaGenerador: '',
+                dniResponsableEorsDestino: '',
+                cargoResponsableEorsDestino: '',
+                fechaHora: ''
+            },
+            //3.3 Otros
+            otrosManejos: {
+                razonSocialReceptor: '',
+                rucReceptor: '',
+                correoReceptor: '',
+                telefonoReceptor: '',
+                comercializacion: false,
+                exportacion: false,
+                otro: false,
+                tipoManejo: '',
+                direccionDestino: '',
+                documentoAprueba: '',
+            },
+            //PASO4 Otras obligaciones
+            //representante de la eo
+            otrasObligaciones: {
+                representanteEors: '', cargoRepresentanteEors: '', dniRepresentanteEors: '', firmaRepresentanteEors: '',
+                //datos del generador responsable del manejo
+                generadorResponsableManejo: '', cargoGeneradorResponsableManejo: '', dniGeneradorResponsableManejo: '', firmaGeneradorResponsableManejo: '', fecha: '', hora: ''
+            },
+            estado: 'PENDIENTE'
         });
         setPasoActual(1);
     };
     const register = async () => {
         setDeshabilitar(true);
-        setMessage("Registrando manifiesto...", "Cargando");
+        sendMessage("Registrando manifiesto...", "Cargando");
 
         try {
             // Validar paso 1
@@ -158,12 +231,12 @@ const RegisterManifiestos = ({ editUpdate, editCancel, formEdit, setFormEdit }) 
 
             {/* Barra de progreso */}
             <div className="mb-4 mx-4">
-                <ProgressBar style={{ borderRadius: "20px" }} value={(pasoActual / pasos.length) * 100}></ProgressBar>
+                <ProgressBar style={{ borderRadius: "20px" }} value={parseFloat(((pasoActual / pasos.length) * 100).toFixed(2))} ></ProgressBar>
             </div>
 
             {/* Paso actual */}
             <CardPlegable title={` ${pasos[pasoActual - 1].nombre}`}>
-                <PasoComponente formData={formData} setFormData={setFormEdit || setFormData} />
+                <PasoComponente formData={formEdit ? formEdit : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
 
             {/* Botones de navegación */}
