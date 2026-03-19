@@ -1,35 +1,56 @@
 import { useState } from "react";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable";
 import DatosBasicos from "./DatosBasicos";
-import Representante from "./Representante";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
 import PopUp from "../../../../recicle/popUps";
 import { setMessage } from "../../../../redux/actions";
 import axios from "../../../../api/axios"
+import DatosPlanta from "./DatosPlanta";
+import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
+import Responsable from "./Responsable";
 
-const Register = () => {
+const Register = ({ editForm, setEditForm }) => {
     const sendMessage = useSendMessage()
     const [deshabilitar, setDeshabilitar] = useState(false)
     const [form, setForm] = useState({
         razonSocial: "",
         ruc: "",
-        direccion: "",
         correoElectronico: "",
         telefono: "",
         representanteLegal: "",
         dniRepresentante: "",
+        plantas: [],
+        responsablesTecnicos: []
     });
     const resetForm = () => {
         if (Object.values(form).some(value => value !== "")) {
             setForm({
                 razonSocial: "",
                 ruc: "",
-                direccion: "",
                 correoElectronico: "",
                 telefono: "",
                 representanteLegal: "",
                 dniRepresentante: "",
+                plantas: [{
+                    denominacion: "",
+                    tipoPlanta: "",
+                    direccion: "",
+                    ubigeoId: "",
+                    coordenadasUtm: { norte: "", este: "", zona: "" },
+                    actividadEconomica: "",
+                    sector: "",
+                    tieneIga: false,
+                    institucionApruebaIga: "",
+                    fechaAprobacionIga: "",
+                    numeroResolucionIga: "",
+                }],
+                responsablesTecnicos: [{
+                    nombreResponsable: "",
+                    dniResponsable: "",
+                    cargoResponsable: "",
+                    firmaResponsable: null,
+                }]
             });
         }
     }
@@ -43,38 +64,56 @@ const Register = () => {
             }
             const response = await axios.post("/certificaciones/postGenerador", form)
             const data = response.data;
-            sendMessage(data.message, data.type || "Correcto");
-            resetForm();
+            if (data.type === "Correcto") {
+                sendMessage(data.message, data.type || "Correcto");
+                resetForm();
+            }
         } catch (error) {
             sendMessage(error, error.type || "Error")
         } finally {
             setDeshabilitar(false);
         }
     }
-
     return (
-        <div className="w-full p-4">
+        <div className="w-full p-4 ">
             <PopUp deshabilitar={deshabilitar} />
-            <CardPlegable title="Datos Basicos" >
-                <DatosBasicos form={form} setForm={setForm} />
+            <CardPlegable title="Datos Basicos"   >
+                <DatosBasicos form={editForm ? editForm : form} setForm={setEditForm ? setEditForm : setForm} />
             </CardPlegable>
-            <CardPlegable title="Representante" >
-                <Representante form={form} setForm={setForm} />
+            <CardPlegable title="Plantas"  >
+                <Directorio
+                    ItemComponent={DatosPlanta}
+                    setForm={setEditForm ? setEditForm : setForm}
+                    directory={editForm ? editForm.plantas : form?.plantas}
+                    data="plantas"
+                    estilos="flex items-center pl-4 pb-2 pt-4 "
+                />
             </CardPlegable>
-            <div className="flex justify-center ">
-                <ButtonOk
-                    children="Cancelar"
-                    classe="!w-32"
-                    onClick={() => resetForm()}
+            <CardPlegable title="Responsables tecnicos"  >
+                <Directorio
+                    ItemComponent={Responsable}
+                    setForm={setEditForm ? setEditForm : setForm}
+                    directory={editForm ? editForm.responsablesTecnicos : form?.responsablesTecnicos}
+                    data="responsablesTecnicos"
+                    estilos="flex items-center pl-4 pb-2 pt-4 "
                 />
-                <ButtonOk
-                    type="ok"
-                    onClick={register}
-                    classe="!w-32"
-                    children="Registrar"
-                />
-            </div>
-        </div>
+            </CardPlegable>
+            {!editForm && (
+                <div className="flex justify-center ">
+                    <ButtonOk
+                        children="Cancelar"
+                        classe="!w-60 !p-3 !text-xl"
+                        onClick={() => resetForm()}
+                    />
+                    <ButtonOk
+                        type="ok"
+                        onClick={register}
+                        classe="!w-60 !p-3 !text-xl"
+                        children="Registrar"
+                    />
+                </div>
+            )}
+        </div >
 
     );
 };

@@ -54,11 +54,11 @@ const Directorio = (props) => {
     }));
   }, [formData, setForm, data]); // Asegúrate de incluir 'data' en las dependencias si no lo estaba
   return (
-    <div className="w-full">
+    <div className="w-full mt-0">
       {formData.map((form) => (
         <div
           key={form.id}
-          className={` ${estilos} border mt-2 border-slate-300 rounded`}
+          className={` ${estilos} border mb-4 pt-2 bg-white  border-slate-200 shadow-lg rounded-xl`}
         >
           <ItemComponent
             initialData={form.initialData}
@@ -68,19 +68,21 @@ const Directorio = (props) => {
           />
           <ButtonOk
             classe="w-full"
-            styles="my-7 px-6  mx-4"
+            styles="my-6 px-6  mx-4"
             onClick={() => handleRemoveForm(form.id)}
             children="X"
           />
         </div>
       ))}
-      <ButtonOk
-        type="ok"
-        children="+"
-        classe="w-[95%]"
-        styles="mt-8 !ml-10 px-8 mb-3 "
-        onClick={handleAddForm}
-      />
+      <div className="w-full">
+        <ButtonOk
+          type="ok"
+          children="+"
+          classe="w-full !from-gray-300 !to-gray-400"
+          styles="mt-7 px-20 mb-0 "
+          onClick={handleAddForm}
+        />
+      </div>
     </div>
   );
 };

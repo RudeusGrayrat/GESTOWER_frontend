@@ -18,12 +18,7 @@ const DatosBasicos = ({ form, setForm }) => {
                 }}
                 value={form.ruc}
                 name="ruc"
-                setForm={setForm}
-            />
-            <Input
-                label="Dirección"
-                value={form.direccion}
-                name="direccion"
+                maxLength={11}
                 setForm={setForm}
             />
             <Input
@@ -41,6 +36,30 @@ const DatosBasicos = ({ form, setForm }) => {
                 label="Correo"
                 value={form.correoElectronico}
                 name="correoElectronico"
+                setForm={setForm}
+            />
+            <Input
+                label="Representante Legal"
+                name="representanteLegal"
+                value={form.representanteLegal}
+                setForm={setForm}
+            />
+            <Input
+                label="DNI del Representante"
+                onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                }}
+                name="dniRepresentante"
+                value={form.dniRepresentante}
+                setForm={setForm}
+            />
+            <Input
+                label="Firma del Representante"
+                name="firmaRepresentante"
+                type="file"
+                value={form.firmaRepresentante}
                 setForm={setForm}
             />
 

@@ -57,7 +57,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         referendoEntrega: { referendo: false, generadorResponsableManejo: '', firmaGenerador: '', responsableEors: '', firmaResponsableEors: '', dniResponsableEors: '', cargoResponsableEors: '', fechaHora: '' },
         //3.2 EoRs del Destino final
         destinoId: '',
-        destinoFinal: { cantidadEntregada: '', observaciones: '' },
+        destinoFinal: { tipoManejo: "", cantidadEntregada: '', observaciones: '' },
         referendoRecepcion: {
             referendo: false,
             responsableEorsDestino: '',
@@ -137,7 +137,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             referendoEntrega: { referendo: false, generadorResponsableManejo: '', firmaGenerador: '', responsableEors: '', firmaResponsableEors: '', dniResponsableEors: '', cargoResponsableEors: '', fechaHora: '' },
             //3.2 Destino final
             destinoId: '',
-            destinoFinal: { cantidadEntregada: '', observaciones: '' },
+            destinoFinal: { tipoManejo: "", cantidadEntregada: '', observaciones: '' },
             referendoRecepcion: {
                 referendo: false,
                 responsableEorsDestino: '',

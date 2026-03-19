@@ -135,8 +135,8 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                 label="Tipo de Manejo *"
                 type="select"
                 name="tipoManejo"
-                value={formData.tipoManejo}
-                setForm={setFormData}
+                value={formData.destinoFinal?.tipoManejo || ""}
+                onChange={(e) => handleDestinoChange('tipoManejo', e.target.value)}
                 options={tipoManejoOptions}
                 placeholder="Seleccionar tipo de manejo"
             />

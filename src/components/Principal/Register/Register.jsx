@@ -33,14 +33,14 @@ const Register = ({ validate, registrar, children, resetForm }) => {
         {resetForm && (
           <ButtonOk
             children="Cancelar"
-            classe="!w-32"
+            classe="!w-60 !p-3 !text-xl"
             onClick={() => resetForm()}
           />
         )}
         <ButtonOk
           type="ok"
           onClick={enviar}
-          classe="!w-32"
+          classe="!w-60 !p-3 !text-xl"
           children="Registrar"
         />
       </div>
