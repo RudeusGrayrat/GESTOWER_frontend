@@ -1,6 +1,5 @@
 import { useState } from "react";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
-import PopUp from "../../../../recicle/popUps";
 import Register from "../Register/Register";
 import { deepDiff } from "../../../validateEdit";
 import useSendMessage from "../../../../recicle/senMessage";

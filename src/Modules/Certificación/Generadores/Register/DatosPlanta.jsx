@@ -72,14 +72,10 @@ const DatosPlanta = ({ set, initialData }) => {
             {/* Tipo de planta */}
             <Input
                 label="Tipo de planta"
-                type="select"
                 name="tipoPlanta"
                 value={form.tipoPlanta}
                 setForm={setForm}
-                options={tipoPlantaOptions}
-                optionLabel="name"
-                optionValue="code"
-                placeholder="Seleccione tipo"
+                placeholder="Seleccione el tipo de planta"
             />
 
             {/* Dirección */}
@@ -119,14 +115,10 @@ const DatosPlanta = ({ set, initialData }) => {
             {/* Sector */}
             <Input
                 label="Sector"
-                type="select"
                 name="sector"
                 value={form.sector}
                 setForm={setForm}
-                options={sectorOptions}
-                optionLabel="name"
-                optionValue="code"
-                placeholder="Seleccione sector"
+                placeholder="Escriba el sector"
             />
             <Input
                 label="Coordenada Norte"

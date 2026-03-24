@@ -56,13 +56,6 @@ const DatosBasicos = ({ form, setForm }) => {
                 value={form.dniRepresentante}
                 setForm={setForm}
             />
-            <InpuFiles
-                label="Firma del Representante"
-                name="firmaRepresentante"
-                value={form.firmaRepresentante}
-                setForm={setForm}
-                toBase64
-            />
         </div>
     );
 };

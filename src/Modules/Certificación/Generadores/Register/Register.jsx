@@ -20,7 +20,6 @@ const Register = ({ editForm, setEditForm }) => {
         telefono: "",
         representanteLegal: "",
         dniRepresentante: "",
-        firmaRepresentante: null,
         plantas: [],
         responsablesTecnicos: []
     });
@@ -33,7 +32,6 @@ const Register = ({ editForm, setEditForm }) => {
                 telefono: "",
                 representanteLegal: "",
                 dniRepresentante: "",
-                firmaRepresentante: null,
                 plantas: [{
                     denominacion: "",
                     tipoPlanta: "",
