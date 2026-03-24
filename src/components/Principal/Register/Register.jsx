@@ -27,7 +27,6 @@ const Register = ({ validate, registrar, children, resetForm }) => {
 
   return (
     <div className="flex flex-col w-full p-6">
-      <PopUp deshabilitar={habilitar} />
       {children}
       <div className="flex justify-center">
         {resetForm && (

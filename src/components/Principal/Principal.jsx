@@ -2,6 +2,7 @@ import { useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import RadioOption from "../../recicle/Otros/Radio";
+import PopUp from "../../recicle/popUps";
 
 const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule, module }) => {
   const { user } = useAuth();
@@ -106,6 +107,7 @@ const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule, module }
 
   return (
     <div className="w-full">
+      <PopUp />
       <div className="flex justify-center items-center p-5">
         <RadioOption
           opciones={options}

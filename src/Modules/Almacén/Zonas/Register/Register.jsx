@@ -38,6 +38,7 @@ const RegisterZonas = () => {
   const enviar = async () => {
     // const isValid = validateForm(form);
     setHabilitar(true);
+    sendMessage("Registrando zona...", "Espere", true);
     // if (!isValid) {
     //   sendMessage("Faltan datos", "Error");
     //   return;
@@ -99,7 +100,6 @@ const RegisterZonas = () => {
   }, [allNaves.length, recargar]);
   return (
     <div className="flex flex-col w-full p-6">
-      <PopUp deshabilitar={habilitar} />
 
       <CardPlegable title="Registrar Zona de Almacen">
         <DatosBasicos form={form} naves={naves} setForm={setForm} />

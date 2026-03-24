@@ -82,7 +82,6 @@ const Nave01 = ({ naveId }) => {
   };
   return (
     <div className="w-full h-full flex  justify-center bg-gray-100 p-2 rounded-lg shadow-lg">
-      <PopUp />
       {viewUbicación && (
         <ViewUbicacion
           setViewUbicacion={setViewUbicación}

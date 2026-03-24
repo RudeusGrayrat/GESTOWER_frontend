@@ -56,14 +56,15 @@ const DatosDestino = ({ formData, setFormData }) => {
                 label="Ubigeo"
                 type="autocomplete"
                 optionValue="_id"
-                name="ubigeoId"
+                ancho={"!w-80"}
                 value={formData.ubigeoId}
                 setForm={setFormData}
                 fetchData="/certificaciones/getUbigeoPaginacion"
                 setOptions={setUbigeoOptions}
-                field="distrito"
                 options={ubigeoOptions}
-                placeholder="Buscar distrito..."
+                name="ubigeoId"
+                field={(option) => `${option.distrito} - ${option.provincia} - ${option.departamento}`}
+                placeholder="Distrito - Provincia - Departamento"
             />
 
             <Input

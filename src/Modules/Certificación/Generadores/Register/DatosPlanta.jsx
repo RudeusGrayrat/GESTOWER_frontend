@@ -101,9 +101,10 @@ const DatosPlanta = ({ set, initialData }) => {
                 setForm={setForm}
                 fetchData="/certificaciones/getUbigeoPaginacion"
                 setOptions={setUbigeoOptions}
-                field="distrito"
+                ancho={"!w-80"}
+                field={(option) => `${option.distrito} - ${option.provincia} - ${option.departamento}`}
                 options={ubigeoOptions}
-                placeholder="Buscar distrito..."
+                placeholder="Distrito - Provincia - Departamento"
             />
             {/* Actividad Económica (CIIU) */}
             <Input

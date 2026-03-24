@@ -172,7 +172,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
     };
     const register = async () => {
         setDeshabilitar(true);
-        sendMessage("Registrando manifiesto...", "Cargando");
+        sendMessage("Registrando manifiesto...", "Cargando", true);
 
         try {
             // Validar paso 1
@@ -227,8 +227,6 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
 
     return (
         <div className="w-full p-4">
-            <PopUp deshabilitar={deshabilitar} />
-
             {/* Barra de progreso */}
             <div className="mb-4 mx-4">
                 <ProgressBar style={{ borderRadius: "20px" }} value={parseFloat(((pasoActual / pasos.length) * 100).toFixed(2))} ></ProgressBar>

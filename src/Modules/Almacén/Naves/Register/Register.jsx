@@ -32,6 +32,7 @@ const RegisterNaves = () => {
       return sendMessage("El Nombre y Sede son obligatorios", "Error");
     }
     setDeshabilitar(true);
+    sendMessage("Registrando nave...", "Espere", true);
     try {
       const findSede = allSedes?.find((sede) => sede.nombre === form.sede);
       if (!findSede) {
@@ -58,7 +59,6 @@ const RegisterNaves = () => {
 
   return (
     <div className="w-full h-full ">
-      <PopUp deshabilitar={deshabilitar} />
       <DatosBasicos
         form={form}
         setForm={setForm}

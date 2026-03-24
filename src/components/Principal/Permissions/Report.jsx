@@ -6,7 +6,6 @@ import PopUp from "../../../recicle/popUps";
 const Report = ({ descargar, form, setForm, title, options }) => {
   return (
     <div>
-      <PopUp />
       <CardPlegable title={title}>
         <div className="flex flex-wrap">
           <Input

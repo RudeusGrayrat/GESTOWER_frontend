@@ -105,6 +105,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
   //aquí empieza el cambio con lo de producto y stock
   const register = async () => {
     setHabilitar(true);
+    sendMessage("Registrando movimiento...", "Info", true);
     const erroresDeStock = [];
 
     try {
@@ -324,7 +325,6 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
 
   return (
     <div className="px-5">
-      <PopUp deshabilitar={habilitar} />
       <CardPlegable title="Datos Básicos">
         <DatosBasicos
           form={form}

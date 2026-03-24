@@ -22,6 +22,7 @@ const RegisterSedesAlmacen = () => {
   const enviar = async () => {
     const isValid = validateForm(form);
     setHabilitar(true);
+    sendMessage("Registrando sede...", "Espere", true);
     if (!isValid) {
       sendMessage("Faltan datos", "Error");
       return;
@@ -44,7 +45,6 @@ const RegisterSedesAlmacen = () => {
   };
   return (
     <div className="flex flex-col w-full p-6">
-      <PopUp deshabilitar={habilitar} />
 
       <CardPlegable title="Registrar Sede Almacen">
         <DatosSedes form={form} setForm={setForm} error={error} />

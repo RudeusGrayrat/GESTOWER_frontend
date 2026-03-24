@@ -120,7 +120,6 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
   };
   return (
     <Edit setShowEdit={setShowEdit} upDate={actualizar}>
-      <PopUp deshabilitar={habilitar} />
       <CardPlegable title="Datos Básicos">
         <DatosBasicos
           form={form}

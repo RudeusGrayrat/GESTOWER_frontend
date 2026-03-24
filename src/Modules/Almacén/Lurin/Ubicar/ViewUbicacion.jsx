@@ -38,7 +38,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion }) => {
 
   const editUbicacion = async () => {
     setDeshabilitar(true);
-    sendMessage("Guardando cambios...", "Info");
+    sendMessage("Guardando cambios...", "Info", true);
     const inicial = normalizarProductos(form.productos);
     const actual = normalizarProductos(edit.productos);
 
@@ -133,7 +133,6 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion }) => {
       <div className="  flex justify-center items-start min-h-[85%]  max-h-[90%]">
         <div className="px-6 pt-4 overflow-y-auto mt-6 h-[97%] max-h-[97%] w-[95%] flex flex-col bg-gradient-to-tr from-slate-100 to-white rounded-lg shadow-lg ">
           <div className="  my-2 md:min-h-[60%] 2xl:min-h-[45%] flex justify-evenly w-full">
-            <PopUp deshabilitar={deshabilitar} />
             <div className=" flex flex-col justify-start content-center center w-[40%]">
               <p className="text-3xl mb-5 font-bold">Detalles de Ubicación</p>
               <div className="flex flex-wrap gap-x-6  ">

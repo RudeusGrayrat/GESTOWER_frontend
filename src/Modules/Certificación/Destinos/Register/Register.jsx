@@ -59,7 +59,7 @@ const RegisterDestinos = () => {
 
     const register = async () => {
         setDeshabilitar(true);
-        setMessage("Registrando destino...", "Cargando");
+        setMessage("Registrando destino...", "Cargando", true);
 
         try {
             // Validaciones básicas
@@ -113,7 +113,6 @@ const RegisterDestinos = () => {
 
     return (
         <div className="w-full p-4">
-            <PopUp deshabilitar={deshabilitar} />
 
             <CardPlegable title="Datos Básicos del Destino">
                 <DatosDestino formData={formData} setFormData={setFormData} />

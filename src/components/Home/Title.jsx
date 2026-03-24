@@ -24,7 +24,6 @@ import Naves from "../../Modules/Almacén/Naves/Naves";
 import ZonasAlmacen from "../../Modules/Almacén/Zonas/Zonas";
 import Manifiestos from "../../Modules/Certificación/Manifiestos/Manifiestos";
 import Generadores from "../../Modules/Certificación/Generadores/Generadores";
-import Plantas from "../../Modules/Certificación/Plantas/Plantas";
 import Ubigeo from "../../Modules/Certificación/Ubigeo/Ubigeo";
 import Transportistas from "../../Modules/Certificación/Transportistas/Transportistas";
 import Destinos from "../../Modules/Certificación/Destinos/Destinos";
@@ -46,7 +45,6 @@ const componentMap = {
     certificados: Certificados,
     manifiestos: Manifiestos,
     generadores: Generadores,
-    plantas: Plantas,
     ubigeo: Ubigeo,
     transportistas: Transportistas,
     destinos: Destinos,

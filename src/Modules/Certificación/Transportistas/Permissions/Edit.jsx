@@ -13,7 +13,7 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
     const diferencias = deepDiff(selected, formEdit);
     const upDate = async () => {
         setDeshabilitar(true);
-        sendMessage("Editando transportista...", "Espere");
+        sendMessage("Editando transportista...", "Espere", true);
         try {
             console.log("Enviando datos al backend:", formEdit);
             if (Object.keys(diferencias).length === 0) {
@@ -42,7 +42,6 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
             border-gray-100 border shadow-2xl fixed top-5 z-40 rounded-xl `}
         >
             <div className=" flex flex-col h-[90%] space-y-4 p-2 overflow-y-auto">
-                <PopUp deshabilitar={deshabilitar} />
                 <RegisterTransportistas editData={formEdit} setFormEdit={setFormEdit} />
             </div>
 

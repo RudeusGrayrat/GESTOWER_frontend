@@ -21,7 +21,7 @@ export const GET_MODULES = "GET_MODULES";
 export const GET_SUBMODULES = "GET_SUBMODULES";
 export const GET_ALL_NOTIFICACIONES = "GET_ALL_NOTIFICACIONES";
 
-export const setMessage = (message, type) => async (dispatch) => {
+export const setMessage = (message, type, loading = false) => async (dispatch) => {
   let realMessage = message?.response?.data?.message
     ? message.response.data.message
     : message;
@@ -29,7 +29,7 @@ export const setMessage = (message, type) => async (dispatch) => {
     realMessage = realMessage.toString();
   }
   try {
-    dispatch({ type: SET_MESSAGE, payload: { message: realMessage, type } });
+    dispatch({ type: SET_MESSAGE, payload: { message: realMessage, type, loading } });
   } catch (error) {
     throw error;
   }

@@ -20,6 +20,7 @@ const Register = ({ editForm, setEditForm }) => {
         telefono: "",
         representanteLegal: "",
         dniRepresentante: "",
+        firmaRepresentante: null,
         plantas: [],
         responsablesTecnicos: []
     });
@@ -32,6 +33,7 @@ const Register = ({ editForm, setEditForm }) => {
                 telefono: "",
                 representanteLegal: "",
                 dniRepresentante: "",
+                firmaRepresentante: null,
                 plantas: [{
                     denominacion: "",
                     tipoPlanta: "",
@@ -56,27 +58,29 @@ const Register = ({ editForm, setEditForm }) => {
     }
     const register = async () => {
         setDeshabilitar(true);
-        setMessage("Registrando generador...", "Cargando");
+        sendMessage("Registrando generador...", "Cargando", true);
         try {
             if (Object.values(form).some(value => value === "")) {
                 sendMessage("Por favor, complete todos los campos del formulario.", "Advertencia");
                 return;
             }
-            const response = await axios.post("/certificaciones/postGenerador", form)
+
+            // ✅ Todo ya viene en base64 desde InputFile — enviar directo
+            const response = await axios.post("/certificaciones/postGenerador", form);
             const data = response.data;
+
             if (data.type === "Correcto") {
                 sendMessage(data.message, data.type || "Correcto");
                 resetForm();
             }
         } catch (error) {
-            sendMessage(error, error.type || "Error")
+            sendMessage(error, error.type || "Error");
         } finally {
             setDeshabilitar(false);
         }
     }
     return (
         <div className="w-full p-4 ">
-            <PopUp deshabilitar={deshabilitar} />
             <CardPlegable title="Datos Basicos"   >
                 <DatosBasicos form={editForm ? editForm : form} setForm={setEditForm ? setEditForm : setForm} />
             </CardPlegable>
@@ -89,7 +93,7 @@ const Register = ({ editForm, setEditForm }) => {
                     estilos="flex items-center pl-4 pb-2 pt-4 "
                 />
             </CardPlegable>
-            <CardPlegable title="Responsables tecnicos"  >
+            <CardPlegable title="Responsables"  >
                 <Directorio
                     ItemComponent={Responsable}
                     setForm={setEditForm ? setEditForm : setForm}

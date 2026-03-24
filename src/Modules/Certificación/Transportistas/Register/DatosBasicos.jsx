@@ -67,9 +67,10 @@ const DatosBasicos = ({ formData, setFormData }) => {
                 setForm={setFormData}
                 fetchData="/certificaciones/getUbigeoPaginacion"
                 setOptions={setUbigeoOptions}
-                field="distrito"
                 options={ubigeoOptions}
-                placeholder="Buscar distrito..."
+                ancho={"!w-80"}
+                field={(option) => `${option.distrito} - ${option.provincia} - ${option.departamento}`}
+                placeholder="Distrito - Provincia - Departamento"
             />
             <Input
                 label="Correo Electrónico"

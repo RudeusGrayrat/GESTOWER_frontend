@@ -13,7 +13,6 @@ const ReportAlmacen = ({
 }) => {
   return (
     <div>
-      <PopUp />
       <CardPlegable title={title}>
         <div className="flex flex-wrap">
           <Input

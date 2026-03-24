@@ -1,4 +1,5 @@
 import Input from "../../../../recicle/Inputs/Inputs";
+import InpuFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
 const DatosBasicos = ({ form, setForm }) => {
     return (
@@ -55,14 +56,13 @@ const DatosBasicos = ({ form, setForm }) => {
                 value={form.dniRepresentante}
                 setForm={setForm}
             />
-            <Input
+            <InpuFiles
                 label="Firma del Representante"
                 name="firmaRepresentante"
-                type="file"
                 value={form.firmaRepresentante}
                 setForm={setForm}
+                toBase64
             />
-
         </div>
     );
 };

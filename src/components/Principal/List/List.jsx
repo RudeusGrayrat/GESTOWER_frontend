@@ -316,7 +316,6 @@ const ListPrincipal = ({
 
   return (
     <div className="flex justify-center items-center">
-      {showPopUp && <PopUp onClose={handleClosePopUp} message={errorForms} />}
       {showDetail && (
         <DetailItem setShowDetail={setShowDetail} selected={selected} />
       )}

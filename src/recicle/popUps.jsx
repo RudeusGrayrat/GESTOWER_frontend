@@ -39,7 +39,7 @@ const PopUp = ({ deshabilitar, ...OtherProps }) => {
               ? errorForms.message
               : "Error desconocido"}
           </p>
-          {deshabilitar === true ? null : (
+          {!errorForms.loading && (
             <div className="flex justify-center items-center w-full">
               <button
                 onClick={handleClosePopUp}

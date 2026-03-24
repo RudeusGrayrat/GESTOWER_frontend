@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
+import InpuFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
 const Responsable = ({ set, initialData }) => {
     const [form, setForm] = useState({
@@ -48,12 +49,12 @@ const Responsable = ({ set, initialData }) => {
                 setForm={setForm}
                 placeholder="Ej: Gerente General"
             />
-            <Input
+            <InpuFiles
                 label="Firma del Responsable"
                 name="firmaResponsable"
-                type="file"
                 value={form.firmaResponsable}
                 setForm={setForm}
+                toBase64
             />
         </div>
     )

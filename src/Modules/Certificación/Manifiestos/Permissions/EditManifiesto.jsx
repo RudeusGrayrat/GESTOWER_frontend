@@ -63,7 +63,7 @@ const EditManifiesto = ({ setShowEdit, selected, reload }) => {
 
     const upDate = async () => {
         setDeshabilitar(true);
-        setMessage("Actualizando manifiesto...", "Cargando");
+        setMessage("Actualizando manifiesto...", "Cargando", true);
 
         try {
             if (Object.keys(changes).length === 0) {
@@ -145,12 +145,10 @@ const EditManifiesto = ({ setShowEdit, selected, reload }) => {
     };
 
     const disabledFields = getDisabledFields();
-    console.log("Deep Diff Changes:", changes);
     return (
         <div className="w-[90%] h-[93%] bg-white flex flex-col justify-center
             border-gray-100 border shadow-2xl fixed top-5 z-40 rounded-xl">
 
-            <PopUp deshabilitar={deshabilitar} />
 
             <div className="flex flex-col h-[90%] space-y-4 p-2 overflow-y-auto">
                 <RegisterManifiestos

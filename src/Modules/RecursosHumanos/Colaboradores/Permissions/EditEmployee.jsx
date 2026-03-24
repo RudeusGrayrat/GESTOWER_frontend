@@ -46,7 +46,7 @@ const EditEmployee = ({ setShowEdit, selected, reload }) => {
   const { error } = useValidation(edition);
 
   const upDate = async () => {
-    dispatch(setMessage("Cargando...", "Espere"));
+    dispatch(setMessage("Cargando...", "Espere", true));
     let pathPhoto = null;
 
     try {
@@ -82,7 +82,6 @@ const EditEmployee = ({ setShowEdit, selected, reload }) => {
 
   return (
     <Edit setShowEdit={setShowEdit} upDate={upDate}>
-      <PopUp />
       <CardPlegable title="Datos del Colaborador">
         <FormOne error={error} setForm={setEdition} form={edition} />
         <div className=" flex flex-col mx-3  pl-12">

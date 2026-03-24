@@ -18,7 +18,6 @@ const Details = (props) => {
       className={`w-[88%] h-[83%] bg-white flex flex-col justify-center
          border-gray-100 blur-0 border shadow-2xl fixed top-20 z-50 rounded-xl`}
     >
-      <PopUp />
       <div className="flex justify-center h-[88%]">
         <div className="w-[97%] h-[97%]">
           <div className={`p-10 m-5 h-full overflow-y-auto bg-gradient-to-tr from-gray-50 to-gray-100 rounded-lg shadow-lg ${estilos}`}>
