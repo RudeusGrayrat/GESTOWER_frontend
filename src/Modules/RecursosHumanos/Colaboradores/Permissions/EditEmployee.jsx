@@ -48,7 +48,6 @@ const EditEmployee = ({ setShowEdit, selected, reload }) => {
   const upDate = async () => {
     dispatch(setMessage("Cargando...", "Espere", true));
     let pathPhoto = null;
-
     try {
       if (Object.keys(formFinal).length === 0) {
         return dispatch(setMessage("No se han realizado cambios", "Error"));

@@ -49,6 +49,8 @@ const Register = ({ editForm, setEditForm }) => {
                     nombreResponsable: "",
                     dniResponsable: "",
                     cargoResponsable: "",
+                    correoResponsable: "",
+                    telefonoResponsable: "",
                     firmaResponsable: null,
                 }]
             });
@@ -88,7 +90,7 @@ const Register = ({ editForm, setEditForm }) => {
                     setForm={setEditForm ? setEditForm : setForm}
                     directory={editForm ? editForm.plantas : form?.plantas}
                     data="plantas"
-                    estilos="flex items-center pl-4 pb-2 pt-4 "
+                    estilos="flex items-center pl-4  "
                 />
             </CardPlegable>
             <CardPlegable title="Responsables"  >
@@ -97,7 +99,7 @@ const Register = ({ editForm, setEditForm }) => {
                     setForm={setEditForm ? setEditForm : setForm}
                     directory={editForm ? editForm.responsablesTecnicos : form?.responsablesTecnicos}
                     data="responsablesTecnicos"
-                    estilos="flex items-center pl-4 pb-2 pt-4 "
+                    estilos="flex items-center pl-4 "
                 />
             </CardPlegable>
             {!editForm && (

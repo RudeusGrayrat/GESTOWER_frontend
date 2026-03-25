@@ -28,6 +28,7 @@ const EditGenerador = ({ setShowEdit, selected, reload }) => {
 
             if (response.data.type === "Correcto") {
                 sendMessage("Generador editado exitosamente", "Correcto");
+                setShowEdit(false);
                 reload();
             }
         } catch (error) {

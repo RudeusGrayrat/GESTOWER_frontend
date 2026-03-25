@@ -36,6 +36,24 @@ const ListGeneradores = ({
             <Column field="ruc" header="RUC" />
             <Column field="correoElectronico" header="Correo Electrónico" />
             <Column field="representanteLegal" header="Representante Legal" />
+            <Column
+                field="estado"
+                body={(rowData) => {
+                    const color =
+                        rowData.estado === "ACTIVO" ? " text-green-500 " : " text-red-500 ";
+
+                    return (
+                        <div
+                            className={`text-center max-w-40 bg-gradient-to-tr from-white to-gray-100 
+                shadow-inner rounded-xl font-semibold  px-5 py-1  ${color} `}
+                        >
+                            {rowData.estado}
+                        </div>
+                    );
+                }}
+                header="Estado"
+                sortable
+            />
         </ListPrincipal>
     )
 }

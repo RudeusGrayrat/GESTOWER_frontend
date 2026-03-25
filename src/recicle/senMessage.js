@@ -4,8 +4,8 @@ import { setMessage } from "../redux/actions";
 const useSendMessage = () => {
   const dispatch = useDispatch();
 
-  return (message, type) => {
-    dispatch(setMessage(message, type));
+  return (message, type, loading) => {
+    dispatch(setMessage(message, type, loading));
   };
 };
 

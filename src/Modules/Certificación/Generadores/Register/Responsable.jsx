@@ -32,6 +32,7 @@ const Responsable = ({ set, initialData }) => {
                 label="DNI del Responsable"
                 type="text"
                 name="dniResponsable"
+                ancho={"!min-w-32 w-40"}
                 onKeyPress={(e) => {
                     if (!/[0-9]/.test(e.key)) {
                         e.preventDefault();
@@ -48,6 +49,28 @@ const Responsable = ({ set, initialData }) => {
                 value={form.cargoResponsable}
                 setForm={setForm}
                 placeholder="Ej: Gerente General"
+            />
+            <Input
+                label="Correo del Responsable"
+                type="email"
+                name="correoResponsable"
+                value={form.correoResponsable}
+                setForm={setForm}
+                placeholder="Ej: juan.perez@empresa.com"
+            />
+            <Input
+                label="Teléfono del Responsable"
+                type="text"
+                ancho={"!min-w-32 w-44"}
+                name="telefonoResponsable"
+                onKeyPress={(e) => {
+                    if (!/[0-9]/.test(e.key)) {
+                        e.preventDefault();
+                    }
+                }}
+                value={form.telefonoResponsable}
+                setForm={setForm}
+                placeholder="Ej: 987654321"
             />
             <InpuFiles
                 label="Firma del Responsable"
