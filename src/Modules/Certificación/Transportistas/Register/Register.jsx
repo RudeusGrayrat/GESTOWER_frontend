@@ -74,6 +74,14 @@ const RegisterTransportistas = ({
             ubigeoId: '',
             correoElectronico: '',
             telefono: '',
+            representanteLegal: {
+                nombre: '',
+                dni: '',
+            },
+            responsableTecnico: {
+                nombre: '',
+                numeroColegiatura: '',
+            },
             responsables: [{
                 nombre: '',
                 dni: '',

@@ -24,18 +24,15 @@ const Representante_y_Responsable = ({ formData, setFormData }) => {
             <Input
                 ancho="!w-96"
                 label="Nombre del Representante Legal"
-                name="nombreRepresentante"
+                name="nombre"
                 value={formData.representanteLegal?.nombre || ""}
-                setForm={(name, value) => handleChangeRepresentanteLegal(name, value)}
+                onChange={(e) => handleChangeRepresentanteLegal('nombre', e.target.value.toUpperCase())}
                 placeholder="Nombres y apellidos"
             />
             <Input
                 label="DNI/CE del Representante Legal"
                 value={formData.representanteLegal?.dni || ""}
-                onChange={(e) => {
-                    const soloNumeros = e.target.value.replace(/\D/g, '');
-                    handleChangeRepresentanteLegal('dni', soloNumeros.slice(0, 12));
-                }}
+                onChange={(e) => handleChangeRepresentanteLegal('dni', e.target.value)}
                 maxLength={12}
                 placeholder="Ej: 12345678"
                 onKeyPress={(e) => {
@@ -47,16 +44,15 @@ const Representante_y_Responsable = ({ formData, setFormData }) => {
             <Input
                 ancho="!w-96"
                 label="Nombre del Responsable Técnico"
-                name="nombre"
-                value={formData.representanteTecnico?.nombre || ""}
-                setForm={(name, value) => handleChangeResponsableTecnico(name, value)}
+                value={formData.responsableTecnico?.nombre || ""}
+                onChange={(e) => handleChangeResponsableTecnico('nombre', e.target.value.toUpperCase())}
                 placeholder="Nombres y apellidos "
             />
             <Input
                 label="N° de Colegiatura"
                 name="numeroColegiatura"
-                value={formData.representanteTecnico?.numeroColegiatura || ""}
-                setForm={(name, value) => handleChangeResponsableTecnico(name, value)}
+                value={formData.responsableTecnico?.numeroColegiatura || ""}
+                onChange={(e) => handleChangeResponsableTecnico('numeroColegiatura', e.target.value)}
                 placeholder="Ej: CIP 123456"
             />
 
