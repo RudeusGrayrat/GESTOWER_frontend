@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import PopUp from "../../../../recicle/popUps";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable";
@@ -8,8 +8,9 @@ import axios from "../../../../api/axios";
 import Contingencias from "./Contingencias";
 import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import GeneradoresTransportistas from "./Generadores";
-import Responsable_y_Representante from "./Responsable_Y_Representante";
 import Conductores from "./Conductores";
+import Representante_y_Responsable from "./Representante_y_Responsable";
+import Responsables from "./Responsables";
 
 const RegisterTransportistas = ({
     editData, setFormEdit
@@ -26,12 +27,20 @@ const RegisterTransportistas = ({
         ubigeoId: '',
         correoElectronico: '',
         telefono: '',
-        responsableTecnico: [
+        representanteLegal: {
+            nombre: '',
+            dni: '',
+        },
+        responsableTecnico: {
+            nombre: '',
+            numeroColegiatura: '',
+        },
+        responsables: [
             {
                 nombre: '',
                 dni: '',
                 cargo: '',
-                numeroColegiatura: '',
+                firmaResponsable: '',
             }
         ],
         contingencias: {
@@ -65,11 +74,11 @@ const RegisterTransportistas = ({
             ubigeoId: '',
             correoElectronico: '',
             telefono: '',
-            responsableTecnico: [{
+            responsables: [{
                 nombre: '',
                 dni: '',
                 cargo: '',
-                numeroColegiatura: '',
+                firmaResponsable: '',
             }],
             contingencias: {
                 derrame: '',
@@ -145,13 +154,16 @@ const RegisterTransportistas = ({
             <CardPlegable title="Contingencias">
                 <Contingencias formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
-            <CardPlegable title="Responsable">
+            <CardPlegable title="Represenatnte y responsable tecnico">
+                <Representante_y_Responsable formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
+            </CardPlegable>
+            <CardPlegable title="Responsables">
                 <Directorio
                     estilos="flex justify-center items-center"
-                    data="responsableTecnico"
+                    data="responsables"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? (editData.responsableTecnico?.length > 0 ? editData.responsableTecnico : []) : (formData.responsableTecnico)}
-                    ItemComponent={Responsable_y_Representante}
+                    directory={editData ? (editData.responsables?.length > 0 ? editData.responsables : []) : (formData.responsables)}
+                    ItemComponent={Responsables}
                 />
             </CardPlegable>
             <CardPlegable title="Generadores">

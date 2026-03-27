@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
+import InputFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
-const Responsable_y_Representante = ({ set, initialData }) => {
+const Responsables = ({ set, initialData }) => {
     const [formData, setFormData] = useState({
         nombre: initialData?.nombre || "",
         dni: initialData?.dni || "",
         cargo: initialData?.cargo || "",
-        numeroColegiatura: initialData?.numeroColegiatura || "",
+        firmaResponsable: initialData?.firmaResponsable || "",
     });
     useEffect(() => {
         console.log("FormData actualizado:", formData);
@@ -14,7 +15,7 @@ const Responsable_y_Representante = ({ set, initialData }) => {
             nombre: formData.nombre,
             dni: formData.dni,
             cargo: formData.cargo,
-            numeroColegiatura: formData.numeroColegiatura,
+            firmaResponsable: formData.firmaResponsable,
         })
     }, [formData]);
     return (
@@ -41,12 +42,12 @@ const Responsable_y_Representante = ({ set, initialData }) => {
                 setForm={setFormData}
                 placeholder="Ej: Gerente General"
             />
-            <Input
-                label="N° de Colegiatura"
-                name="numeroColegiatura"
-                value={formData.numeroColegiatura || ""}
+            <InputFiles
+                label="Firma del Responsable"
+                name="firmaResponsable"
+                value={formData.firmaResponsable}
                 setForm={setFormData}
-                placeholder="Ej: CIP 123456"
+                toBase64
             />
 
         </div>
@@ -54,4 +55,4 @@ const Responsable_y_Representante = ({ set, initialData }) => {
     );
 };
 
-export default Responsable_y_Representante;
+export default Responsables;
