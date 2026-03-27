@@ -154,7 +154,7 @@ const RegisterTransportistas = ({
             <CardPlegable title="Contingencias">
                 <Contingencias formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
-            <CardPlegable title="Represenatnte y responsable tecnico">
+            <CardPlegable title="Representante y Responsable Técnico">
                 <Representante_y_Responsable formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
             <CardPlegable title="Responsables">
