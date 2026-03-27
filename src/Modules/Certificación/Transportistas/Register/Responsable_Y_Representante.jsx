@@ -1,63 +1,49 @@
+import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 
-const Responsable_y_Representante = ({ formData, setFormData }) => {
-    const handleChangeResponsableTecnico = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            responsableTecnico: {
-                ...prev.responsableTecnico,
-                [field]: value
-            }
-        }));
-    };
-    const handleChangeRepresentanteLegal = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            representanteLegal: {
-                ...prev.representanteLegal,
-                [field]: value
-            }
-        }));
-    };
+const Responsable_y_Representante = ({ set, initialData }) => {
+    const [formData, setFormData] = useState({
+        nombre: initialData?.nombre || "",
+        dni: initialData?.dni || "",
+        cargo: initialData?.cargo || "",
+        numeroColegiatura: initialData?.numeroColegiatura || "",
+    });
+    useEffect(() => {
+        set({
+            nombre: formData.nombre,
+            dni: formData.dni,
+            cargo: formData.cargo,
+            numeroColegiatura: formData.numeroColegiatura,
+        })
+    }, [formData]);
     return (
         <div className="flex flex-wrap">
             <Input
                 ancho="!w-96"
-                label="Nombre del Responsable Técnico"
+                label="Nombre del Responsable"
                 value={formData.responsableTecnico?.nombre || ""}
-                onChange={(e) => handleChangeResponsableTecnico('nombre', e.target.value.toUpperCase())}
+                setForm={setFormData}
                 placeholder="Nombres y apellidos"
             />
-
+            <Input
+                label="DNI del Responsable"
+                value={formData.responsableTecnico?.dni || ""}
+                setForm={setFormData}
+                placeholder="Ej: 12345678"
+            />
+            <Input
+                label="Cargo del Responsable"
+                value={formData.responsableTecnico?.cargo || ""}
+                setForm={setFormData}
+                placeholder="Ej: Gerente General"
+            />
             <Input
                 label="N° de Colegiatura"
                 value={formData.responsableTecnico?.numeroColegiatura || ""}
-                onChange={(e) => handleChangeResponsableTecnico('numeroColegiatura', e.target.value.toUpperCase())}
+                setForm={setFormData}
                 placeholder="Ej: CIP 123456"
             />
-            <Input
-                label="Nombre del Representante Legal"
-                value={formData.representanteLegal?.nombre || ""}
-                onChange={(e) => handleChangeRepresentanteLegal('nombre', e.target.value.toUpperCase())}
-                ancho="!w-96"
-                placeholder="Nombres y apellidos completos"
-            />
 
-            <Input
-                label="DNI/CE del Representante Legal"
-                value={formData.representanteLegal?.dni || ""}
-                onChange={(e) => {
-                    const soloNumeros = e.target.value.replace(/\D/g, '');
-                    handleChangeRepresentanteLegal('dni', soloNumeros.slice(0, 12));
-                }}
-                maxLength={12}
-                placeholder="Ej: 12345678"
-                onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                        e.preventDefault();
-                    }
-                }}
-            />
         </div>
 
     );

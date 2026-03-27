@@ -26,14 +26,14 @@ const RegisterTransportistas = ({
         ubigeoId: '',
         correoElectronico: '',
         telefono: '',
-        representanteLegal: {
-            nombre: '',
-            dni: '',
-        },
-        responsableTecnico: {
-            nombre: '',
-            numeroColegiatura: '',
-        },
+        responsableTecnico: [
+            {
+                nombre: '',
+                dni: '',
+                cargo: '',
+                numeroColegiatura: '',
+            }
+        ],
         contingencias: {
             derrame: '',
             infiltracion: '',
@@ -157,8 +157,14 @@ const RegisterTransportistas = ({
             <CardPlegable title="Contingencias">
                 <Contingencias formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
-            <CardPlegable title="Responsable Tecnico y Representante Legal">
-                <Responsable_y_Representante formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
+            <CardPlegable title="Responsable">
+                <Directorio
+                    estilos="flex justify-center items-center"
+                    data="responsableTecnico"
+                    setForm={setFormEdit ? setFormEdit : setFormData}
+                    directory={editData ? editData.responsableTecnico : formData.responsableTecnico}
+                    ItemComponent={Responsable_y_Representante}
+                />
             </CardPlegable>
             <CardPlegable title="Generadores">
                 <Directorio
