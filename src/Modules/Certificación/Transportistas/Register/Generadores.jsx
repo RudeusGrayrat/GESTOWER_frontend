@@ -33,13 +33,8 @@ const GeneradoresTransportistas = ({ set, initialData }) => {
             <Input
                 label="RUC"
                 name="ruc"
+                ancho=" min-w-12 w-36"
                 value={formData.razonSocial?.ruc}
-                disabled
-            />
-            <Input
-                label="Dirección"
-                name="direccion"
-                value={formData.razonSocial?.direccion}
                 disabled
             />
             <Input
@@ -51,6 +46,7 @@ const GeneradoresTransportistas = ({ set, initialData }) => {
             <Input
                 label="Teléfono"
                 name="telefono"
+                ancho="  min-w-12 w-32"
                 value={formData.razonSocial?.telefono}
                 disabled
             />
@@ -63,6 +59,7 @@ const GeneradoresTransportistas = ({ set, initialData }) => {
             <Input
                 label="DNI Representante"
                 name="dniRepresentante"
+                ancho="  min-w-12 w-36"
                 value={formData.razonSocial?.dniRepresentante}
                 disabled
             />

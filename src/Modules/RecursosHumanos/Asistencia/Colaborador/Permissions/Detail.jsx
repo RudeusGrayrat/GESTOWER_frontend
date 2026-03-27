@@ -26,8 +26,8 @@ const DetailAsistenciaColaborador = ({ setShowDetail, selected }) => {
   return (
     <Details setShowDetail={setShowDetail}>
       <div className="flex justify-around">
-        <div>
-          <h3 className="text-3xl font-bold mb-5">DATOS DE LA ASISTENCIA</h3>
+        <div className="flex flex-col gap-1">
+          <h3 className="text-2xl mb-2 font-bold text-[#026DCC]">DATOS DE LA ASISTENCIA</h3>
           <PDetail content="FECHA: " value={fecha} />
           <PDetail content="HORA DE INGRESO: " value={ingreso} />
           <PDetail content="SEDE DE INGRESO: " value={ingresoSede} />
@@ -42,8 +42,8 @@ const DetailAsistenciaColaborador = ({ setShowDetail, selected }) => {
           <PDetail content="OBSERVACIONES: " value={observaciones} />
         </div>
 
-        <div>
-          <h3 className="text-3xl mb-5 font-bold">DATOS DEL COLABORADOR</h3>
+        <div className="flex flex-col gap-1">
+          <h3 className="text-2xl mb-2 font-bold text-[#026DCC]">DATOS DEL COLABORADOR</h3>
           <PDetail content="NOMBRES: " value={name} />
           <PDetail content="APELLIDOS: " value={lastname} />
         </div>

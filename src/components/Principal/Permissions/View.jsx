@@ -20,7 +20,7 @@ const Details = (props) => {
     >
       <div className="flex justify-center h-[88%]">
         <div className="w-[97%] h-[97%]">
-          <div className={`p-10 m-5 h-full overflow-y-auto bg-gradient-to-tr from-gray-50 to-gray-100 rounded-lg shadow-lg ${estilos}`}>
+          <div className={`p-10 m-5  h-full overflow-y-auto bg-gradient-to-tr from-gray-50 to-gray-100 rounded-lg shadow-lg ${estilos}`}>
             {children}
           </div>
         </div>

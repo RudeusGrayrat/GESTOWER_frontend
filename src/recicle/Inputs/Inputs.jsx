@@ -72,7 +72,7 @@ const Input = ({
     const { value } = e.target;
     let newValue = value;
 
-    if (name === "email" || name === "correoElectronico" || name === "username" || name === "correo") {
+    if (type === "email" || type === "correo" || name === "email" || name === "correoElectronico" || name === "username" || name === "correo") {
       newValue = value.toLowerCase();
     } else if (name === "password" || name === "permissions") {
       newValue = value;

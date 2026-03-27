@@ -7,6 +7,8 @@ const Responsable = ({ set, initialData }) => {
         nombreResponsable: initialData?.nombreResponsable || "",
         dniResponsable: initialData?.dniResponsable || "",
         cargoResponsable: initialData?.cargoResponsable || "",
+        correoResponsable: initialData?.correoResponsable || "",
+        telefonoResponsable: initialData?.telefonoResponsable || "",
         firmaResponsable: initialData?.firmaResponsable || null,
     });
 
@@ -15,6 +17,8 @@ const Responsable = ({ set, initialData }) => {
             nombreResponsable: form.nombreResponsable,
             dniResponsable: form.dniResponsable,
             cargoResponsable: form.cargoResponsable,
+            correoResponsable: form.correoResponsable,
+            telefonoResponsable: form.telefonoResponsable,
             firmaResponsable: form.firmaResponsable,
         })
     }, [form]);
@@ -52,7 +56,7 @@ const Responsable = ({ set, initialData }) => {
             />
             <Input
                 label="Correo del Responsable"
-                type="email"
+                type="correo"
                 name="correoResponsable"
                 value={form.correoResponsable}
                 setForm={setForm}
