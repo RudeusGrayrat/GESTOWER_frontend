@@ -65,14 +65,12 @@ const RegisterTransportistas = ({
             ubigeoId: '',
             correoElectronico: '',
             telefono: '',
-            representanteLegal: {
+            responsableTecnico: [{
                 nombre: '',
                 dni: '',
-            },
-            responsableTecnico: {
-                nombre: '',
+                cargo: '',
                 numeroColegiatura: '',
-            },
+            }],
             contingencias: {
                 derrame: '',
                 infiltracion: '',
