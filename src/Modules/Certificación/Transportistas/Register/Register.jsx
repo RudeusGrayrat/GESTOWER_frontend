@@ -117,13 +117,6 @@ const RegisterTransportistas = ({
                 sendMessage(`Campos obligatorios: ${camposFaltantes.join(', ')}`, "Advertencia");
                 return;
             }
-
-            // Validar representante legal
-            if (!formData.representanteLegal.nombre || !formData.representanteLegal.dni) {
-                sendMessage("Complete los datos del representante legal", "Advertencia");
-                return;
-            }
-
             // Validar RUC (11 dígitos)
             if (!/^\d{11}$/.test(String(formData.ruc))) {
                 sendMessage("El RUC debe tener 11 dígitos numéricos", "Advertencia");
