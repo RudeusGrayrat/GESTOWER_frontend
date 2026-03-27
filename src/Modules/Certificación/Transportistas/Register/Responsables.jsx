@@ -3,6 +3,7 @@ import Input from "../../../../recicle/Inputs/Inputs";
 import InputFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
 const Responsables = ({ set, initialData }) => {
+    console.log("InitialData en Responsables:", initialData);
     const [formData, setFormData] = useState({
         nombre: initialData?.nombre || "",
         dni: initialData?.dni || "",
@@ -10,7 +11,6 @@ const Responsables = ({ set, initialData }) => {
         firmaResponsable: initialData?.firmaResponsable || "",
     });
     useEffect(() => {
-        console.log("FormData actualizado:", formData);
         set({
             nombre: formData.nombre,
             dni: formData.dni,

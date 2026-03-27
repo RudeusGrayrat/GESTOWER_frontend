@@ -27,11 +27,6 @@ const DatosBasicos = ({ form, setForm }) => {
                 value={form.telefono}
                 name="telefono"
                 setForm={setForm}
-                onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                        e.preventDefault();
-                    }
-                }}
             />
             <Input
                 label="Correo"

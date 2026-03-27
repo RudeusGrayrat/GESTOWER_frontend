@@ -81,13 +81,7 @@ const DatosDestino = ({ formData, setFormData }) => {
                 name="telefono"
                 value={formData.telefono}
                 setForm={setFormData}
-                maxLength={9}
                 placeholder="Ej: 987654321"
-                onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                        e.preventDefault();
-                    }
-                }}
             />
         </div>
     );

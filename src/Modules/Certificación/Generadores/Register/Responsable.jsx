@@ -67,11 +67,6 @@ const Responsable = ({ set, initialData }) => {
                 type="text"
                 ancho={"!min-w-32 w-44"}
                 name="telefonoResponsable"
-                onKeyPress={(e) => {
-                    if (!/[0-9]/.test(e.key)) {
-                        e.preventDefault();
-                    }
-                }}
                 value={form.telefonoResponsable}
                 setForm={setForm}
                 placeholder="Ej: 987654321"
