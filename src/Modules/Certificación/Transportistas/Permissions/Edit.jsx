@@ -1,5 +1,4 @@
 import { useState } from "react";
-import PopUp from "../../../../recicle/popUps";
 import useSendMessage from "../../../../recicle/senMessage";
 import RegisterTransportistas from "../Register/Register";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
@@ -7,15 +6,15 @@ import axios from "../../../../api/axios";
 import { deepDiff } from "../../../validateEdit";
 
 const EditTransportistas = ({ setShowEdit, selected, reload }) => {
-    const [deshabilitar, setDeshabilitar] = useState(false);
     const sendMessage = useSendMessage();
     const [formEdit, setFormEdit] = useState(selected);
+    console.log("Datos originales:", selected);
+    console.log("Datos editados:", formEdit);
     const diferencias = deepDiff(selected, formEdit);
+    console.log("Diferencias detectadas:", diferencias);
     const upDate = async () => {
-        setDeshabilitar(true);
         sendMessage("Editando transportista...", "Espere", true);
         try {
-            console.log("Enviando datos al backend:", formEdit);
             if (Object.keys(diferencias).length === 0) {
                 sendMessage("No se han detectado cambios para actualizar", "info");
                 return;
@@ -27,13 +26,12 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
             const response = await axios.patch(`/certificaciones/editTransportista/${formEdit._id}`, diferencias);
             if (response.data.type === "Correcto") {
                 sendMessage("Transportista editado exitosamente", "Correcto");
-                setShowEdit(false);
                 reload();
             }
         } catch (error) {
             sendMessage(error || "Error al editar el transportista", "error");
         } finally {
-            setDeshabilitar(false);
+            setShowEdit(false);
         }
     }
     return (

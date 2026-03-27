@@ -9,6 +9,7 @@ const Responsable_y_Representante = ({ set, initialData }) => {
         numeroColegiatura: initialData?.numeroColegiatura || "",
     });
     useEffect(() => {
+        console.log("FormData actualizado:", formData);
         set({
             nombre: formData.nombre,
             dni: formData.dni,
@@ -21,25 +22,29 @@ const Responsable_y_Representante = ({ set, initialData }) => {
             <Input
                 ancho="!w-96"
                 label="Nombre del Responsable"
-                value={formData.responsableTecnico?.nombre || ""}
+                name="nombre"
+                value={formData.nombre || ""}
                 setForm={setFormData}
                 placeholder="Nombres y apellidos"
             />
             <Input
                 label="DNI del Responsable"
-                value={formData.responsableTecnico?.dni || ""}
+                name="dni"
+                value={formData.dni || ""}
                 setForm={setFormData}
                 placeholder="Ej: 12345678"
             />
             <Input
                 label="Cargo del Responsable"
-                value={formData.responsableTecnico?.cargo || ""}
+                name="cargo"
+                value={formData.cargo || ""}
                 setForm={setFormData}
                 placeholder="Ej: Gerente General"
             />
             <Input
                 label="N° de Colegiatura"
-                value={formData.responsableTecnico?.numeroColegiatura || ""}
+                name="numeroColegiatura"
+                value={formData.numeroColegiatura || ""}
                 setForm={setFormData}
                 placeholder="Ej: CIP 123456"
             />

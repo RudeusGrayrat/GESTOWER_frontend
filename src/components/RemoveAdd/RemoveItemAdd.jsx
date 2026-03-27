@@ -29,7 +29,7 @@ const Directorio = (props) => {
   };
 
   const handleUpdateFormData = (id, newData) => {
-    const updatedForms = formData.map((form) =>
+    const updatedForms = formData?.map((form) =>
       form.id === id
         ? { ...form, initialData: { ...form.initialData, ...newData } }
         : form
@@ -37,13 +37,13 @@ const Directorio = (props) => {
     setFormData(updatedForms);
     setForm((prevEdition) => ({
       ...prevEdition,
-      [data]: updatedForms.map((form) => form.initialData),
+      [data]: updatedForms?.map((form) => form.initialData),
     }));
   };
 
   useEffect(() => {
     // Mapeamos los datos para obtener solo los 'initialData'
-    const rawData = formData.map((form) => form.initialData);
+    const rawData = formData?.map((form) => form.initialData);
 
     // ⭐️ FILTRAMOS LOS OBJETOS VACÍOS {} ⭐️
     const filteredData = rawData.filter((item) => !isContentEmpty(item));
@@ -55,7 +55,7 @@ const Directorio = (props) => {
   }, [formData, setForm, data]); // Asegúrate de incluir 'data' en las dependencias si no lo estaba
   return (
     <div className="w-full mt-0 flex flex-col gap-4">
-      {formData.map((form) => (
+      {formData?.map((form) => (
         <div
           key={form.id}
           className={` ${estilos} border py-4 bg-white  border-slate-200 shadow-lg rounded-xl`}

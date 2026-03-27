@@ -162,7 +162,7 @@ const RegisterTransportistas = ({
                     estilos="flex justify-center items-center"
                     data="responsableTecnico"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? editData.responsableTecnico : formData.responsableTecnico}
+                    directory={editData ? (editData.responsableTecnico?.length > 0 ? editData.responsableTecnico : []) : (formData.responsableTecnico || [])}
                     ItemComponent={Responsable_y_Representante}
                 />
             </CardPlegable>
@@ -171,7 +171,7 @@ const RegisterTransportistas = ({
                     estilos="flex justify-center items-center"
                     data="generadores"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? editData.generadores : formData.generadores}
+                    directory={editData ? (editData.generadores?.length > 0 ? editData.generadores : []) : (formData.generadores || [])}
                     ItemComponent={GeneradoresTransportistas}
                 />
             </CardPlegable>
@@ -180,7 +180,7 @@ const RegisterTransportistas = ({
                     estilos="flex justify-center items-center"
                     data="conductores"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? editData.conductores : formData.conductores}
+                    directory={editData ? (editData.conductores?.length > 0 ? editData.conductores : []) : (formData.conductores || [])}
                     ItemComponent={Conductores}
                 />
             </CardPlegable>
