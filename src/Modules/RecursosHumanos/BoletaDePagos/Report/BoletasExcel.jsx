@@ -25,7 +25,7 @@ const BoletaExcel = ({ form, setForm, options }) => {
   };
 
   const descargar = async () => {
-    sendMessage("Descargando archivo...", "info");
+    sendMessage("Descargando archivo...", "Info");
     try {
       const boletas = await findBoletas();
       if (boletas.length === 0)

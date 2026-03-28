@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
-import axios from "../../../../api/axios";
 
 const DatosDestino = ({ formData, setFormData }) => {
     const [ubigeoOptions, setUbigeoOptions] = useState([]);
@@ -55,7 +54,6 @@ const DatosDestino = ({ formData, setFormData }) => {
             <Input
                 label="Ubigeo"
                 type="autocomplete"
-                optionValue="_id"
                 ancho={"!w-80"}
                 value={formData.ubigeoId}
                 setForm={setFormData}

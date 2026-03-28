@@ -63,6 +63,16 @@ const RegisterTransportistas = ({
             }
         ]
     });
+    const validateForm = () => {
+        if (!formData.razonSocial) return "Falta razón social";
+        if (!formData.ruc) return "Falta RUC";
+        if (!formData.registroEors) return "Falta Registro EO-RS";
+        if (!formData.direccion) return "Falta dirección";
+        if (!formData.ubigeoId) return "Falta ubigeo";
+        if (!formData.correoElectronico) return "Falta correo electrónico";
+        if (!formData.telefono) return "Falta teléfono";
+        return null;
+    };
     const resetForm = () => {
         setFormData({
             razonSocial: '',
@@ -82,12 +92,7 @@ const RegisterTransportistas = ({
                 nombre: '',
                 numeroColegiatura: '',
             },
-            responsables: [{
-                nombre: '',
-                dni: '',
-                cargo: '',
-                firmaResponsable: '',
-            }],
+            responsables: [],
             contingencias: {
                 derrame: '',
                 infiltracion: '',
@@ -95,18 +100,8 @@ const RegisterTransportistas = ({
                 explosion: '',
                 otros: ''
             },
-            generadores: [
-                {
-                    _id: "",
-                    razonSocial: "",
-                }
-            ],
-            conductores: [
-                {
-                    nombre: "",
-                    licencia: "",
-                }
-            ]
+            generadores: [],
+            conductores: []
         });
     }
     const register = async () => {
@@ -114,24 +109,12 @@ const RegisterTransportistas = ({
         sendMessage("Registrando transportista...", "Cargando");
 
         try {
-            const camposObligatorios = [
-                { campo: formData.razonSocial, nombre: "Razón Social" },
-                { campo: formData.ruc, nombre: "RUC" },
-                { campo: formData.registroEors, nombre: "Registro EO-RS" },
-                { campo: formData.direccion, nombre: "Dirección" },
-                { campo: formData.ubigeoId, nombre: "Ubigeo" },
-                { campo: formData.correoElectronico, nombre: "Correo electrónico" },
-                { campo: formData.telefono, nombre: "Teléfono" }
-            ];
-
-            const camposFaltantes = camposObligatorios
-                .filter(item => !item.campo)
-                .map(item => item.nombre);
-
-            if (camposFaltantes.length > 0) {
-                sendMessage(`Campos obligatorios: ${camposFaltantes.join(', ')}`, "Advertencia");
+            const errorMsg = validateForm();
+            if (errorMsg) {
+                sendMessage(errorMsg, "Info");
                 return;
             }
+
             // Validar RUC (11 dígitos)
             if (!/^\d{11}$/.test(String(formData.ruc))) {
                 sendMessage("El RUC debe tener 11 dígitos numéricos", "Advertencia");

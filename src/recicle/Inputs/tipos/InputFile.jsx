@@ -20,7 +20,6 @@ const InputFiles = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [preview, setPreview] = useState(null);
   const [nameFile, setNameFile] = useState("");
-  console.log("finelNAME", nameFile);
   // 🎨 estilos
   const styleError = "border-red-500 animate-shake";
   const styleNormal = "border-gray-300";

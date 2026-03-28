@@ -2,6 +2,7 @@ import axios from "../../../../api/axios";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import { Column } from "primereact/column";
 import DetailDestino from "../Permissions/Detail";
+import EditDestino from "../Permissions/EditDestino";
 
 const ListDestinos = ({
     permissionRead, permissionApprove, permissionEdit, permissionDelete, permissionDisapprove
@@ -32,6 +33,7 @@ const ListDestinos = ({
             permissionDelete={permissionDelete}
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
+            EditItem={EditDestino}
             DetailItem={DetailDestino}
             fetchData={fetchData}
             title="destinos_certificacion"

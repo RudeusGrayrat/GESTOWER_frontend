@@ -3,8 +3,6 @@ import CardPlegable from "../../../../recicle/Divs/CardPlegable";
 import DatosBasicos from "./DatosBasicos";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
-import PopUp from "../../../../recicle/popUps";
-import { setMessage } from "../../../../redux/actions";
 import axios from "../../../../api/axios"
 import DatosPlanta from "./DatosPlanta";
 import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
@@ -12,7 +10,6 @@ import Responsable from "./Responsable";
 
 const Register = ({ editForm, setEditForm }) => {
     const sendMessage = useSendMessage()
-    const [deshabilitar, setDeshabilitar] = useState(false)
     const [form, setForm] = useState({
         razonSocial: "",
         ruc: "",
@@ -23,47 +20,43 @@ const Register = ({ editForm, setEditForm }) => {
         plantas: [],
         responsablesTecnicos: []
     });
+    const validateForm = () => {
+        if (!form.razonSocial) return "Falta razón social";
+        if (!form.ruc) return "Falta RUC";
+        if (!form.correoElectronico) return "Falta correo";
+        if (!form.telefono) return "Falta teléfono";
+        if (!form.representanteLegal) return "Falta representante";
+        if (!form.dniRepresentante) return "Falta DNI";
+
+        if (!form.plantas || form.plantas.length === 0)
+            return "Debe agregar al menos una planta";
+
+        if (!form.responsablesTecnicos || form.responsablesTecnicos.length === 0)
+            return "Debe agregar al menos un responsable";
+
+        return null;
+    };
     const resetForm = () => {
-        if (Object.values(form).some(value => value !== "")) {
-            setForm({
-                razonSocial: "",
-                ruc: "",
-                correoElectronico: "",
-                telefono: "",
-                representanteLegal: "",
-                dniRepresentante: "",
-                plantas: [{
-                    denominacion: "",
-                    tipoPlanta: "",
-                    direccion: "",
-                    ubigeoId: "",
-                    coordenadasUtm: { norte: "", este: "", zona: "" },
-                    actividadEconomica: "",
-                    sector: "",
-                    tieneIga: false,
-                    institucionApruebaIga: "",
-                    fechaAprobacionIga: "",
-                    numeroResolucionIga: "",
-                }],
-                responsablesTecnicos: [{
-                    nombreResponsable: "",
-                    dniResponsable: "",
-                    cargoResponsable: "",
-                    correoResponsable: "",
-                    telefonoResponsable: "",
-                    firmaResponsable: null,
-                }]
-            });
-        }
+        setForm({
+            razonSocial: "",
+            ruc: "",
+            correoElectronico: "",
+            telefono: "",
+            representanteLegal: "",
+            dniRepresentante: "",
+            plantas: [],
+            responsablesTecnicos: []
+        });
     }
+
     const register = async () => {
-        setDeshabilitar(true);
+        const errorMsg = validateForm();
+        if (errorMsg) {
+            sendMessage(errorMsg, "Info");
+            return;
+        }
         sendMessage("Registrando generador...", "Cargando", true);
         try {
-            if (Object.values(form).some(value => value === "")) {
-                sendMessage("Por favor, complete todos los campos del formulario.", "Advertencia");
-                return;
-            }
 
             // ✅ Todo ya viene en base64 desde InputFile — enviar directo
             const response = await axios.post("/certificaciones/postGenerador", form);
@@ -75,8 +68,6 @@ const Register = ({ editForm, setEditForm }) => {
             }
         } catch (error) {
             sendMessage(error, error.type || "Error");
-        } finally {
-            setDeshabilitar(false);
         }
     }
     return (

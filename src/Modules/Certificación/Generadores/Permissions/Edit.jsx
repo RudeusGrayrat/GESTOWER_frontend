@@ -16,7 +16,7 @@ const EditGenerador = ({ setShowEdit, selected, reload }) => {
         try {
             sendMessage("Editando generador...", "Espere", true);
             if (Object.keys(changes).length === 0) {
-                sendMessage("No se han detectado cambios para actualizar", "info");
+                sendMessage("No se han detectado cambios para actualizar", "Info");
                 return;
             }
 

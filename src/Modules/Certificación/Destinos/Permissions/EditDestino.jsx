@@ -1,11 +1,11 @@
 import { useState } from "react";
 import useSendMessage from "../../../../recicle/senMessage";
-import RegisterTransportistas from "../Register/Register";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import axios from "../../../../api/axios";
 import { deepDiff } from "../../../validateEdit";
+import RegisterDestinos from "../Register/Register";
 
-const EditTransportistas = ({ setShowEdit, selected, reload }) => {
+const EditDestino = ({ setShowEdit, selected, reload }) => {
     const sendMessage = useSendMessage();
     const [formEdit, setFormEdit] = useState(selected);
     console.log("Datos originales:", selected);
@@ -13,7 +13,7 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
     const diferencias = deepDiff(selected, formEdit);
     console.log("Diferencias detectadas:", diferencias);
     const upDate = async () => {
-        sendMessage("Editando transportista...", "Espere", true);
+        sendMessage("Editando destino...", "Espere", true);
         try {
             if (Object.keys(diferencias).length === 0) {
                 sendMessage("No se han detectado cambios para actualizar", "Info");
@@ -23,13 +23,13 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
                 diferencias.generadores = formEdit.generadores.map(gen => gen._id);
             }
 
-            const response = await axios.patch(`/certificaciones/editTransportista/${formEdit._id}`, diferencias);
+            const response = await axios.patch(`/certificaciones/editDestino/${formEdit._id}`, diferencias);
             if (response.data.type === "Correcto") {
-                sendMessage("Transportista editado exitosamente", "Correcto");
+                sendMessage("Destino editado exitosamente", "Correcto");
                 reload();
             }
         } catch (error) {
-            sendMessage(error || "Error al editar el transportista", "error");
+            sendMessage(error || "Error al editar el destino", "error");
         } finally {
             setShowEdit(false);
         }
@@ -40,7 +40,7 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
             border-gray-100 border shadow-2xl fixed top-5 z-40 rounded-xl `}
         >
             <div className=" flex flex-col h-[90%] space-y-4 p-2 overflow-y-auto">
-                <RegisterTransportistas editData={formEdit} setFormEdit={setFormEdit} />
+                <RegisterDestinos editData={formEdit} setFormEdit={setFormEdit} />
             </div>
 
             <div className="flex justify-end border-t ">
@@ -55,4 +55,4 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
     )
 }
 
-export default EditTransportistas;
+export default EditDestino;

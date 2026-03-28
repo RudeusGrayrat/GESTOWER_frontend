@@ -2,17 +2,32 @@ import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 
 const Paso4_Transporte = ({ formData, setFormData }) => {
+    const [formTransporte, setFormTransporte] = useState(formData.transporte || {
+        nombreConductor: "",
+        fechaRecepcion: "",
+        tipoVehiculo: "",
+        placaVehiculo: "",
+        cantidadRecibida: "",
+        observaciones: "",
+    });
+    const [formReferendo, setFormReferendo] = useState(formData.referendoEntrega || {
+        referendo: false,
+        generadorResponsableManejo: "",
+        firmaGenerador: "",
+        responsableEors: "",
+        firmaResponsableEors: "",
+        dniResponsableEors: "",
+        cargoResponsableEors: "",
+        fechaHora: "",
+    });
     const [transportistaOptions, setTransportistaOptions] = useState([]);
     const [conductoresOptions, setConductoresOptions] = useState([]);
-    console.log("FormData Transporte:", formData);
-    useEffect(() => {
-        if (formData.transportistaId) {
-            const transportistaSeleccionado = formData?.transportistaId;
-            const conductores = transportistaSeleccionado?.conductores || [];
-            const allConductores = conductores?.map(c => c.nombre)
-            setConductoresOptions(allConductores);
-        }
-    }, [formData.transportistaId]);
+    const [responsableGeneradorOptions, setResponsableGeneradorOptions] = useState([]);
+    const [responsableEORSOptions, setResponsableEORSOptions] = useState([]);
+    console.log("Opciones de conductores:", conductoresOptions);
+    console.log("Opciones de responsables del generador:", responsableGeneradorOptions);
+    console.log("Opciones de responsables EORS:", responsableEORSOptions);
+    console.log("Opciones de transportistas:", transportistaOptions);
     const handleTransporteChange = (campo, valor) => {
         setFormData(prev => ({
             ...prev,
@@ -31,35 +46,40 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
             }
         }));
     };
+    useEffect(() => {
+        if (formData.transportistaId) {
+            const transportistaSeleccionado = formData?.transportistaId;
+            const conductores = transportistaSeleccionado?.conductores || [];
+            const allConductores = conductores?.map(c => c.nombre)
+            setConductoresOptions(allConductores);
+        }
+    }, [formData.transportistaId]);
 
     useEffect(() => {
-        if (formData.referendoEntrega?.referendo && formData.transportistaId) {
-            setFormData(prev => ({
-                ...prev,
-                referendoEntrega: {
-                    ...prev.referendoEntrega,
-                    // generadorResponsableManejo: formData.generadorId?.representanteLegal,
-                    responsableEors: formData.transportistaId?.representanteLegal?.nombre,
-                    dniResponsableEors: formData.transportistaId?.representanteLegal?.dni,
-                    fechaHora: formData.transporte?.fechaRecepcion
-                }
-            }));
+        if (formData.transportistaId) {
+            const responsablesEORS = formData.transportistaId?.responsables
+            console.log("Responsables EORS del transportista:", responsablesEORS);
+            if (responsablesEORS.length > 0) {
+                setResponsableEORSOptions(responsablesEORS.map(r => r.nombre));
+            } else {
+                setResponsableEORSOptions([]);
+            }
         }
-        if (!formData.referendoEntrega?.referendo) {
-            setFormData(prev => ({
-                ...prev,
-                referendoEntrega: {
-                    generadorResponsableManejo: '',
-                    firmaGenerador: '',
-                    responsableEors: '',
-                    firmaResponsableEors: '',
-                    dniResponsableEors: '',
-                    cargoResponsableEors: '',
-                    fechaHora: ''
-                }
-            }));
+
+    }, [formData.transportistaId]);
+    useEffect(() => {
+        if (Object.keys(formData.generadorId || {}).length > 0) {
+            console.log("Generador seleccionado para referendo:", formData.generadorId);
+            const responsablesGenerador = formData.generadorId?.responsablesTecnicos
+            console.log("Responsables Generador del transportista:", responsablesGenerador);
+            if (responsablesGenerador.length > 0) {
+                console.log("Nombres de responsables del generador:", responsablesGenerador.map(r => r.nombre));
+                setResponsableGeneradorOptions(responsablesGenerador.map(r => r.nombreResponsable));
+            } else {
+                setResponsableGeneradorOptions([]);
+            }
         }
-    }, [formData.transportistaId, formData.referendoEntrega?.referendo]);
+    }, [formData.generadorId]);
     return (
         <div className="gap-4">
             <div className="flex flex-wrap">
@@ -140,8 +160,10 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
 
                         <Input
                             label="Generador - Responsable del manejo"
-                            value={formData.referendoEntrega?.generadorResponsableManejo || ""}
-                            onChange={(e) => handleReferendo('generadorResponsableManejo', e.target.value.toUpperCase())}
+                            type="select"
+                            options={responsableGeneradorOptions}
+                            value={formReferendo.generadorResponsableManejo}
+                            setForm={setFormReferendo}
                             placeholder="Nombre del generador - responsable del manejo"
                             ancho="w-full"
                         />
@@ -155,8 +177,10 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
                         />
                         <Input
                             label="Responsable EORS"
-                            value={formData.referendoEntrega?.responsableEors || ""}
-                            onChange={(e) => handleReferendo('responsableEors', e.target.value.toUpperCase())}
+                            type="select"
+                            options={responsableEORSOptions}
+                            value={formReferendo.responsableEors}
+                            setForm={setFormReferendo}
                             placeholder="Nombre del responsable EORS"
                             ancho="w-full"
                         />

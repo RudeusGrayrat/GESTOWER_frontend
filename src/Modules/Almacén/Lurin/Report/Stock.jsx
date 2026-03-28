@@ -18,7 +18,7 @@ const Stock = ({ contratos, plantilla, contratosId }) => {
     (contrato) => contrato.cliente === form.contrato
   );
   const enviar = async () => {
-    sendMessage("Descargando archivo...", "info");
+    sendMessage("Descargando archivo...", "Info");
     try {
       if (!findContrato) {
         sendMessage("Seleccione un contrato válido", "Error");

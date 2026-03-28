@@ -10,7 +10,6 @@ import axios from "../../api/axios";
 import { AutoComplete } from "primereact/autocomplete";
 
 const Input = ({
-  prueba,
   setForm,
   label,
   type,

@@ -26,7 +26,6 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         mes: new Date().getMonth() + 1,
         //PASO1 Datos Generales
         transportistaId: '',
-        plantaId: '',
         generadorId: '',
         //PASO2 datos del residuo
         residuo: {
@@ -89,7 +88,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
 
         estado: 'PENDIENTE'
     });
-
+    console.log("formData", formData);
     const pasos = [
         { id: 1, nombre: "Datos generales", componente: Paso1_DatosGenerales },
         { id: 2, nombre: "Residuos peligroso", componente: Paso2_Residuo },
@@ -105,8 +104,8 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             año: new Date().getFullYear(),
             mes: new Date().getMonth() + 1,
             //PASO1 Datos Generales
+            transportistaId: '',
             generadorId: '',
-            plantaId: '',
             //PASO2 datos del residuo
             residuo: {
                 descripcion: '',
@@ -129,7 +128,6 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
                 corrosivos: false, otros: ''
             },
             //PASO3 Manejo del residuo
-            transportistaId: '',
             transporte: {
                 nombreConductor: "",
                 fechaRecepcion: '', cantidadRecibida: '', observaciones: '', tipoVehiculo: '', placaVehiculo: ''

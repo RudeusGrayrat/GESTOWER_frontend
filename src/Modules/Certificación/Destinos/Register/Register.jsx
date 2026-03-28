@@ -1,17 +1,16 @@
 import { useState } from "react";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable";
 import RepresentanteLegal from "./RepresentanteLegal";
-import ResponsableTecnico from "./ResponsableTecnico";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
-import PopUp from "../../../../recicle/popUps";
 import { setMessage } from "../../../../redux/actions";
 import axios from "../../../../api/axios";
 import DatosDestino from "./DatosDestino";
+import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
+import Responsables from "./Responsables";
 
-const RegisterDestinos = () => {
+const RegisterDestinos = ({ editData, setFormEdit }) => {
     const sendMessage = useSendMessage();
-    const [deshabilitar, setDeshabilitar] = useState(false);
 
     const [formData, setFormData] = useState({
         razonSocial: '',
@@ -31,6 +30,7 @@ const RegisterDestinos = () => {
             nombre: '',
             numeroColegiatura: '',
         },
+        responsables: [],
         estado: 'ACTIVO'
     });
 
@@ -53,12 +53,11 @@ const RegisterDestinos = () => {
                 nombre: '',
                 numeroColegiatura: '',
             },
+            responsables: [],
             estado: 'ACTIVO'
         });
     };
-
     const register = async () => {
-        setDeshabilitar(true);
         setMessage("Registrando destino...", "Cargando", true);
 
         try {
@@ -94,8 +93,12 @@ const RegisterDestinos = () => {
                 sendMessage("El RUC debe tener 11 dígitos numéricos", "Advertencia");
                 return;
             }
-
-            const response = await axios.post("/certificaciones/postDestino", formData);
+            const soloIdUbigeo = typeof formData.ubigeoId === 'object' ? formData.ubigeoId._id : formData.ubigeoId;
+            const dataToSend = {
+                ...formData,
+                ubigeoId: soloIdUbigeo,
+            };
+            const response = await axios.post("/certificaciones/postDestino", dataToSend);
             const data = response.data;
 
             sendMessage(data.message, data.type || "Correcto");
@@ -106,8 +109,6 @@ const RegisterDestinos = () => {
         } catch (error) {
             console.error("Error:", error);
             sendMessage(error.response?.data?.message || "Error al registrar destino", "Error");
-        } finally {
-            setDeshabilitar(false);
         }
     };
 
@@ -115,32 +116,36 @@ const RegisterDestinos = () => {
         <div className="w-full p-4">
 
             <CardPlegable title="Datos Básicos del Destino">
-                <DatosDestino formData={formData} setFormData={setFormData} />
+                <DatosDestino formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
 
-            <CardPlegable title="Representante Legal">
-                <RepresentanteLegal formData={formData} setFormData={setFormData} />
+            <CardPlegable title="Representante Legal y Responsable Tecnico">
+                <RepresentanteLegal formData={editData ? editData : formData} setFormData={setFormEdit ? setFormEdit : setFormData} />
             </CardPlegable>
 
-            <CardPlegable title="Responsable Técnico">
-                <ResponsableTecnico formData={formData} setFormData={setFormData} />
+            <CardPlegable title="Responsables">
+                <Directorio
+                    ItemComponent={Responsables}
+                    setForm={setFormEdit ? setFormEdit : setFormData}
+                    directory={editData ? editData.responsables : formData.responsables}
+                    data="responsables"
+                    estilos="flex justify-center items-center"
+                />
             </CardPlegable>
 
-            <div className="flex justify-center mt-6">
+            {!editData && <div className="flex justify-center mt-6">
                 <ButtonOk
                     children="Cancelar"
                     classe="!w-32 mr-4"
                     onClick={resetForm}
-                    disabled={deshabilitar}
                 />
                 <ButtonOk
                     type="ok"
                     onClick={register}
                     classe="!w-32"
                     children="Registrar"
-                    disabled={deshabilitar}
                 />
-            </div>
+            </div>}
         </div>
     );
 };

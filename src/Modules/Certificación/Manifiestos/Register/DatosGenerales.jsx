@@ -1,10 +1,23 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 
 const Paso1_DatosGenerales = ({ formData, setFormData }) => {
     const [transportistaOptions, setTransportistaOptions] = useState([]);
     const [generadorOptions, setGeneradorOptions] = useState([]);
     const [plantaOptions, setPlantaOptions] = useState([]);
+
+    useEffect(() => {
+        //poner las opciones de planta que vienen en el generador, o sea que se pongan en formData.generadorId
+        if (!formData.generadorId) {
+            return;
+        }
+        const plantasDisponibles = formData.generadorId.plantas || [];
+        if (plantasDisponibles.length > 0) {
+            setPlantaOptions(plantasDisponibles);
+        } else {
+            return
+        }
+    }, [formData.generadorId]);
 
     return (
         <div className="flex flex-wrap">
@@ -24,6 +37,7 @@ const Paso1_DatosGenerales = ({ formData, setFormData }) => {
                 label="Generador"
                 type="autocomplete"
                 name="generadorId"
+                ancho="!w-80"
                 value={formData.generadorId}
                 setForm={setFormData}
                 fetchData={`/certificaciones/getGeneradoresByTransportista/${formData.transportistaId?._id || formData.transportistaId}`}
@@ -35,14 +49,13 @@ const Paso1_DatosGenerales = ({ formData, setFormData }) => {
             />
             <Input
                 label="Planta/Instalación"
-                type="autocomplete"
+                type="select"
                 name="plantaId"
+                ancho="!w-80"
                 value={formData.plantaId}
                 setForm={setFormData}
-                fetchData={`/certificaciones/getPlantasByGenerador/${formData?.generadorId?._id || formData?.generadorId}`}
-                setOptions={setPlantaOptions}
                 options={plantaOptions}
-                field="direccion"
+                optionLabel="direccion"
                 placeholder={formData.generadorId ? "Seleccionar planta" : "Primero seleccione un generador"}
                 disabled={!formData.generadorId}
             />

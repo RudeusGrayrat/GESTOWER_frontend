@@ -30,7 +30,7 @@ const Ingresos = ({ contratos, contratosId, plantilla }) => {
   };
   const findStock = response.data;
   const enviar = async () => {
-    sendMessage("Descargando archivo...", "info");
+    sendMessage("Descargando archivo...", "Info");
     try {
       if (findStock.length === 0)
         return sendMessage("No hay datos para descargar", "Error");
