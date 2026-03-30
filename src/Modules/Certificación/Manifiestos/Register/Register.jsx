@@ -108,7 +108,8 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             //PASO1 Datos Generales
             transportistaId: '',
             generadorId: '',
-            responsableGestionId: '',
+            planta: {},
+            responsableGestion: {},
             //PASO2 datos del residuo
             residuo: {
                 descripcion: '',
@@ -185,7 +186,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
 
             // Validar paso 2
             if (!formData.residuo.descripcion || !formData.residuo.cantidadTotal || !formData.residuo.estadoFisico) {
-                sendMessage("Complete los datos del residuo", "Advertencia");
+                sendMessage(`Complete los datos del residuo: ${!formData.residuo.descripcion ? 'Descripción, ' : ''}${!formData.residuo.cantidadTotal ? 'Cantidad total, ' : ''}${!formData.residuo.estadoFisico ? 'Estado físico' : ''}`, "Info");
                 setPasoActual(2);
                 return;
             }
