@@ -59,6 +59,17 @@ const Paso1_DatosGenerales = ({ formData, setFormData }) => {
                 placeholder={formData.generadorId ? "Seleccionar planta" : "Primero seleccione un generador"}
                 disabled={!formData.generadorId}
             />
+            <Input
+                label="Responsable de gestion"
+                type="select"
+                options={formData.generadorId?.responsablesTecnicos || []}
+                name="responsableGestionId"
+                value={formData.responsableGestionId}
+                setForm={setFormData}
+                optionLabel="nombreResponsable"
+                placeholder={formData.generadorId ? "Seleccionar responsable de gestión" : "Primero seleccione un generador"}
+                disabled={!formData.generadorId}
+            />
         </div>
     );
 };

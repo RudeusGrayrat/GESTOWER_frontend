@@ -18,7 +18,8 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
 
         // Extraer referencias pobladas (asumiendo que vienen con populate)
         const generador = manifiesto.generadorId || {};
-        const planta = manifiesto.plantaId || {};
+        const findplanta = generador.plantas ? generador.plantas.find(p => p._id === manifiesto.plantaId) : null;
+        const planta = findplanta || {};
         const plantaUbigeo = planta.ubigeoId || {};
         const transportista = manifiesto.transportistaId || {};
         const transportistaUbigeo = transportista.ubigeoId || {};

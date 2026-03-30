@@ -5,13 +5,13 @@ import Paso2_Residuo from "./Residuo";
 import Paso3_Peligrosidad from "./Peligrosidad";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
-import PopUp from "../../../../recicle/popUps";
 import axios from "../../../../api/axios";
 import { useAuth } from "../../../../context/AuthContext";
 import { ProgressBar } from "primereact/progressbar";
 import Paso4_Transporte from "./Transporte";
 import Paso5_Destino from "./Destino";
 import Paso6_OtrasObligaciones from "./OtrasObligaciones";
+import dayjs from "dayjs";
 
 const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) => {
 
@@ -23,10 +23,12 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
     const [formData, setFormData] = useState({
         // Autogenerado
         año: new Date().getFullYear(),
-        mes: new Date().getMonth() + 1,
+        // El mes se guarda como número (1-12) para facilitar la consulta en backend, pero se muestra como nombre en el frontend
+        mes: dayjs().locale("es").format("MMMM"),
         //PASO1 Datos Generales
         transportistaId: '',
         generadorId: '',
+        plantaId: '',
         //PASO2 datos del residuo
         residuo: {
             descripcion: '',
@@ -106,6 +108,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             //PASO1 Datos Generales
             transportistaId: '',
             generadorId: '',
+            responsableGestionId: '',
             //PASO2 datos del residuo
             residuo: {
                 descripcion: '',

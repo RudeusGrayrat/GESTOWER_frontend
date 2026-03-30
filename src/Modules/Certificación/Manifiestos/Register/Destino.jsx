@@ -4,7 +4,11 @@ import Input from "../../../../recicle/Inputs/Inputs";
 const Paso5_Destino = ({ formData, setFormData }) => {
     const [destinoOptions, setDestinoOptions] = useState([]);
     const tipoManejoOptions = ["TRATAMIENTO", "DISPOSICIÓN FINAL", "VALORIZACIÓN"];
-
+    const [responsableOptions, setResponsableOptions] = useState([]);
+    const [referendoForm, setReferendoForm] = useState({
+        responsableEorsDestino: "",
+        fechaHora: ""
+    });
     const handleDestinoChange = (campo, valor) => {
         setFormData(prev => ({
             ...prev,
@@ -14,17 +18,49 @@ const Paso5_Destino = ({ formData, setFormData }) => {
             }
         }));
     };
+    useEffect(() => {
+        // Si el referendo se desactiva, limpiar los campos relacionados
+        if (!formData.referendoRecepcion?.referendo) {
+            setReferendoForm({
+                responsableEorsDestino: "",
+                fechaHora: ""
+            });
+        }
+    }, [formData.referendoRecepcion?.referendo]);
+    useEffect(() => {
+        if (destinoOptions.length > 0) {
+            setFormData(prev => ({
+                ...prev,
+                destinoId: prev.destinoId || destinoOptions[0]
+            }));
+        }
+    }, [destinoOptions]);
+    useEffect(() => {
+        // Si el referendo se activa, cargar opciones de responsables EO-RS
+        if (formData.referendoRecepcion?.referendo) {
+            const destinoId = formData.destinoId;
+            if (destinoId) {
+                setResponsableOptions(destinoId.responsables)
+            } else {
+                setResponsableOptions([]);
+            }
+        }
+    }, [formData.referendoRecepcion?.referendo, formData.destinoId]);
 
-
-    const handleReferendo = (campo, valor) => {
+    useEffect(() => {
         setFormData(prev => ({
             ...prev,
             referendoRecepcion: {
                 ...prev.referendoRecepcion,
-                [campo]: valor
+                responsableEorsDestino: referendoForm.responsableEorsDestino?.nombre || '',
+                firmaGenerador: referendoForm.responsableEorsDestino?.firma || '',
+                dniResponsableEorsDestino: referendoForm.responsableEorsDestino?.dni || '',
+                cargoResponsableEorsDestino: referendoForm.responsableEorsDestino?.cargo || '',
+                fechaHora: referendoForm.fechaHora || '',
             }
         }));
-    }
+    }, [referendoForm.responsableEorsDestino, referendoForm.fechaHora]);
+
     const handleOtrosManejosChange = (campo, valor) => {
         setFormData(prev => ({
             ...prev,
@@ -158,52 +194,54 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                 ancho="w-full"
             />
 
+            <div className="flex flex-col items-start ml-5 gap-1">
+                <span className=" text-md text-gray-600">Referendo</span>
+                <input
+                    type="checkbox"
+                    checked={formData.referendoRecepcion?.referendo || false}
+                    onChange={(e) => setFormData(prev => ({
+                        ...prev,
+                        referendoRecepcion: {
+                            ...prev.referendoRecepcion,
+                            referendo: e.target.checked
+                        }
+                    }))}
+                    className="h-6 w-10 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+                />
+            </div>
             <div className="w-full mt-4 border-t pt-4">
                 <div className="flex flex-col gap-4 ">
-                    <div className="flex items-center mt-4 m-2">
-                        <input
-                            type="checkbox"
-                            checked={formData.referendoRecepcion?.referendo || false}
-                            onChange={(e) => handleReferendo('referendo', e.target.checked)}
-                            className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                        />
-                        <span className="ml-2 text-md text-gray-600">Referendo</span>
-                    </div>
                     {formData.referendoRecepcion?.referendo && (
                         <div className="flex flex-wrap">
-
                             <Input
                                 label="Responsable EO-RS del destino final"
-                                value={formData.referendoRecepcion?.responsableEorsDestino || ""}
-                                onChange={(e) => handleReferendo('responsableEorsDestino', e.target.value.toUpperCase())}
+                                type="select"
+                                name="responsableEorsDestino"
+                                options={responsableOptions}
+                                setForm={setReferendoForm}
+                                optionLabel="nombre"
+                                value={referendoForm.responsableEorsDestino || ""}
                                 placeholder="Nombre del responsable EO-RS del destino final"
                                 ancho="w-full"
                             />
                             <Input
-                                label="Firma del generador"
-                                value={formData.referendoRecepcion?.firmaGenerador || ""}
-                                onChange={(e) => handleReferendo('firmaGenerador', e.target.value.toUpperCase())}
-                                placeholder="Por el momento de forma manual"
-                                ancho="w-full"
-                                disabled
-                            />
-                            <Input
                                 label="DNI"
-                                value={formData.referendoRecepcion?.dniResponsableEorsDestino || ""}
-                                onChange={(e) => handleReferendo('dniResponsableEorsDestino', e.target.value)}
+                                value={referendoForm.responsableEorsDestino?.dni || ""}
+                                setForm={setReferendoForm}
                                 placeholder="DNI del responsable EO-RS del destino final"
                             />
                             <Input
                                 label="Cargo"
-                                value={formData.referendoRecepcion?.cargoResponsableEorsDestino || ""}
-                                onChange={(e) => handleReferendo('cargoResponsableEorsDestino', e.target.value.toUpperCase())}
+                                value={referendoForm.responsableEorsDestino?.cargo || ""}
+                                setForm={setReferendoForm}
                                 placeholder="Cargo del responsable EO-RS del destino final"
                             />
                             <Input
                                 label="Fecha y hora"
                                 type="datetime-local"
-                                value={formData.referendoRecepcion?.fechaHora || ""}
-                                onChange={(e) => handleReferendo('fechaHora', e.target.value)}
+                                name="fechaHora"
+                                value={referendoForm.fechaHora || ""}
+                                setForm={setReferendoForm}
                                 placeholder="Fecha y hora del referendo"
                             />
                         </div>
@@ -272,8 +310,6 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                         onChange={(e) => handleOtrosManejosChange('telefonoReceptor', e.target.value)}
                         placeholder="Teléfono"
                     />
-
-
                     <Input
                         label="Tipo de Manejo Realizado"
                         value={formData.otrosManejos?.tipoManejo || ""}
