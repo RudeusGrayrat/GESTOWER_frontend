@@ -18,9 +18,10 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
 
         // Extraer referencias pobladas (asumiendo que vienen con populate)
         const generador = manifiesto.generadorId || {};
-        const findplanta = generador.plantas ? generador.plantas.find(p => p._id === manifiesto.plantaId) : null;
-        const planta = findplanta || {};
-        const plantaUbigeo = planta.ubigeoId || {};
+        const planta = manifiesto.planta || {};
+        const responsableGestion = manifiesto.responsableGestion || {};
+        const findPlanta = generador.plantas?.find(p => p._id === manifiesto.planta?._id) || {};
+        const plantaUbigeo = findPlanta.ubigeoId || {};
         const transportista = manifiesto.transportistaId || {};
         const transportistaUbigeo = transportista.ubigeoId || {};
         const destino = manifiesto.destinoId || {};
@@ -66,11 +67,11 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             coordenada_zona: safe(planta.coordenadasUtm?.zona),
             actividad_economica: safe(planta.actividadEconomica),
             sector: safe(planta.sector),
-            responsable_gestion: safe(planta.responsableGestion?.nombre),
-            cargo_responsable: safe(planta.responsableGestion?.cargo),
-            dni_responsable: safe(planta.responsableGestion?.dni),
-            correo_responsable: safe(planta.responsableGestion?.correo),
-            telefono_responsable: safe(planta.responsableGestion?.telefono),
+            responsable_gestion: safe(responsableGestion?.nombre),
+            cargo_responsable: safe(responsableGestion?.cargo),
+            dni_responsable: safe(responsableGestion?.dni),
+            correo_responsable: safe(responsableGestion?.correo),
+            telefono_responsable: safe(responsableGestion?.telefono),
 
             // ===== IGA =====
             tiene_iga_si: check(planta.tieneIga === true),
