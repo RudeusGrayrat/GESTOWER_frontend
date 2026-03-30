@@ -20,8 +20,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
         const generador = manifiesto.generadorId || {};
         const planta = manifiesto.planta || {};
         const responsableGestion = manifiesto.responsableGestion || {};
-        const findPlanta = generador.plantas?.find(p => p._id === manifiesto.planta?._id) || {};
-        const plantaUbigeo = findPlanta.ubigeoId || {};
+        const plantaUbigeo = planta.ubigeoId || {};
         const transportista = manifiesto.transportistaId || {};
         const transportistaUbigeo = transportista.ubigeoId || {};
         const destino = manifiesto.destinoId || {};
@@ -67,11 +66,11 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             coordenada_zona: safe(planta.coordenadasUtm?.zona),
             actividad_economica: safe(planta.actividadEconomica),
             sector: safe(planta.sector),
-            responsable_gestion: safe(responsableGestion?.nombre),
-            cargo_responsable: safe(responsableGestion?.cargo),
-            dni_responsable: safe(responsableGestion?.dni),
-            correo_responsable: safe(responsableGestion?.correo),
-            telefono_responsable: safe(responsableGestion?.telefono),
+            responsable_gestion: safe(responsableGestion?.nombreResponsable),
+            cargo_responsable: safe(responsableGestion?.cargoResponsable),
+            dni_responsable: safe(responsableGestion?.dniResponsable),
+            correo_responsable: safe(responsableGestion?.correoResponsable),
+            telefono_responsable: safe(responsableGestion?.telefonoResponsable),
 
             // ===== IGA =====
             tiene_iga_si: check(planta.tieneIga === true),
