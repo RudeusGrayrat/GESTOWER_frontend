@@ -28,7 +28,8 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         //PASO1 Datos Generales
         transportistaId: '',
         generadorId: '',
-        plantaId: '',
+        planta: '',
+        responsableGestion: {},
         //PASO2 datos del residuo
         residuo: {
             descripcion: '',
@@ -178,7 +179,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
 
         try {
             // Validar paso 1
-            if (!formData.generadorId || !formData.plantaId) {
+            if (!formData.generadorId || !formData.planta) {
                 sendMessage("Debe seleccionar generador y planta", "Advertencia");
                 setPasoActual(1);
                 return;
@@ -207,7 +208,6 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             const datosEnvio = {
                 ...formData,
                 generadorId: formData.generadorId?._id || formData.generadorId,
-                plantaId: formData.plantaId?._id || formData.plantaId,
                 transportistaId: formData.transportistaId?._id || formData.transportistaId,
                 destinoId: formData.destinoId?._id || formData.destinoId,
                 creadoPor: user._id

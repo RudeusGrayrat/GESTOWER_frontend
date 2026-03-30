@@ -50,8 +50,8 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             ruc_generador: safe(generador.ruc),
             correo_generador: safe(generador.correoElectronico),
             telefono_generador: safe(generador.telefono),
-            representante_legal_generador: safe(generador.representanteLegal?.nombre),
-            dni_representante_generador: safe(generador.representanteLegal?.dni),
+            representante_legal_generador: safe(generador.representanteLegal),
+            dni_representante_generador: safe(generador.dniRepresentante),
 
             // ===== PLANTA =====
             denominacion_planta: safe(planta.denominacion),
