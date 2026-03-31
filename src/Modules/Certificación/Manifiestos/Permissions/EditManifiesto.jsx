@@ -20,7 +20,8 @@ const EditManifiesto = ({ setShowEdit, selected, reload }) => {
         return {
             ...selected,
             generadorId: selected.generadorId,
-            plantaId: selected.plantaId,
+            plantas: selected.generadorId?.plantas || [],
+            responsableGestion: selected.responsableGestion,
             servicioTransporte: selected.transportistaId?.razonSocial?.includes("TOWER") ? selected.transportistaId.razonSocial : 'SERVICIO EO',
             transportistaId: selected.transportistaId,
             destinoId: selected.destinoId,

@@ -24,6 +24,7 @@ const Input = ({
   otro = true,
   extraParams = {},
   disabled = false,
+  optionLabel,
   ...OtherProps
 }) => {
   if (setForm === undefined) {
@@ -260,6 +261,7 @@ const Input = ({
           placeholder={label}
           editable={OtherProps.editable || true}
           disabled={disabled}
+          optionLabel={optionLabel}
           {...OtherProps}
         />
       );

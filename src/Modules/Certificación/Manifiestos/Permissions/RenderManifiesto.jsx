@@ -23,6 +23,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
         const plantaUbigeo = planta.ubigeoId || {};
         const transportista = manifiesto.transportistaId || {};
         const transportistaUbigeo = transportista.ubigeoId || {};
+        const destinoFinal = manifiesto.destinoFinal || {};
         const destino = manifiesto.destinoId || {};
         const destinoUbigeo = destino.ubigeoId || {};
 
@@ -30,7 +31,6 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
         const residuo = manifiesto.residuo || {};
         const peligrosidad = manifiesto.peligrosidad || {};
         const transporte = manifiesto.transporte || {};
-        const destinoFinal = manifiesto.destinoFinal || {};
         const referendoEntrega = manifiesto.referendoEntrega || {};
         const referendoRecepcion = manifiesto.referendoRecepcion || {};
         const otrosManejos = manifiesto.otrosManejos || {}; // OBJETO
@@ -43,7 +43,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             // ===== ENCABEZADO =====
             numero_manifiesto: safe(manifiesto.numeroManifiesto),
             año: safe(manifiesto.año),
-            mes: safe(manifiesto.mes),
+            mes: safe(manifiesto.mes ? manifiesto.mes.toUpperCase() : ""),
 
             // ===== GENERADOR =====
             razon_social_generador: safe(generador.razonSocial),
@@ -151,9 +151,9 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             fecha_hora_entrega: fechaFormat(referendoEntrega.fechaHora),
 
             // ===== DESTINO (tipo de manejo) =====
-            tratamiento: check(manifiesto.tipoManejo === 'TRATAMIENTO'),   // nivel superior
-            valorizacion: check(manifiesto.tipoManejo === 'VALORIZACION'),
-            disposicion_final: check(manifiesto.tipoManejo === 'DISPOSICION_FINAL'),
+            tratamiento: check(destinoFinal.tipoManejo === 'TRATAMIENTO'),   // nivel superior
+            valorizacion: check(destinoFinal.tipoManejo === ('VALORIZACION' || "VALORIZACIÓN")),
+            disposicion_final: check(destinoFinal.tipoManejo === 'DISPOSICION_FINAL'),
 
             razon_social_destino: safe(destino.razonSocial),
             ruc_destino: safe(destino.ruc),

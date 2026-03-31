@@ -91,7 +91,6 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
 
         estado: 'PENDIENTE'
     });
-    console.log("formData", formData);
     const pasos = [
         { id: 1, nombre: "Datos generales", componente: Paso1_DatosGenerales },
         { id: 2, nombre: "Residuos peligroso", componente: Paso2_Residuo },

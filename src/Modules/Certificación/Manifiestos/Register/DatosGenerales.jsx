@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 
 const Paso1_DatosGenerales = ({ formData, setFormData }) => {
+    console.log("🚀 ~ file: DatosGenerales.jsx:6 ~ Paso1_DatosGenerales ~ formData:", formData);
     const [transportistaOptions, setTransportistaOptions] = useState([]);
     const [generadorOptions, setGeneradorOptions] = useState([]);
     const [plantaOptions, setPlantaOptions] = useState([]);
