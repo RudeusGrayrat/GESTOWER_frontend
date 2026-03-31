@@ -29,7 +29,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         transportistaId: '',
         generadorId: '',
         planta: '',
-        responsableGestion: {},
+        responsableGestion: "",
         //PASO2 datos del residuo
         residuo: {
             descripcion: '',
@@ -37,7 +37,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             estadoFisico: '',
             tipoRecipiente: '',
             materialRecipiente: '',
-            numeroRecipientes: 1,
+            numeroRecipientes: "",
             codigoBasilea: '',
             subcodigoBasilea: '',
             informacionAdicional: '',
@@ -110,7 +110,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             transportistaId: '',
             generadorId: '',
             planta: {},
-            responsableGestion: {},
+            responsableGestion: "",
             //PASO2 datos del residuo
             residuo: {
                 descripcion: '',

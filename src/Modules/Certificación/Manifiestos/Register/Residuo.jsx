@@ -63,9 +63,8 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
             <Input
                 label="N° de recipientes"
                 type="text"
-                value={formData.residuo?.numeroRecipientes || 1}
+                value={formData.residuo?.numeroRecipientes || ""}
                 onChange={(e) => handleResiduoChange('numeroRecipientes', e.target.value)}
-                min="1"
             />
 
             <Input
