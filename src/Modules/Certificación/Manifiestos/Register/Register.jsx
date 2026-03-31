@@ -34,7 +34,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         residuo: {
             descripcion: '',
             cantidadTotal: '',
-            estadoFisico: 'SOLIDO',
+            estadoFisico: '',
             tipoRecipiente: '',
             materialRecipiente: '',
             numeroRecipientes: 1,
@@ -115,7 +115,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             residuo: {
                 descripcion: '',
                 cantidadTotal: '',
-                estadoFisico: 'SOLIDO',
+                estadoFisico: '',
                 tipoRecipiente: '',
                 materialRecipiente: '',
                 numeroRecipientes: 1,
