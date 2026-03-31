@@ -66,7 +66,8 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             firmaGenerador: '',
             dniResponsableEorsDestino: '',
             cargoResponsableEorsDestino: '',
-            fechaHora: ''
+            fechaReferendo: '',
+            horaReferendo: ''
         },
         //3.3 Otros
         otrosManejos: {
@@ -134,7 +135,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             //PASO3 Manejo del residuo
             transporte: {
                 nombreConductor: "",
-                fechaRecepcion: '', cantidadRecibida: '', observaciones: '', tipoVehiculo: '', placaVehiculo: ''
+                fechaRecepcion: '', cantidadRecibida: '', observaciones: '', tipoVehiculo: '', placaVehiculo: '', horaRecepcion: ''
             },
             referendoEntrega: { referendo: false, generadorResponsableManejo: '', firmaGenerador: '', responsableEors: '', firmaResponsableEors: '', dniResponsableEors: '', cargoResponsableEors: '', fechaHora: '' },
             //3.2 Destino final

@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
+import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const Paso4_Transporte = ({ formData, setFormData }) => {
     const [formReferendo, setFormReferendo] = useState(formData.referendoEntrega || {
         generadorResponsableManejo: "",
         responsableEors: "",
-        fechaHora: formData.transporte?.fechaRecepcion || "",
+        fechaRecepcion: formData.transporte?.fechaRecepcion || "",
     });
     const [transportistaOptions, setTransportistaOptions] = useState([]);
     const [conductoresOptions, setConductoresOptions] = useState([]);
@@ -31,11 +32,10 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
     }, [formData.transportistaId]);
     useEffect(() => {
         if (formData.referendoEntrega?.referendo === false) {
-            console.log("Referendo desactivado, limpiando campos relacionados");
             setFormReferendo({
                 generadorResponsableManejo: "",
                 responsableEors: "",
-                fechaHora: "",
+                fechaRecepcion: "",
             });
             setFormData(prev => ({
                 ...prev,
@@ -46,18 +46,16 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
                     firmaResponsableEors: "",
                     dniResponsableEors: "",
                     cargoResponsableEors: "",
-                    fechaHora: "",
+                    fechaRecepcion: "",
+                    horaRecepcion: "",
                 }
             }));
         }
     }, [formData.referendoEntrega?.referendo]);
     useEffect(() => {
         if (Object.keys(formData.generadorId).length > 0) {
-            console.log("Generador seleccionado", formData.generadorId);
             const responsablesGenerador = formData.generadorId.responsablesTecnicos
-            console.log("Responsables del generador", responsablesGenerador);
             if (responsablesGenerador.length > 0) {
-                console.log("Responsables del generador disponibles", responsablesGenerador);
                 setResponsableGeneradorOptions(responsablesGenerador);
             } else {
                 setResponsableGeneradorOptions([]);
@@ -66,11 +64,8 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
     }, [formData.generadorId]);
     useEffect(() => {
         if (formData.transportistaId) {
-            console.log("Transportista seleccionado", formData.transportistaId);
             const responsablesEORS = formData.transportistaId?.responsables
-            console.log("Responsables EORS del transportista", responsablesEORS);
             if (responsablesEORS.length > 0) {
-                console.log("Responsables EORS disponibles", responsablesEORS);
                 setResponsableEORSOptions(responsablesEORS);
             } else {
                 setResponsableEORSOptions([]);
@@ -84,13 +79,13 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
             setFormData(prev => ({
                 ...prev,
                 referendoEntrega: {
-                    generadorResponsableManejo: formReferendo.generadorResponsableManejo.nombreResponsable ,
+                    generadorResponsableManejo: formReferendo.generadorResponsableManejo.nombreResponsable,
                     firmaGenerador: formReferendo.generadorResponsableManejo.firmaResponsable || "",
                     responsableEors: formReferendo.responsableEors.nombre,
                     firmaResponsableEors: formReferendo.responsableEors.firmaResponsable || "",
                     dniResponsableEors: formReferendo.responsableEors.dni,
                     cargoResponsableEors: formReferendo.responsableEors.cargo,
-                    fechaHora: formData.transporte?.fechaRecepcion,
+                    fechaRecepcion: formReferendo.fechaRecepcion,
                     referendo: formData.referendoEntrega?.referendo || false,
                 }
             }));
@@ -152,7 +147,7 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
                     placeholder="Ej: 15.5"
                 />
 
-                <Input
+                <InputNormal
                     label="Observaciones"
                     value={formData.transporte?.observaciones || ""}
                     onChange={(e) => handleTransporteChange('observaciones', e.target.value)}
@@ -219,12 +214,20 @@ const Paso4_Transporte = ({ formData, setFormData }) => {
                             ancho="w-full"
                         />
                         <Input
-                            label="Fecha y hora del referendo"
+                            label="Fecha"
                             type="date"
-                            name="fechaHora"
+                            name="fechaRecepcion"
                             value={formData.transporte?.fechaRecepcion || ""}
-                            ancho="w-full"
+                            ancho="!min-w-40"
                             disabled
+                        />
+                        <InputNormal
+                            label="Hora"
+                            type="time"
+                            name="horaRecepcion"
+                            value={formData.transporte?.horaRecepcion || ""}
+                            onChange={(e) => handleTransporteChange('horaRecepcion', e.target.value)}
+                            ancho="!min-w-32"
                         />
                     </div>
                 )}

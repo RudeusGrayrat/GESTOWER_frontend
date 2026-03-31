@@ -1,13 +1,16 @@
 import { useState, useEffect } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
+import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const Paso5_Destino = ({ formData, setFormData }) => {
+    console.log("Datos del paso 5 - Destino:", formData);
     const [destinoOptions, setDestinoOptions] = useState([]);
     const tipoManejoOptions = ["TRATAMIENTO", "DISPOSICIÓN FINAL", "VALORIZACIÓN"];
     const [responsableOptions, setResponsableOptions] = useState([]);
     const [referendoForm, setReferendoForm] = useState({
         responsableEorsDestino: "",
-        fechaHora: ""
+        fechaReferendo: "",
+        horaReferendo: ""
     });
     const handleDestinoChange = (campo, valor) => {
         setFormData(prev => ({
@@ -23,7 +26,8 @@ const Paso5_Destino = ({ formData, setFormData }) => {
         if (!formData.referendoRecepcion?.referendo) {
             setReferendoForm({
                 responsableEorsDestino: "",
-                fechaHora: ""
+                fechaReferendo: "",
+                horaReferendo: ""
             });
         }
     }, [formData.referendoRecepcion?.referendo]);
@@ -56,10 +60,11 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                 firmaGenerador: referendoForm.responsableEorsDestino?.firma || '',
                 dniResponsableEorsDestino: referendoForm.responsableEorsDestino?.dni || '',
                 cargoResponsableEorsDestino: referendoForm.responsableEorsDestino?.cargo || '',
-                fechaHora: referendoForm.fechaHora || '',
+                fechaReferendo: referendoForm.fechaReferendo || '',
+                horaReferendo: referendoForm.horaReferendo || ''
             }
         }));
-    }, [referendoForm.responsableEorsDestino, referendoForm.fechaHora]);
+    }, [referendoForm.responsableEorsDestino, referendoForm.fechaReferendo, referendoForm.horaReferendo]);
 
     const handleOtrosManejosChange = (campo, valor) => {
         setFormData(prev => ({
@@ -81,14 +86,14 @@ const Paso5_Destino = ({ formData, setFormData }) => {
         documentoAprueba: ""
     });
 
-    // Función para llenar los campos desde transportistaId
-    const fillFromTransportista = (transportista) => ({
-        razonSocialReceptor: transportista?.razonSocial || "",
-        rucReceptor: transportista?.ruc || "",
-        correoReceptor: transportista?.correoElectronico || "",
-        telefonoReceptor: transportista?.telefono || "",
-        direccionDestino: transportista?.direccion || "",
-        documentoAprueba: transportista?.registroEors || "",
+    // Función para llenar los campos desde DestinoId
+    const fillFromDestino = (destino) => ({
+        razonSocialReceptor: destino?.razonSocial || "",
+        rucReceptor: destino?.ruc || "",
+        correoReceptor: destino?.correoElectronico || "",
+        telefonoReceptor: destino?.telefono || "",
+        direccionDestino: destino?.direccion || "",
+        documentoAprueba: destino?.codigoRegistroEors || "",
         // Estos campos no se llenan automáticamente
         tipoManejo: ""
     });
@@ -96,7 +101,7 @@ const Paso5_Destino = ({ formData, setFormData }) => {
     const handleCheckboxChange = (nombre) => {
         setFormData(prev => {
             const otros = prev.otrosManejos || {};
-            const transportista = prev.transportistaId;
+            const destino = prev.destinoId || {};
 
             // Si el checkbox clickeado ya estaba activo, lo desactivamos y limpiamos campos
             if (otros[nombre]) {
@@ -122,7 +127,7 @@ const Paso5_Destino = ({ formData, setFormData }) => {
             // Según cuál se activó, llenamos o limpiamos campos
             let camposAdicionales = {};
             if (nombre === "comercializacion") {
-                camposAdicionales = fillFromTransportista(transportista);
+                camposAdicionales = fillFromDestino(destino);
             } else {
                 // exportacion u otro: limpiamos campos
                 camposAdicionales = clearOtrosManejosFields();
@@ -146,11 +151,11 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                 ...prev,
                 otrosManejos: {
                     ...prev.otrosManejos,
-                    ...fillFromTransportista(prev.transportistaId)
+                    ...fillFromDestino(prev.DestinoId)
                 }
             }));
         }
-    }, [formData.transportistaId]);
+    }, [formData.destinoId]);
 
     return (
         <div className="flex flex-wrap">
@@ -186,7 +191,7 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                 placeholder="Ej: 15.5"
             />
 
-            <Input
+            <InputNormal
                 label="Observaciones"
                 value={formData.destinoFinal?.observaciones || ""}
                 onChange={(e) => handleDestinoChange('observaciones', e.target.value)}
@@ -209,9 +214,9 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                     className="h-6 w-10 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
                 />
             </div>
-            <div className="w-full mt-4 border-t pt-4">
-                <div className="flex flex-col gap-4 ">
-                    {formData.referendoRecepcion?.referendo && (
+            <div className="w-full ">
+                {formData.referendoRecepcion?.referendo && (
+                    <div className="flex flex-col mt-4  pt-4 border-t gap-4 ">
                         <div className="flex flex-wrap">
                             <Input
                                 label="Responsable EO-RS del destino final"
@@ -237,16 +242,26 @@ const Paso5_Destino = ({ formData, setFormData }) => {
                                 placeholder="Cargo del responsable EO-RS del destino final"
                             />
                             <Input
-                                label="Fecha y hora"
-                                type="datetime-local"
-                                name="fechaHora"
-                                value={referendoForm.fechaHora || ""}
+                                label="Fecha"
+                                type="date"
+                                ancho="!min-w-40"
+                                name="fechaReferendo"
+                                value={referendoForm.fechaReferendo || ""}
                                 setForm={setReferendoForm}
-                                placeholder="Fecha y hora del referendo"
+                                placeholder="Fecha"
+                            />
+                            <InputNormal
+                                label="Hora"
+                                type="time"
+                                ancho="!min-w-40"
+                                name="horaReferendo"
+                                value={referendoForm.horaReferendo || ""}
+                                setForm={setReferendoForm}
+                                placeholder="Hora"
                             />
                         </div>
-                    )}
-                </div>
+                    </div>
+                )}
                 <div className="w-full mt-4 border-t pt-4 ">
                     <span className="text-lg font-semibold">Otros Manejos</span>
                     <div className="flex gap-8 mt-3">

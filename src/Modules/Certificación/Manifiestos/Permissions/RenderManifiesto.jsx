@@ -196,7 +196,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             infiltracion: safe(contingencias.infiltracion),
             incendio: safe(contingencias.incendio),
             explosion: safe(contingencias.explosion),
-            otros_accidentes: safe(contingencias.otrosAccidentes),
+            otros_accidentes: safe(contingencias.otros),
 
             // ===== OTRAS OBLIGACIONES (antes "devolución") =====
             nombre_representante_eors: safe(otrasObligaciones.representanteEors),

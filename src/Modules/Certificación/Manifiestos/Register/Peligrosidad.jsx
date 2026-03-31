@@ -1,4 +1,5 @@
 import Input from "../../../../recicle/Inputs/Inputs";
+import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const Paso3_Peligrosidad = ({ formData, setFormData }) => {
     const peligrosidades = [
@@ -59,7 +60,7 @@ const Paso3_Peligrosidad = ({ formData, setFormData }) => {
                 </div>
             </div>
 
-            <Input
+            <InputNormal
                 label="Otros (especificar)"
                 value={formData.peligrosidad?.otros || ""}
                 onChange={(e) => handleOtrosChange(e.target.value)}

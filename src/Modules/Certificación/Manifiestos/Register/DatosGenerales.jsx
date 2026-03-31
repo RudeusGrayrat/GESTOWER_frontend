@@ -2,22 +2,14 @@ import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 
 const Paso1_DatosGenerales = ({ formData, setFormData }) => {
-    console.log("🚀 ~ file: DatosGenerales.jsx:6 ~ Paso1_DatosGenerales ~ formData:", formData);
     const [transportistaOptions, setTransportistaOptions] = useState([]);
     const [generadorOptions, setGeneradorOptions] = useState([]);
-    const [plantaOptions, setPlantaOptions] = useState([]);
+    const [plantaOptions, setPlantaOptions] = useState(formData.generadorId?.plantas || []);
 
     useEffect(() => {
-        //poner las opciones de planta que vienen en el generador, o sea que se pongan en formData.generadorId
-        if (!formData.generadorId) {
-            return;
-        }
+        if (!formData.generadorId) return;
         const plantasDisponibles = formData.generadorId.plantas || [];
-        if (plantasDisponibles.length > 0) {
-            setPlantaOptions(plantasDisponibles);
-        } else {
-            return
-        }
+        setPlantaOptions(plantasDisponibles);
     }, [formData.generadorId]);
 
     return (
@@ -65,10 +57,10 @@ const Paso1_DatosGenerales = ({ formData, setFormData }) => {
                 type="select"
                 name="responsableGestion"
                 value={formData.responsableGestion}
-                options={formData.generadorId?.responsablesTecnicos}
+                options={formData.generadorId?.responsablesTecnicos || []} // ✅ ya disponible
                 setForm={setFormData}
                 optionLabel="nombreResponsable"
-                placeholder={"Seleccionar responsable de gestión"}
+                placeholder="Seleccionar responsable de gestión"
                 disabled={!formData.planta}
             />
         </div>
