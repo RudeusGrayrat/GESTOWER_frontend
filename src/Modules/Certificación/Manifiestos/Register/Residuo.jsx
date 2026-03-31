@@ -1,4 +1,5 @@
 import Input from "../../../../recicle/Inputs/Inputs";
+import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const Paso2_Residuo = ({ formData, setFormData }) => {
     const estadosFisicos = ["SOLIDO", "SEMISOLIDO", "LIQUIDO", "GAS"]
@@ -63,7 +64,7 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
 
             <Input
                 label="N° de recipientes"
-                type="number"
+                type="text"
                 value={formData.residuo?.numeroRecipientes || 1}
                 onChange={(e) => handleResiduoChange('numeroRecipientes', parseInt(e.target.value) || 1)}
                 min="1"
@@ -86,7 +87,7 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
                 placeholder="Ej: A1010"
             />
 
-            <Input
+            <InputNormal
                 label="Información adicional"
                 value={formData.residuo?.informacionAdicional || ""}
                 onChange={(e) => handleResiduoChange('informacionAdicional', e.target.value)}
