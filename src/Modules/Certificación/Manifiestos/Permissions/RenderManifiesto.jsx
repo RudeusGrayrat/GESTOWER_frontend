@@ -74,7 +74,7 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
 
             // ===== IGA =====
             tiene_iga_si: check(planta.tieneIga === true),
-            tiene_iga_no: check(planta.tieneIga === false),
+            tiene_iga_no: check(planta.tieneIga === false || planta.tieneIga === undefined || planta.tieneIga === null),
             institucion_aprueba: safe(planta.institucionApruebaIga),
             fecha_aprobacion_iga: fechaFormat(planta.fechaAprobacionIga),
             numero_resolucion: safe(planta.numeroResolucionIga),
