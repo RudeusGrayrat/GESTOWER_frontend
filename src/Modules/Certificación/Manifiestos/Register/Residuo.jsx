@@ -40,7 +40,7 @@ const Paso2_Residuo = ({ formData, setFormData }) => {
             <Input
                 label="Estado del residuo *"
                 type="select"
-                value={formData.residuo?.estadoFisico || "SOLIDO"}
+                value={formData.residuo?.estadoFisico}
                 onChange={(e) => handleResiduoChange('estadoFisico', e.target.value)}
                 options={estadosFisicos}
                 optionLabel="label"
