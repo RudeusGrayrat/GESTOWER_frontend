@@ -151,9 +151,9 @@ const renderManifiesto = async (manifiesto, plantillaUrl, nombreArchivo) => {
             fecha_hora_entrega: fechaFormat(referendoEntrega.fechaHora),
 
             // ===== DESTINO (tipo de manejo) =====
-            tratamiento: check(destinoFinal.tipoManejo === 'TRATAMIENTO'),   // nivel superior
-            valorizacion: check(destinoFinal.tipoManejo === ('VALORIZACION' || "VALORIZACIÓN")),
-            disposicion_final: check(destinoFinal.tipoManejo === 'DISPOSICION_FINAL'),
+            tratamiento: check(destinoFinal.tipoManejo === 'TRATAMIENTO'),
+            valorizacion: check((destinoFinal.tipoManejo === "VALORIZACIÓN" || destinoFinal.tipoManejo === "VALORIZACION")),
+            disposicion_final: check(destinoFinal.tipoManejo === 'DISPOSICION FINAL'),
 
             razon_social_destino: safe(destino.razonSocial),
             ruc_destino: safe(destino.ruc),
