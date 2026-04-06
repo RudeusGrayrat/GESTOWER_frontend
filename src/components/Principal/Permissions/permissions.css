@@ -1,0 +1,19 @@
+/* En tu archivo CSS global o un módulo CSS */
+.modal-with-notch {
+    border-radius: 16px;
+    position: relative;
+}
+
+.modal-with-notch::before {
+    content: '';
+    position: absolute;
+    top: -1px;
+    right: 48px; /* ajusta según tamaño del botón */
+    width: 60px;
+    height: 60px;
+    background: transparent;
+    border-top-right-radius: 50%;
+    box-shadow: 20px -20px 0 0 #f3f4f6; /* color del fondo de la página */
+    pointer-events: none;
+    z-index: 1;
+}
