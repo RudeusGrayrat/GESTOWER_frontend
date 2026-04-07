@@ -1,37 +1,86 @@
-import ButtonOk from "../../../recicle/Buttons/Buttons";
-import PopUp from "../../../recicle/popUps";
 import { useLocation, useNavigate } from "react-router-dom";
-const Details = (props) => {
-  const { setShowDetail, children, estilos } = props;
+import { useState, useEffect, useRef } from "react";
+
+const Details = ({ setShowDetail, children }) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const containerRef = useRef(null);
+  const [size, setSize] = useState({ width: 0, height: 0 });
 
-  // const detailsRef = useref(setShowDetail);
+  // Medimos el contenedor para que el SVG sepa cuánto espacio tiene
+  // Variables de diseño fijas
+  const gap = 120; // Tamaño exacto de la mordida
+  const r = 20;   // Radio de las esquinas redondeadas
+  useEffect(() => {
+    if (containerRef.current) {
+      const { offsetWidth, offsetHeight } = containerRef.current;
+      setSize({ width: offsetWidth, height: offsetHeight });
+    }
+  }, [children]); // Se recalcula si cambian los datos internos
+
   const handleCloseDetail = () => {
     setShowDetail(false);
     navigate(location.pathname);
   };
 
+
+  // Coordenadas del Path Dinámico
+  // W = Ancho total, H = Alto total
+  const w = size.width;
+  const h = size.height;
+
+  const dynamicPath = w > 0 ? `
+    M ${r},0 
+    H ${w - gap - r} 
+    Q ${w - gap},0 ${w - gap},${r} 
+    V ${gap - r} 
+    Q ${w - gap},${gap} ${w - gap + r},${gap} 
+    H ${w - r} 
+    Q ${w},${gap} ${w},${gap + r} 
+    V ${h - r} 
+    Q ${w},${h} ${w - r},${h} 
+    H ${r} 
+    Q 0,${h} 0,${h - r} 
+    V ${r} 
+    Q 0,0 ${r},0 
+    Z
+  ` : "";
+
   return (
-    <div className="w-screen pl-20 h-screen fixed top-0 right-0 z-40 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="w-screen pl-20 h-screen fixed top-0 right-0 z-40 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+      <div ref={containerRef} className="relative min-w-[80%] max-w-[90%]  max-h-[90%] min-h-[50%] flex flex-col">
 
-      <div
-        // ref={detailsRef}
+        {/* SVG DINÁMICO (Capa de fondo) */}
+        <div className="absolute inset-0 -z-10">
+          <svg width="100%" height="100%" className="drop-shadow-2xl">
+            <defs>
+              <linearGradient id="modalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#f9fafb" />
+                <stop offset="100%" stopColor="#f3f4f6" />
+              </linearGradient>
+            </defs>
+            {w > 0 && (
+              <path
+                d={dynamicPath}
+                fill="url(#modalGrad)"
+                stroke="#e5e7eb"
+                strokeWidth="1"
+              />
+            )}
+          </svg>
+        </div>
 
-        className={`w-[85%] max-h-[90%] bg-gradient-to-tr  absolute  from-gray-50 to-gray-100  border-gray-100 blur-0 border shadow-2xl  z-40 rounded-xl p-10`}
-
-      >
-
-        <div className="flex justify-end fixed  -top-8 -right-8 rounded-b-xl">
+        {/* BOTÓN X - Siempre calza en el hueco de 140px */}
+        <div className="absolute top-0 right-0  flex items-center justify-center z-50">
           <button
             onClick={handleCloseDetail}
-            className=" h-20 w-20 text-3xl text-white rounded-full bg-gradient-to-tr
-          from-[#2b5993] to-[#418fda] transition-colors"
+            className="h-24 w-24 text-3xl text-white rounded-full bg-gradient-to-tr from-[#2b5993] to-[#418fda] shadow-xl hover:scale-105 transition-transform"
           >
             X
           </button>
         </div>
-        <div className="h-full m-1 w-full  gap-8 flex flex-col justify-center">
+
+        <div className="p-10 grid  gap-8 pr-40" >
           {children}
         </div>
       </div>
