@@ -3,6 +3,10 @@ import ListPrincipal from "../../../../components/Principal/List/List"
 import axios from "../../../../api/axios";
 import DetailHorasExtras from "../Permissions/Detail";
 import ApproveHorasExtras from "../Permissions/Approve";
+import SendHorasExtras from "../Permissions/Send";
+import EditHorasExtras from "../Permissions/Edit";
+import DissaproveHorasExtras from "../Permissions/Dissaprove";
+import DeletehorasExtras from "../Permissions/Delete";
 
 const ListHorasExtras = ({
     permissionRead,
@@ -40,8 +44,12 @@ const ListHorasExtras = ({
             permissionEdit={permissionEdit}
             permissionSend={permissionSend}
             DetailItem={DetailHorasExtras}
+            EditItem={EditHorasExtras}
+            DisapproveItem={DissaproveHorasExtras}
             ApproveItem={ApproveHorasExtras}
+            DeleteItem={DeletehorasExtras}
             fetchData={fetchData}
+            EnviarItem={SendHorasExtras}
             title="horas_etxras_list"
         >
             <Column field="fecha" header="Fecha" />
@@ -64,16 +72,19 @@ const ListHorasExtras = ({
                     let color = "";
                     switch (rowData.estado) {
                         case "PENDIENTE":
-                            color = "text-red-500";
+                            color = "text-yellow-500";
+                            break;
+                        case "ENVIADO":
+                            color = "text-blue-500";
                             break;
                         case "APROBADO":
                             color = "text-green-600";
                             break;
                         case "RECHAZADO":
-                            color = "text-gray-500";
+                            color = "text-red-500";
                             break;
                         default:
-                            color = "text-gray-900";
+                            color = "text-gray-300";
                     }
                     return (
                         <div

@@ -6,7 +6,7 @@ const CardPlegable = ({ title, children, estiloDiv, estiloButton, estiloContent 
     setShow(!show);
   };
   return (
-    <div className={`${estiloDiv} shadow-md bg-[#f3f3f3a1] rounded-lg mr-4 m-4`}>
+    <div className={`${estiloDiv} shadow-md bg-[#f3f3f3a1] rounded-lg mx-4 m-2`}>
       <button
         type="ok"
         className={`my-1 ${estiloButton} bg-[#ffffff] text-start shadow-md p-3 mb-6 rounded-lg w-full font-semibold text-lg pl-6`}

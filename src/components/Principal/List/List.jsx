@@ -40,7 +40,7 @@ const ListPrincipal = ({
   const [showEdit, setShowEdit] = useState(false);
   const [showApprove, setShowApprove] = useState(false);
   const [showDisapprove, setShowDisapprove] = useState(false);
-  const [showSent, setShowSent] = useState(false);
+  const [showSend, setShowSend] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
   const { setResponse, setErrors } = useAuth();
   const errorForms = useSelector((state) => state.error);
@@ -82,9 +82,9 @@ const ListPrincipal = ({
     searchParams.set("view", item._id); // Añade o actualiza sin eliminar los demás
     navigate(`${location.pathname}?${searchParams.toString()}`);
   };
-  const handleShowSent = (item) => {
+  const handleShowSend = (item) => {
     setSelected(item);
-    setShowSent(true);
+    setShowSend(true);
     setSelectedRowId(item._id);
   }
   const handleClosePopUp = () => {
@@ -106,7 +106,7 @@ const ListPrincipal = ({
       rowData.state === "APROBADO" || rowData.estado === "APROBADO";
     const isRejected =
       rowData.state === "RECHAZADO" || rowData.estado === "RECHAZADO";
-    const isSent = rowData.estado !== "PENDIENTE" && rowData.estado !== "OBSERVADO";
+    const isSend = rowData.estado !== "PENDIENTE" && rowData.estado !== "OBSERVADO";
     return (
       <React.Fragment>
         {permissionRead && (
@@ -131,18 +131,18 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-blue-600 rounded-full
-              ${isSent
+              ${isSend
                 ? "cursor-not-allowed opacity-30"
                 : ""
               }
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
-              ${selectedRowId === rowData._id && showSent
+              ${selectedRowId === rowData._id && showSend
                 ? "shadow-inner translate-y-[2px]"
                 : "shadow-xl"
               }
               `}
-            onClick={() => handleShowSent(rowData)}
-            disabled={isSent}
+            onClick={() => handleShowSend(rowData)}
+            disabled={isSend}
           />
         )}
         {permissionApprove && (
@@ -188,7 +188,7 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-blue-500 rounded-full 
-              ${isApproved
+              ${isApproved || isRejected
                 ? "cursor-not-allowed opacity-30"
                 : ""
               }
@@ -199,7 +199,7 @@ const ListPrincipal = ({
               }
               `}
             onClick={() => handleShowEdit(rowData)}
-            disabled={isApproved}
+            disabled={isApproved || isRejected}
           />
         )}
         {permissionDelete && (
@@ -319,9 +319,9 @@ const ListPrincipal = ({
       {showDetail && (
         <DetailItem setShowDetail={setShowDetail} selected={selected} />
       )}
-      {showSent && (
+      {showSend && (
         <EnviarItem
-          setShowSent={setShowSent}
+          setShowSend={setShowSend}
           selected={selected}
           reload={() => fetchAll(pagina, limite, searchTerm)}
         />

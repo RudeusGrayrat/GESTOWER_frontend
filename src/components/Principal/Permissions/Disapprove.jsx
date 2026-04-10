@@ -1,7 +1,7 @@
 import ButtonOk from "../../../recicle/Buttons/Buttons";
 import useref from "../../../recicle/useRef";
 
-const Disapprove = ({ setShowDisapprove, onclick }) => {
+const Disapprove = ({ setShowDisapprove, onclick, text }) => {
   const ref = useref(setShowDisapprove);
 
   return (
@@ -15,22 +15,22 @@ const Disapprove = ({ setShowDisapprove, onclick }) => {
             Atención !
           </h1>
           <h1 className="p-4 text-center text-xl">
-            ¿Estás seguro de querer desaprobar?
+            {text || "¿Estás seguro de querer desaprobar?"}
           </h1>
         </div>
         <div className="flex justify-center items-center">
+          <ButtonOk
+            onClick={() => setShowDisapprove(false)}
+            styles={"!w-full m-4 flex justify-center mx-4"}
+            classe={"!w-24"}
+            children="NO"
+          />
           <ButtonOk
             onClick={onclick}
             type="ok"
             styles={"!w-full m-4 flex justify-center mx-4"}
             classe={"!w-24"}
             children="SI"
-          />
-          <ButtonOk
-            onClick={() => setShowDisapprove(false)}
-            styles={"!w-full m-4 flex justify-center mx-4"}
-            classe={"!w-24"}
-            children="NO"
           />
         </div>
       </div>

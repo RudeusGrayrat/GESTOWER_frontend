@@ -126,15 +126,15 @@ const Register = () => {
 
       <div className="flex justify-center ">
         <ButtonOk
+          children="Cancelar"
+          classe="!w-32"
+          onClick={() => setResetForm(true)}
+        />
+        <ButtonOk
           type="ok"
           onClick={register}
           classe="!w-32"
           children="Registrar"
-        />
-        <ButtonOk
-          children="Cancelar"
-          classe="!w-32"
-          onClick={() => setResetForm(true)}
         />
       </div>
     </div>

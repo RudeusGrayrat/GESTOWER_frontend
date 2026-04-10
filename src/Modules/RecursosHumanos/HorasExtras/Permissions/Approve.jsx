@@ -41,7 +41,6 @@ const ApproveHorasExtras = ({ setShowApprove, selected, reload }) => {
 
     return (
         <Approve setShowApprove={setShowApprove} onclick={handleApprove} >
-            <PopUp deshabilitar={deshabilitar} />
         </Approve>
     )
 }

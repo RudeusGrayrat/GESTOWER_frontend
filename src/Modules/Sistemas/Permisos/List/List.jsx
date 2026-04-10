@@ -10,7 +10,7 @@ const ListPermisos = ({ permissionEdit, permissionRead }) => {
   const colaboradores = useSelector((state) => state.recursosHumanos.employees);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (colaboradores.length === 0) {
+    if (colaboradores?.length === 0) {
       dispatch(getEmployees());
     }
   }, [colaboradores]);

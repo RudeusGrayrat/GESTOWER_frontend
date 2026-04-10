@@ -8,7 +8,7 @@ const Loading = () => {
         <div className="loader">
           <div className="box">
             <div className="logo">
-              <img src="/LOGO512.png" alt="Logo" className="logo-img" />
+              <img src="/ISOTIPO SOFT TOWER.svg" alt="Logo" className="logo-img" />
             </div>
           </div>
           <div className="box" />

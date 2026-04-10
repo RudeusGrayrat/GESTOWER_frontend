@@ -115,8 +115,8 @@ const Register = () => {
         <Representante error={error} setForm={setForm} form={form} />
       </CardPlegable>
       <div className="flex justify-center">
-        <ButtonOk children="Enviar" onClick={enviar} type="ok" />
         <ButtonOk children="Cancelar" />
+        <ButtonOk children="Enviar" onClick={enviar} type="ok" />
       </div>
     </div>
   );

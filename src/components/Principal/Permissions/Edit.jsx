@@ -14,12 +14,12 @@ const Edit = ({ setShowEdit, children, upDate }) => {
       </div>
 
       <div className="flex justify-end border-t ">
-        <ButtonOk onClick={upDate} type="ok" classe="w-32" children="Editar" />
         <ButtonOk
           onClick={() => setShowEdit(false)}
           classe="w-32"
           children="Cancelar"
         />
+        <ButtonOk onClick={upDate} type="ok" classe="w-32" children="Editar" />
       </div>
     </div>
   );

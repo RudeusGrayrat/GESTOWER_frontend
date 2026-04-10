@@ -189,12 +189,12 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion }) => {
         </div>
       </div>
       <div className="min-h-[10%] max-h-[12%] flex justify-end items-center m-2 ">
+        <ButtonOk onClick={() => setViewUbicacion(false)} children="Cerrar" />
         <ButtonOk
           onClick={() => editUbicacion()}
           children="Guardar"
           type="ok"
         />
-        <ButtonOk onClick={() => setViewUbicacion(false)} children="Cerrar" />
       </div>
     </div>
   );

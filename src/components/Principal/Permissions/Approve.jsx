@@ -20,17 +20,17 @@ const Approve = ({ setShowApprove, onclick }) => {
         </div>
         <div className="flex justify-center items-center">
           <ButtonOk
+            onClick={() => setShowApprove(false)}
+            styles={"!w-full m-4 flex justify-center mx-4"}
+            classe={"!w-24"}
+            children="NO"
+          />
+          <ButtonOk
             onClick={onclick}
             type="ok"
             styles={"!w-full m-4 flex justify-center mx-4"}
             classe={"!w-24"}
             children="SI"
-          />
-          <ButtonOk
-            onClick={() => setShowApprove(false)}
-            styles={"!w-full m-4 flex justify-center mx-4"}
-            classe={"!w-24"}
-            children="NO"
           />
         </div>
       </div>

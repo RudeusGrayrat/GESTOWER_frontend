@@ -117,15 +117,15 @@ const RegisterZonas = () => {
       </CardPlegable>
       <div className="flex justify-center ">
         <ButtonOk
+          children="Cancelar"
+          classe="!w-32"
+          onClick={() => resetForm()}
+        />
+        <ButtonOk
           type="ok"
           onClick={enviar}
           classe="!w-32"
           children="Registrar"
-        />
-        <ButtonOk
-          children="Cancelar"
-          classe="!w-32"
-          onClick={() => resetForm()}
         />
       </div>
     </div>

@@ -71,15 +71,15 @@ const RegisterNaves = () => {
       />
       <div className="flex justify-center m-10 ">
         <ButtonOk
+          children="Cancelar"
+          classe="!w-32"
+          onClick={() => resetForm()}
+        />
+        <ButtonOk
           type="ok"
           onClick={register}
           classe="!w-32"
           children="Registrar"
-        />
-        <ButtonOk
-          children="Cancelar"
-          classe="!w-32"
-          onClick={() => resetForm()}
         />
       </div>
     </div>

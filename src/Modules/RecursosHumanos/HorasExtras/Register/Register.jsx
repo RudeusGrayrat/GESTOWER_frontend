@@ -118,7 +118,7 @@ const RegisterHorasExtras = () => {
         }
     }
     return (
-        <div className="p-4">
+        <div className="grid gap-2">
             <PopUp deshabilitar={deshabilitar} />
             <CardPlegable title="Registro de Horas Extras">
                 <div className="flex flex-wrap gap-4">

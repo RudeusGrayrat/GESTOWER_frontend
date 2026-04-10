@@ -96,15 +96,15 @@ const Register = ({ editForm, setEditForm }) => {
             {!editForm && (
                 <div className="flex justify-center ">
                     <ButtonOk
-                        children="Cancelar"
-                        classe="!w-60 !p-3 !text-xl"
-                        onClick={() => resetForm()}
-                    />
-                    <ButtonOk
                         type="ok"
                         onClick={register}
                         classe="!w-60 !p-3 !text-xl"
                         children="Registrar"
+                    />
+                    <ButtonOk
+                        children="Cancelar"
+                        classe="!w-60 !p-3 !text-xl"
+                        onClick={() => resetForm()}
                     />
                 </div>
             )}

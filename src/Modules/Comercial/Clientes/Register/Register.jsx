@@ -88,8 +88,8 @@ const Register = () => {
       )}
 
       <div className="flex justify-center ">
-        <ButtonOk type="ok" onClick={register} children="Registrar" />
         <ButtonOk children="Cancelar" />
+        <ButtonOk type="ok" onClick={register} children="Registrar" />
       </div>
     </div>
   );

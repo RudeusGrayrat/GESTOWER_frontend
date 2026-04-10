@@ -35,8 +35,8 @@ const Delete = ({ setShowDelete, client }) => {
           </h1>
         </div>
         <div className="flex justify-center">
-          <ButtonOk onClick={handleDelete} type="ok" children="SI" />
           <ButtonOk onClick={() => setShowDelete(false)} children="NO" />
+          <ButtonOk onClick={handleDelete} type="ok" children="SI" />
         </div>
       </div>
     </div>

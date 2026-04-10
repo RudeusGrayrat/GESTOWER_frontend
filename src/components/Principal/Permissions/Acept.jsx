@@ -17,17 +17,17 @@ const AceptPrincipal = ({ onclickOk, onclickNo, title = "" }) => {
                 </div>
                 <div className="flex justify-center items-center">
                     <ButtonOk
+                        onClick={onclickNo}
+                        styles={"!w-full m-4 flex justify-center mx-4"}
+                        classe={"!w-24"}
+                        children="NO"
+                    />
+                    <ButtonOk
                         onClick={onclickOk}
                         type="ok"
                         styles={"!w-full m-4 flex justify-center mx-4"}
                         classe={"!w-24"}
                         children="SI"
-                    />
-                    <ButtonOk
-                        onClick={onclickNo}
-                        styles={"!w-full m-4 flex justify-center mx-4"}
-                        classe={"!w-24"}
-                        children="NO"
                     />
                 </div>
             </div>

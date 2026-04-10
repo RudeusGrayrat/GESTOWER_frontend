@@ -67,8 +67,8 @@ const Edit = (props) => {
       </div>
 
       <div className="flex justify-end p-3">
-        <ButtonOk onClick={() => upDate()} type="ok" children="Editar" />
         <ButtonOk onClick={() => setShowEdit(false)} children="Cancelar" />
+        <ButtonOk onClick={() => upDate()} type="ok" children="Editar" />
       </div>
     </div>
   );
