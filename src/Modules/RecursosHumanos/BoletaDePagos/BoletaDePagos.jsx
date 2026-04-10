@@ -7,6 +7,7 @@ import ReporteBoletasDePago from "./Report/Reporte";
 import ExcelBoletas from "./Permissions/ExcelBoletas";
 import RadioOption from "../../../recicle/Otros/Radio";
 import { useSearchParams } from "react-router-dom";
+import PopUp from "../../../recicle/popUps";
 
 const BoletaDePagos = () => {
   const { user } = useAuth();
@@ -91,6 +92,7 @@ const BoletaDePagos = () => {
 
   return (
     <div className="w-full">
+      <PopUp />
       <div className="flex justify-center items-center p-5">
         <RadioOption
           opciones={options}

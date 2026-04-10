@@ -9,6 +9,7 @@ import { useSearchParams } from "react-router-dom";
 import VistaGeneral from "./Ubicar/Vista";
 import ReporteMovimientos from "./Report/Reporte";
 import StockAlmacenLurin from "./Stock/Stock";
+import PopUp from "../../../recicle/popUps";
 
 const Lurin = () => {
   const dispatch = useDispatch();
@@ -112,6 +113,7 @@ const Lurin = () => {
 
   return (
     <div className="w-full ">
+      <PopUp />
       <div className="flex justify-center items-center p-5">
         <RadioOption
           opciones={options}
