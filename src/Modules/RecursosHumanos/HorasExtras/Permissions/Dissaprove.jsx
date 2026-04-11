@@ -9,8 +9,8 @@ const DissaproveHorasExtras = ({ setShowDisapprove, selected, reload }) => {
     const handleDisapprove = async () => {
         sendMessage("Rechazando horas extras...", "Cargando", true);
         try {
-            if (selected.estado === "APROBADO") {
-                sendMessage("Las horas extras ya han sido aprobadas.", "Advertencia");
+            if (selected.estado === "RECHAZADO") {
+                sendMessage("Las horas extras ya han sido rechazadas.", "Advertencia");
                 return;
             }
             if (!selected.colaborador) {

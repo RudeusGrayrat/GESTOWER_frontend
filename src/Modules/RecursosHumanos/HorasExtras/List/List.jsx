@@ -30,7 +30,6 @@ const ListHorasExtras = ({
                 data: data.data,
                 total: data.total
             }
-
         } catch (error) {
             throw error
         }
