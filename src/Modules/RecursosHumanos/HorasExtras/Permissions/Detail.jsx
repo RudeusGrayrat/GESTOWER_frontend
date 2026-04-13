@@ -26,14 +26,14 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                 if (!selected) return;
                 const plantilla = VITE_PLANTILLA_HORAS_EXTRAS;
                 let logoEmpresa = "";
-                const businessSolicitante = selected.solicitante?.business
-                if (businessSolicitante.includes("CORPEMSE")) {
+                const businessSolicitante = selected.solicitante?.business;
+                if (businessSolicitante?.includes("CORPEMSE")) {
                     logoEmpresa = "/CORPEMSE_LOGO.png";
-                } else if (businessSolicitante.includes("LURIN")) {
+                } else if (businessSolicitante?.includes("LURIN")) {
                     logoEmpresa = "/INVERSIONES_LURIN_LOGO.png";
-                } else if (businessSolicitante.includes("ECOLOGY")) {
+                } else if (businessSolicitante?.includes("ECOLOGY")) {
                     logoEmpresa = "/ECOLOGY_LOGO.png";
-                } else if (businessSolicitante.includes("LABORATORIO")) {
+                } else if (businessSolicitante?.includes("LABORATORIO")) {
                     logoEmpresa = "/LADIAMB_LOGO.png";
                 } else {
                     logoEmpresa = "/TOWER_LOGO.png";
