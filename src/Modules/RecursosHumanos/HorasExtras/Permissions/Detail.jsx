@@ -46,7 +46,7 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                         cargo: colaboradorData?.charge || "",
                         hora_inicio: colab?.horaInicio || "",
                         hora_fin: colab?.horaFin || "",
-                        total_horas: colab?.horas || "",
+                        total_horas: colab?.minutosTotales || "",
                     };
                 });
                 const payload = {
