@@ -17,6 +17,7 @@ const FormOne = ({ setForm, error, form }) => {
       <Input
         label="Tipo de Documento"
         name="documentType"
+        ancho="!w-40 !min-w-36"
         type="select"
         options={["DNI", "C.E", "PASAPORTE"]}
         value={form.documentType}
@@ -25,6 +26,7 @@ const FormOne = ({ setForm, error, form }) => {
       />
       <Input
         label="Número de Documento"
+        ancho="!w-44 !min-w-36"
         name="documentNumber"
         inputMode="numeric"
         onKeyPress={(e) => {
@@ -53,6 +55,7 @@ const FormOne = ({ setForm, error, form }) => {
       <Input
         label="Género"
         name="genre"
+        ancho="!w-40 !min-w-36"
         type="select"
         options={["MASCULINO", "FEMENINO"]}
         value={form.genre}
@@ -68,6 +71,7 @@ const FormOne = ({ setForm, error, form }) => {
       />
       <Input
         label="Estado Civil"
+        ancho="!w-44 !min-w-36"
         name="civilStatus"
         type="select"
         options={["SOLTERO", "CASADO", "DIVORCIADO", "VIUDO"]}
@@ -84,6 +88,7 @@ const FormOne = ({ setForm, error, form }) => {
       />
       <InputNormal
         label="Celular"
+        ancho="!w-40 !min-w-36"
         name="phone"
         onKeyPress={(e) => {
           if (!/[0-9]/.test(e.key)) {
@@ -95,6 +100,7 @@ const FormOne = ({ setForm, error, form }) => {
       />
       <InputNormal
         label="Telefono"
+        ancho="!w-40 !min-w-36"
         name="telephone"
         onKeyPress={(e) => {
           if (!/[0-9]/.test(e.key)) {
@@ -115,6 +121,7 @@ const FormOne = ({ setForm, error, form }) => {
       />
       <Input
         label="Sede"
+        ancho="!w-44 !min-w-36"
         name="sede"
         type="select"
         options={[
@@ -137,7 +144,16 @@ const FormOne = ({ setForm, error, form }) => {
         errorOnclick={error.charge}
       />
       <Input
+        label="Área"
+        name="area"
+        type="select"
+        options={["OPERACIONES", "RECURSOS HUMANOS", "SISTEMAS", "LOGISTICA", "CONTABILIDAD", "PROYECTOS", "PLANTA DE ACEITE", "MATPEL", "COMERCIAL", "GERENCIA", "TESORERIA", "ADMINISTRACION"]}
+        value={form.area}
+        setForm={setForm}
+      />
+      <Input
         label="Sueldo"
+        ancho="!w-32 !min-w-36"
         name="sueldo"
         onKeyPress={(e) => {
           if (!/[0-9/.]/.test(e.key)) e.preventDefault();
@@ -153,12 +169,6 @@ const FormOne = ({ setForm, error, form }) => {
         setForm={setForm}
         errorOnclick={error.user}
       />
-      <InpuFiles
-        label="Foto"
-        name="photo"
-        setForm={setForm}
-        errorOnclick={error.photo}
-      />
       <Input
         label="Contraseña"
         name="password"
@@ -166,6 +176,12 @@ const FormOne = ({ setForm, error, form }) => {
         value={form.password}
         setForm={setForm}
         errorOnclick={error.password}
+      />
+      <InpuFiles
+        label="Foto"
+        name="photo"
+        setForm={setForm}
+        errorOnclick={error.photo}
       />
       <InputDate
         label="Fecha de Inicio"
@@ -177,6 +193,7 @@ const FormOne = ({ setForm, error, form }) => {
         label="Tipo de Colaborador"
         name="type"
         type="select"
+        ancho="!w-52 !min-w-36"
         value={form.type}
         options={["VISITANTE", "COLABORADOR"]}
         setForm={setForm}
@@ -204,6 +221,7 @@ const FormOne = ({ setForm, error, form }) => {
       <Input
         label="Codigo SPP"
         name="codigoSpp"
+        ancho="!w-40 !min-w-36"
         value={form.codigoSpp}
         setForm={setForm}
       />
@@ -211,6 +229,7 @@ const FormOne = ({ setForm, error, form }) => {
         label="Asistencia Automática"
         name="asistenciaAutomatica"
         type="select"
+        ancho="!w-48 !min-w-36"
         value={form.asistenciaAutomatica}
         options={["NO", "SI"]}
         setForm={setForm}

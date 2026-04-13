@@ -25,6 +25,19 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
             try {
                 if (!selected) return;
                 const plantilla = VITE_PLANTILLA_HORAS_EXTRAS;
+                let logoEmpresa = "";
+                const businessSolicitante = selected.solicitante?.business
+                if (businessSolicitante.includes("CORPEMSE")) {
+                    logoEmpresa = "/CORPEMSE_LOGO.png";
+                } else if (businessSolicitante.includes("LURIN")) {
+                    logoEmpresa = "/INVERSIONES_LURIN_LOGO.png";
+                } else if (businessSolicitante.includes("ECOLOGY")) {
+                    logoEmpresa = "/ECOLOGY_LOGO.png";
+                } else if (businessSolicitante.includes("LABORATORIO")) {
+                    logoEmpresa = "/LADIAMB_LOGO.png";
+                } else {
+                    logoEmpresa = "/TOWER_LOGO.png";
+                }
                 const listColaboradores = selected.colaboradores.map((colab) => {
                     const colaboradorData = colab.colaborador || {};
                     const nombre = colaboradorData.name && colaboradorData.lastname ? `${colaboradorData.lastname}, ${colaboradorData.name}` : "";
@@ -37,18 +50,18 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                     };
                 });
                 const payload = {
-                    logo_empresa: "",
+                    "logo_empresa": logoEmpresa,
                     nombre_colaborador: selected.solicitante ? `${selected.solicitante.lastname}, ${selected.solicitante.name}` : "",
-                    area_colaborador: selected.solicitante ? selected.solicitante.area : "",
+                    area_colaborador: selected.solicitante?.area ? selected.solicitante?.area : "",
                     fecha_solicitud: selected.fecha || "",
                     retribucion_pago: check(selected.retribucion === "PAGO"),
                     retribucion_compensacion: check(selected.retribucion === "COMPENSACION"),
                     foma_compensacion: selected.formaCompensacion || "",
                     sustento_requerimiento: selected.motivo || "",
                     colaboradores: listColaboradores,
-                    firma_solicitante: "",
-                    firma_jefe_inmediato: "",
-                    fecha_recepcion_rrhh: "",
+                    // firma_solicitante: "",
+                    // firma_jefe_inmediato: "",
+                    // fecha_recepcion_rrhh: "",
                 }
                 const file = await convertDocx(payload, plantilla, "");
                 if (!file) {

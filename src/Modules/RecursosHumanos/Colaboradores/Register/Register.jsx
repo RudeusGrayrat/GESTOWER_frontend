@@ -40,6 +40,7 @@ const Register = () => {
     business: "",
     sede: "",
     charge: "",
+    area: "",
     funcion: "",
     sueldo: "",
     user: "",

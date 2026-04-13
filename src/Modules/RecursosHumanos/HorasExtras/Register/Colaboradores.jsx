@@ -1,56 +1,51 @@
 import { useEffect, useState } from "react"
 import Input from "../../../../recicle/Inputs/Inputs"
 import InputNormal from "../../../../recicle/Inputs/tipos/Normal"
+import InputTime from "../../../../recicle/Inputs/tipos/InputTime"
+import dayjs from "dayjs"
 
 const Colaboradores = ({ set, initialData }) => {
     const [colaboradorOptions, setColaboradorOptions] = useState([])
     const [formData, setFormData] = useState({
         colaborador: initialData?.colaborador || "",
-        horas: initialData?.horas || 0,
-        minutos: initialData?.minutos || 0,
+        horaInicio: initialData?.horaInicio || "06:00 PM",
+        horaFin: initialData?.horaFin || "06:01 PM",
+        horas: initialData?.horas || "",
+        minutos: initialData?.minutos || "",
         minutosTotales: initialData?.minutosTotales || 0
     })
 
-    const handleHorasChange = (e) => {
-        const horas = parseInt(e.target.value) || 0;
-        // Validar que horas no exceda 24
-        const horasValidas = Math.min(Math.max(horas, 0), 24);
-
-        setFormData((prev) => {
-            const nuevosDatos = {
-                ...prev,
-                horas: horasValidas,
-                minutos: prev.minutos,
-                minutosTotales: (horasValidas * 60) + prev.minutos
-            };
-            return nuevosDatos;
-        });
+    // Función para calcular minutos totales entre horaInicio y horaFin
+    const calcularMinutosTotales = (inicio, fin) => {
+        if (!inicio || !fin) return 0;
+        const ini = dayjs(inicio, "hh:mm A");
+        const end = dayjs(fin, "hh:mm A");
+        let diff = end.diff(ini, "minute");
+        if (diff <= 0) diff += 24 * 60;
+        return diff;
     }
 
-    const handleMinutosChange = (e) => {
-        let minutos = parseInt(e.target.value) || 0;
-        // Limitar minutos a 59 y no negativos
-        minutos = Math.min(Math.max(minutos, 0), 59);
-
-        setFormData((prev) => {
-            const nuevosDatos = {
-                ...prev,
-                minutos: minutos,
-                minutosTotales: (prev.horas * 60) + minutos
-            };
-            return nuevosDatos;
-        });
+    // Formatear minutos totales a horas y minutos para mostrar
+    const formatearMinutos = (minutos) => {
+        if (!minutos && minutos !== 0) return "0h 0m";
+        const horas = Math.floor(minutos / 60);
+        const mins = minutos % 60;
+        return `${horas}h ${mins}m`;
     }
+
     useEffect(() => {
         set({
             colaborador: formData.colaborador,
+            horaInicio: formData.horaInicio,
+            horaFin: formData.horaFin,
+            minutosTotales: formData.minutosTotales,
             horas: formData.horas,
-            minutos: formData.minutos,
-            minutosTotales: formData.minutosTotales
+            minutos: formData.minutos
         });
     }, [formData])
+
     return (
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap gap-2">
             <Input
                 label="Colaborador"
                 name="colaborador"
@@ -64,39 +59,50 @@ const Colaboradores = ({ set, initialData }) => {
                 options={colaboradorOptions}
                 required
             />
-            <InputNormal
-                label="Horas"
-                name="horas"
-                type="number"
-                min="0"
-                max="24"
-                step="1"
-                ancho="!min-w-36"
-                value={formData.horas}
-                onChange={handleHorasChange}
+
+            <InputTime
+                label="Hora Inicio"
+                name="horaInicio"
+
+                ancho="!w-40 !min-w-36"
+                value={formData.horaInicio}
+                setForm={(updater) => {
+                    setFormData((prev) => {
+                        const updated = typeof updater === "function" ? updater(prev) : updater;
+                        const minutosTotales = calcularMinutosTotales(updated.horaInicio, prev.horaFin);
+                        const horas = Math.floor(minutosTotales / 60);
+                        const minutos = minutosTotales % 60;
+                        return { ...updated, minutosTotales, horas, minutos };
+                    });
+                }}
+            />
+
+            <InputTime
+                label="Hora Fin"
+                name="horaFin"
+                ancho="!w-40 !min-w-36"
+                value={formData.horaFin}
+                setForm={(updater) => {
+                    setFormData((prev) => {
+                        const updated = typeof updater === "function" ? updater(prev) : updater;
+                        const minutosTotales = calcularMinutosTotales(prev.horaInicio, updated.horaFin);
+                        const horas = Math.floor(minutosTotales / 60);
+                        const minutos = minutosTotales % 60;
+                        return { ...updated, minutosTotales, horas, minutos };
+                    });
+                }}
             />
             <InputNormal
-                label="Minutos"
-                name="minutos"
-                type="number"
-                min="0"
-                max="59"
-                step="1"
-                ancho="!min-w-36"
-                value={formData.minutos}
-                onChange={handleMinutosChange}
-            />
-            {/* Mostrar total en minutos */}
-            <InputNormal
-                label="Minutos Totales"
-                name="minutosTotales"
-                type="number"
-                ancho="!min-w-32 !w-36"
-                value={formData.minutosTotales}
+                label="Duración Total"
+                name="duracionTotal"
+                type="text"
+                ancho="!min-w-32 !w-40"
+                value={formatearMinutos(formData.minutosTotales)}
                 disabled
                 readOnly
             />
-        </div >
+
+        </div>
     )
 }
 

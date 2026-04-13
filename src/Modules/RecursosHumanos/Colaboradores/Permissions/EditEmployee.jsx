@@ -75,6 +75,7 @@ const EditEmployee = ({ setShowEdit, selected, reload }) => {
       });
       dispatch(setMessage("Error en la actualización", "Error"));
     } finally {
+      setShowEdit(false);
       reload();
     }
   };

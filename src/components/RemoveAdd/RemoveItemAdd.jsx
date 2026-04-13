@@ -68,7 +68,7 @@ const Directorio = (props) => {
           />
           <ButtonOk
             classe="w-full"
-            styles="!my-0 px-6  mx-4"
+            styles="!my-0 px-3  mx-2"
             onClick={() => handleRemoveForm(form.id)}
             children="X"
           />

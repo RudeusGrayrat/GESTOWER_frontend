@@ -21,6 +21,7 @@ const RegisterHorasExtras = ({ editData, setEditForm }) => {
         colaboradores: [],
         motivo: "",
     })
+    console.log("Form data state:", formData);
     const validate = () => {
         if (!formData.solicitante) {
             sendMessage("Debe seleccionar un solicitante", "Info");

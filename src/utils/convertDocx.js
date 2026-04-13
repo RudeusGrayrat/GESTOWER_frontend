@@ -2,6 +2,7 @@
 import PizZip from "pizzip";
 import Docxtemplater from "docxtemplater";
 import axios from "axios";
+import ImageModule from "docxtemplater-image-module-free";
 
 const convertDocx = async (predata, archivo, nameDoc) => {
   // Detectar entorno de desarrollo
@@ -35,17 +36,28 @@ const convertDocx = async (predata, archivo, nameDoc) => {
       throw new Error("El archivo no parece ser una plantilla válida de Word.");
     }
 
-    // Solo en desarrollo: logs y verificaciones adicionales
+    const imageOptions = {
+      centered: false,
+      getImage: async (tagValue) => {
+        // window.location.origin asegura que busque en http://localhost:5173/
+        const baseUrl = window.location.origin;
+        const imageUrl = tagValue.startsWith('http') ? tagValue : `${baseUrl}/${tagValue.replace(/^\//, '')}`;
+        const res = await axios.get(imageUrl, { responseType: "arraybuffer" });
+        return res.data;
+      },
+      getSize: () => [150, 60], // Tamaño [ancho, alto] por defecto en píxeles
+    };
 
-    // Configurar docxtemplater
+    const imageModule = new ImageModule(imageOptions);
+
     const doc = new Docxtemplater(zip, {
       paragraphLoop: true,
       linebreaks: true,
       delimiters: { start: "{{", end: "}}" },
+      modules: [imageModule], // <-- Añadir aquí
     });
 
-    // Renderizar documento
-    doc.render(data);
+    await doc.renderAsync(data);
 
     const blob = doc.getZip().generate({
       type: "blob",
@@ -56,20 +68,14 @@ const convertDocx = async (predata, archivo, nameDoc) => {
       throw new Error("No se pudo generar el archivo .docx");
     }
 
-    const file = new File([blob], `${nameDoc}.docx`, {
-      type: blob.type || "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    });
+    return new File([blob], `${nameDoc}.docx`, { type: blob.type });
 
-    return file;
-
-  } catch (error) {
-    // Log del error siempre (para depuración)
-    console.error("❌ Error en convertDocx:", error.message);
+  } catch (error) {;
     if (error.properties && error.properties.errors) {
       console.error("Errores de docxtemplater:", error.properties.errors);
     }
     // Lanzar el error con el mensaje original (como en la versión simple)
-    throw new Error(error.message || "Error al generar el documento");
+    throw new Error(error || "Error al generar el documento");
   }
 };
 
