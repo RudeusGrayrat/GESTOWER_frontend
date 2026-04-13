@@ -1,39 +1,71 @@
-import ButtonOk from "../../../../recicle/Buttons/Buttons";
+import { useState } from "react";
+import Edit from "../../../../components/Principal/Permissions/Edit";
+import RegisterHorasExtras from "../Register/Register";
+import { deepDiff } from "../../../validateEdit";
+import useSendMessage from "../../../../recicle/senMessage";
+import { useAuth } from "../../../../context/AuthContext";
+import axios from "../../../../api/axios";
 
 const EditHorasExtras = ({ setShowEdit, selected, reload }) => {
-    const onclick = () => {
-        console.log("Editando horas extras...");
+    const [formEdit, setFormEdit] = useState(selected);
+    const sendMessage = useSendMessage();
+    const { user } = useAuth();
+    const diferencias = deepDiff(selected, formEdit);
+    const validate = () => {
+        if (!formEdit.solicitante) {
+            sendMessage("Debe seleccionar un solicitante", "Info");
+            return false;
+        }
+        if (!formEdit.fecha) {
+            sendMessage("Debe seleccionar una fecha", "Info");
+            return false;
+        }
+        if (formEdit.colaboradores.length === 0) {
+            sendMessage("Debe agregar al menos un colaborador con horas extras", "Info");
+            return false;
+        }
+        if (!formEdit.retribucion) {
+            sendMessage("Debe seleccionar una retribución", "Info");
+            return false;
+        }
+        if (!formEdit.motivo.trim()) {
+            sendMessage("Debe ingresar un motivo para las horas extras", "Info");
+            return false;
+        }
+
+        return true;
+    }
+
+    const onclick = async () => {
+        if (!validate()) return;
+        sendMessage("Actualizando horas extras...", "Cargando", true);
+        try {
+            if (diferencias.length === 0) {
+                sendMessage("No se han realizado cambios en el formulario.", "Info");
+                return;
+            }
+            const newFormData = {
+                _id: selected._id,
+                estado: formEdit.estado,
+                fecha: formEdit.fecha,
+                modificadoPor: user._id,
+                ...diferencias
+            }
+            const response = await axios.patch("/rrhh/patchHorasExtras/", newFormData);
+            if (response.status > 200 || response.status < 400) {
+                sendMessage(response.data.message, response.data.type);
+                setShowEdit(false);
+                return reload();
+            }
+        } catch (error) {
+            sendMessage(error, "Error");
+        }
     }
 
     return (
-        <div className="fixed top-0 z-40 left-0 right-0 bottom-0 flex justify-center items-center"
-        >
-            <div className="flex flex-col  bg-white p-8 border-2 rounded-lg shadow-lg ">
-                <div className="">
-                    <h1 className="p-4 font-bold text-red-600 text-center text-5xl">
-                        Espere
-                    </h1>
-                    <h1 className="p-4 text-center text-xl">
-                        ¿Está seguro que desea editarlo?
-                    </h1>
-                </div>
-                <div className="flex justify-center items-center">
-                    <ButtonOk
-                        onClick={() => setShowEdit(false)}
-                        styles={"!w-full m-4 flex justify-center mx-4"}
-                        classe={"!w-24"}
-                        children="NO"
-                    />
-                    <ButtonOk
-                        onClick={onclick}
-                        type="ok"
-                        styles={"!w-full m-4 flex justify-center mx-4"}
-                        classe={"!w-24"}
-                        children="SI"
-                    />
-                </div>
-            </div>
-        </div>
+        <Edit setShowEdit={setShowEdit} upDate={onclick}>
+            <RegisterHorasExtras editData={formEdit} setEditForm={setFormEdit} />
+        </Edit>
     )
 }
 

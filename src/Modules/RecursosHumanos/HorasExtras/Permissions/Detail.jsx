@@ -6,29 +6,47 @@ import documentoCloudinary from "../../../../api/cloudinaryDocument";
 import axios from "../../../../api/axios";
 const { VITE_PLANTILLA_HORAS_EXTRAS } = import.meta.env;
 const DetailHorasExtras = ({ setShowDetail, selected }) => {
-    const {
-        _id
-    } = selected;
-    const [showDoc, setShowDoc] = useState(true);
+    console.log("Selected data for detail view:", selected);
+    const [showDoc, setShowDoc] = useState(false);
     const [docxContent, setDocxContent] = useState("");
     const sendMessage = useSendMessage();
+    const safe = (value) => {
+        if (value === undefined || value === null) return "";
+        if (typeof value === 'string') return value;
+        if (typeof value === 'number') return value.toString();
+        if (typeof value === 'boolean') return value ? 'X' : '';
+        return String(value);
+    };
+    const check = (condition) => condition ? 'X' : '';
+
     useEffect(() => {
         if (docxContent) return;
         const renderDocx = async () => {
             try {
                 if (!selected) return;
                 const plantilla = VITE_PLANTILLA_HORAS_EXTRAS;
+                const listColaboradores = selected.colaboradores.map((colab) => {
+                    const colaboradorData = colab.colaborador || {};
+                    const nombre = colaboradorData.name && colaboradorData.lastname ? `${colaboradorData.lastname}, ${colaboradorData.name}` : "";
+                    return {
+                        nombre: nombre,
+                        cargo: colaboradorData?.cargo || "",
+                        hora_inicio: colab?.horaInicio || "",
+                        hora_fin: colab?.horaFin || "",
+                        total_horas: colab?.horas || "",
+                    };
+                });
                 const payload = {
                     logo_empresa: "",
-                    nombre_colaborador: selected.colaborador ? selected.colaborador.nombre : "N/A",
-                    area_colaborador: selected.colaborador ? selected.colaborador.area : "N/A",
-                    fecha_solicitud: selected.fecha,
-                    retribucion_pago: selected.retribucionPago,
-                    retribucion_compensacion: selected.retribucionCompensacion,
-                    forma_compensacion: selected.formaCompensacion,
-                    sustento_requerimiento: selected.motivo,
-                    colaboradores: [],
-                    firma_solicitabte: "",
+                    nombre_colaborador: selected.solicitante ? `${selected.solicitante.lastname}, ${selected.solicitante.name}` : "",
+                    area_colaborador: selected.solicitante ? selected.solicitante.area : "",
+                    fecha_solicitud: selected.fecha || "",
+                    retribucion_pago: selected.retribucionPago || "",
+                    retribucion_compensacion: selected.retribucionCompensacion || "",
+                    foma_compensacion: selected.formaCompensacion || "",
+                    sustento_requerimiento: selected.motivo || "",
+                    colaboradores: listColaboradores,
+                    firma_solicitante: "",
                     firma_jefe_inmediato: "",
                     fecha_recepcion_rrhh: "",
                 }

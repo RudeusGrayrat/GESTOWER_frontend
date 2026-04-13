@@ -1,6 +1,7 @@
 import Input from "../../../../../recicle/Inputs/Inputs";
 import InputDate from "../../../../../recicle/Inputs/tipos/InputDate";
 import InputTime from "../../../../../recicle/Inputs/tipos/InputTime";
+import InputNormal from "../../../../../recicle/Inputs/tipos/Normal";
 
 const DatosDeAsistencia = ({ setForm, error, form }) => {
   return (
@@ -84,7 +85,7 @@ const DatosDeAsistencia = ({ setForm, error, form }) => {
         setForm={setForm}
         errorOnclick={error.estado}
       />
-      <Input
+      <InputNormal
         label="Observaciones"
         name="observaciones"
         value={form.observaciones}

@@ -6,13 +6,11 @@ import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
 
 const EditGenerador = ({ setShowEdit, selected, reload }) => {
-    const [deshabilitar, setDeshabilitar] = useState(false);
     console.log("Selected para editar:", selected);
     const [editForm, setEditForm] = useState(selected);
     const sendMessage = useSendMessage();
     const changes = deepDiff(selected, editForm);
     const upDate = async () => {
-        setDeshabilitar(true);
         try {
             sendMessage("Editando generador...", "Espere", true);
             if (Object.keys(changes).length === 0) {
@@ -33,8 +31,6 @@ const EditGenerador = ({ setShowEdit, selected, reload }) => {
             }
         } catch (error) {
             sendMessage(error || "Error al editar el generador", "error");
-        } finally {
-            setDeshabilitar(false);
         }
     }
     return (

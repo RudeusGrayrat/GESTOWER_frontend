@@ -71,7 +71,7 @@ const Register = ({ editForm, setEditForm }) => {
         }
     }
     return (
-        <div className="w-full p-4 ">
+        <div className="w-full p-4">
             <CardPlegable title="Datos Basicos"   >
                 <DatosBasicos form={editForm ? editForm : form} setForm={setEditForm ? setEditForm : setForm} />
             </CardPlegable>
@@ -81,7 +81,7 @@ const Register = ({ editForm, setEditForm }) => {
                     setForm={setEditForm ? setEditForm : setForm}
                     directory={editForm ? editForm.plantas : form?.plantas}
                     data="plantas"
-                    estilos="flex items-center pl-4  "
+                    estilos="flex items-center pl-4"
                 />
             </CardPlegable>
             <CardPlegable title="Responsables"  >
@@ -90,11 +90,11 @@ const Register = ({ editForm, setEditForm }) => {
                     setForm={setEditForm ? setEditForm : setForm}
                     directory={editForm ? editForm.responsablesTecnicos : form?.responsablesTecnicos}
                     data="responsablesTecnicos"
-                    estilos="flex items-center pl-4 "
+                    estilos="flex items-center pl-4"
                 />
             </CardPlegable>
             {!editForm && (
-                <div className="flex justify-center ">
+                <div className="flex justify-center">
                     <ButtonOk
                         type="ok"
                         onClick={register}

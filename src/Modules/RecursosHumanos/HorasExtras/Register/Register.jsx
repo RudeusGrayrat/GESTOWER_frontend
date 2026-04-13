@@ -10,7 +10,7 @@ import { useAuth } from "../../../../context/AuthContext";
 import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import Colaboradores from "./Colaboradores";
 
-const RegisterHorasExtras = () => {
+const RegisterHorasExtras = ({ editData, setEditForm }) => {
     const sendMessage = useSendMessage();
     const { user } = useAuth();
     const [formData, setFormData] = useState({
@@ -66,8 +66,8 @@ const RegisterHorasExtras = () => {
                 estado: "PENDIENTE",
                 creadoPor: user._id
             });
-            if (response.data.type === "Correcto" || response.status < 300) {
-                sendMessage(response.data.message, "Correcto");
+            if (response.status > 200 || response.status < 400) {
+                sendMessage(response.data.message, response.data.type);
                 return limpiarFormulario();
             }
         } catch (error) {
@@ -82,7 +82,7 @@ const RegisterHorasExtras = () => {
                         label="Solicitante"
                         name="solicitante"
                         type="autocomplete"
-                        value={formData.solicitante}
+                        value={editData ? editData.solicitante : formData.solicitante}
                         ancho="!min-w-96"
                         field={(item) => `${item.name} ${item.lastname}`}
                         disabled
@@ -93,8 +93,8 @@ const RegisterHorasExtras = () => {
                         name="fecha"
                         type="date"
                         ancho="!min-w-36"
-                        value={formData.fecha}
-                        setForm={setFormData}
+                        value={editData ? editData.fecha : formData.fecha}
+                        setForm={setEditForm ? setEditForm : setFormData}
                         required
                     />
                     <Input
@@ -102,8 +102,8 @@ const RegisterHorasExtras = () => {
                         name="retribucion"
                         type="select"
                         ancho="!min-w-36 !w-48"
-                        value={formData.retribucion}
-                        setForm={setFormData}
+                        value={editData ? editData.retribucion : formData.retribucion}
+                        setForm={setEditForm ? setEditForm : setFormData}
                         options={["PAGO", "COMPENSACIÓN"]}
                         required
                     />
@@ -113,8 +113,8 @@ const RegisterHorasExtras = () => {
                         name="formaCompensacion"
                         type="text"
                         ancho="!min-w-96"
-                        value={formData.formaCompensacion}
-                        setForm={setFormData}
+                        value={editData ? editData.formaCompensacion : formData.formaCompensacion}
+                        setForm={setEditForm ? setEditForm : setFormData}
                     />
                     <div className="flex flex-col mx-3 w-full">
                         <label className="text-base font-medium text-gray-700">
@@ -124,8 +124,8 @@ const RegisterHorasExtras = () => {
                             className="mt-1 py-2 border px-3 w-full !text-base rounded-md shadow-sm sm:text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 min-h-[60px]"
                             name="motivo"
                             placeholder="Ejemplo: Se requirió trabajar horas extras para completar un proyecto urgente debido a una fecha límite inminente."
-                            value={formData.motivo}
-                            onChange={(e) => {
+                            value={editData ? editData.motivo : formData.motivo}
+                            onChange={setEditForm ? (e) => setEditForm({ ...editData, motivo: e.target.value }) : (e) => {
                                 setFormData({
                                     ...formData,
                                     motivo: e.target.value
@@ -134,7 +134,7 @@ const RegisterHorasExtras = () => {
                             maxLength={500}
                         />
                         <div className="text-xs text-gray-500 mt-1 text-right">
-                            {formData.motivo.length}/500 caracteres
+                            {editData ? editData.motivo.length : formData.motivo.length}/500 caracteres
                         </div>
                     </div>
                 </div>
@@ -144,12 +144,12 @@ const RegisterHorasExtras = () => {
                     ItemComponent={Colaboradores}
                     data="colaboradores"
                     estilos=" flex justify-center items-center"
-                    directory={formData.colaboradores}
-                    setForm={setFormData}
+                    directory={editData ? editData.colaboradores : formData.colaboradores}
+                    setForm={setEditForm ? setEditForm : setFormData}
                 />
             </CardPlegable>
 
-            <div className="flex justify-center gap-4">
+            {!editData && (<div className="flex justify-center gap-4">
                 <ButtonOk
                     children="Cancelar"
                     classe="!w-60 !p-3 !text-xl"
@@ -161,7 +161,7 @@ const RegisterHorasExtras = () => {
                     classe="!w-60 !p-3 !text-xl"
                     onClick={register}
                 />
-            </div>
+            </div>)}
         </div>
     )
 }

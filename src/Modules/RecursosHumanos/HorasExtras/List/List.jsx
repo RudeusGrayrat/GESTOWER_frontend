@@ -52,15 +52,10 @@ const ListHorasExtras = ({
             title="horas_etxras_list"
         >
             <Column field="fecha" header="Fecha" />
-            <Column field="colaborador.name" header="Nombres" />
-            <Column field="colaborador.lastname" header="Apellidos" />
-            <Column field="colaborador.documentNumber" header="DNI del Colaborador" />
-            <Column field="minutosTotales" header="Tiempo "
-                body={(rowData) => {
-                    const minutosTotales = rowData.minutosTotales || 0;
-                    return `${minutosTotales} minutos`;
-                }}
-            />
+            <Column field="solicitante" header="Solicitante" body={(rowData) => rowData.solicitante ? `${rowData.solicitante.name} ${rowData.solicitante.lastname}` : "N/A"} />
+            <Column field="retribucion" header="Retribución" />
+            <Column field="motivo" header="Motivo" />
+            <Column header="N° colaboradores" body={(rowData) => rowData.colaboradores ? rowData.colaboradores.length : 0} />
             <Column
                 field="estado"
                 header="Estado"

@@ -4,6 +4,7 @@ import RegisterTransportistas from "../Register/Register";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import axios from "../../../../api/axios";
 import { deepDiff } from "../../../validateEdit";
+import Edit from "../../../../components/Principal/Permissions/Edit";
 
 const EditTransportistas = ({ setShowEdit, selected, reload }) => {
     const sendMessage = useSendMessage();
@@ -35,23 +36,9 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
         }
     }
     return (
-        <div
-            className={`w-[90%]   h-[93%] bg-white  flex flex-col justify-center
-            border-gray-100 border shadow-2xl fixed top-5 z-40 rounded-xl `}
-        >
-            <div className=" flex flex-col h-[90%] space-y-4 p-2 overflow-y-auto">
-                <RegisterTransportistas editData={formEdit} setFormEdit={setFormEdit} />
-            </div>
-
-            <div className="flex justify-end border-t ">
-                <ButtonOk
-                    onClick={() => setShowEdit(false)}
-                    classe="w-32"
-                    children="Cancelar"
-                />
-                <ButtonOk onClick={upDate} type="ok" classe="w-32" children="Editar" />
-            </div>
-        </div>
+        <Edit setShowEdit={setShowEdit} upDate={upDate}>
+            <RegisterTransportistas editData={formEdit} setFormEdit={setFormEdit} />
+        </Edit>
     )
 }
 

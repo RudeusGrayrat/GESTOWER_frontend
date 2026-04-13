@@ -14,7 +14,7 @@ const SideBar = () => {
       <div className=" w-18 flex justify-center items-center h-18 my-8 rounded-full">
         <Link to={"/home"}>
           <img
-            src="/ISOTIPO SOFT TOWER.svg"
+            src="/ISOTIPO_GESTOWER.svg"
             width={66}
             height={66}
             alt="LOGO TOWER"
