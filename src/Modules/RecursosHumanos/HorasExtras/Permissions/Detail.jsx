@@ -30,7 +30,7 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                     const nombre = colaboradorData.name && colaboradorData.lastname ? `${colaboradorData.lastname}, ${colaboradorData.name}` : "";
                     return {
                         nombre: nombre,
-                        cargo: colaboradorData?.cargo || "",
+                        cargo: colaboradorData?.charge || "",
                         hora_inicio: colab?.horaInicio || "",
                         hora_fin: colab?.horaFin || "",
                         total_horas: colab?.horas || "",
@@ -41,8 +41,8 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                     nombre_colaborador: selected.solicitante ? `${selected.solicitante.lastname}, ${selected.solicitante.name}` : "",
                     area_colaborador: selected.solicitante ? selected.solicitante.area : "",
                     fecha_solicitud: selected.fecha || "",
-                    retribucion_pago: selected.retribucionPago || "",
-                    retribucion_compensacion: selected.retribucionCompensacion || "",
+                    retribucion_pago: check(selected.retribucion === "PAGO"),
+                    retribucion_compensacion: check(selected.retribucion === "COMPENSACION"),
                     foma_compensacion: selected.formaCompensacion || "",
                     sustento_requerimiento: selected.motivo || "",
                     colaboradores: listColaboradores,
