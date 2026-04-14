@@ -54,7 +54,8 @@ const ListHorasExtras = ({
             <Column field="fecha" header="Fecha" />
             <Column field="solicitante" header="Solicitante" body={(rowData) => rowData.solicitante ? `${rowData.solicitante.name} ${rowData.solicitante.lastname}` : "N/A"} />
             <Column field="retribucion" header="Retribución" />
-            <Column field="motivo" header="Motivo" />
+            {/* En motivo debe de ser solo maximo 50 palabras visibles */}
+            <Column field="motivo" header="Motivo" body={(rowData) => rowData.motivo ? (rowData.motivo.length > 40 ? `${rowData.motivo.substring(0, 40)}...` : rowData.motivo) : "N/A"} />
             <Column header="N° colaboradores" body={(rowData) => rowData.colaboradores ? rowData.colaboradores.length : 0} />
             <Column
                 field="estado"
