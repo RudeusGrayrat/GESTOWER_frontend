@@ -1,43 +1,23 @@
 import { useEffect, useState } from "react";
-import Details from "../../../../components/Principal/Permissions/View"
+import Details from "../../../../components/Principal/Permissions/View";
 import useSendMessage from "../../../../recicle/senMessage";
 import convertDocx from "../../../../utils/convertDocx";
-import documentoCloudinary from "../../../../api/cloudinaryDocument";
-import axios from "../../../../api/axios";
-const { VITE_PLANTILLA_HORAS_EXTRAS } = import.meta.env;
+import { saveAs } from "file-saver"; // npm install file-saver
+
 const DetailHorasExtras = ({ setShowDetail, selected }) => {
-    console.log("Selected data for detail view:", selected);
-    const [showDoc, setShowDoc] = useState(false);
-    const [docxContent, setDocxContent] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [fileGenerated, setFileGenerated] = useState(null);
+    const [fileName, setFileName] = useState("");
     const sendMessage = useSendMessage();
-    const safe = (value) => {
-        if (value === undefined || value === null) return "";
-        if (typeof value === 'string') return value;
-        if (typeof value === 'number') return value.toString();
-        if (typeof value === 'boolean') return value ? 'X' : '';
-        return String(value);
-    };
-    const check = (condition) => condition ? 'X' : '';
 
     useEffect(() => {
-        if (docxContent) return;
-        const renderDocx = async () => {
+        // Reset estados al cambiar de fila seleccionada
+        setLoading(true);
+        setFileGenerated(null);
+
+        const prepareFile = async () => {
             try {
                 if (!selected) return;
-                const plantilla = VITE_PLANTILLA_HORAS_EXTRAS;
-                let logoEmpresa = "";
-                const businessSolicitante = selected.solicitante?.business;
-                if (businessSolicitante?.includes("CORPEMSE")) {
-                    logoEmpresa = "/CORPEMSE_LOGO.png";
-                } else if (businessSolicitante?.includes("LURIN")) {
-                    logoEmpresa = "/INVERSIONES_LURIN_LOGO.png";
-                } else if (businessSolicitante?.includes("ECOLOGY")) {
-                    logoEmpresa = "/ECOLOGY_LOGO.png";
-                } else if (businessSolicitante?.includes("LABORATORIO")) {
-                    logoEmpresa = "/LADIAMB_LOGO.png";
-                } else {
-                    logoEmpresa = "/TOWER_LOGO.png";
-                }
                 const listColaboradores = selected.colaboradores.map((colab) => {
                     const colaboradorData = colab.colaborador || {};
                     const nombre = colaboradorData.name && colaboradorData.lastname ? `${colaboradorData.lastname}, ${colaboradorData.name}` : "";
@@ -46,11 +26,30 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                         cargo: colaboradorData?.charge || "",
                         hora_inicio: colab?.horaInicio || "",
                         hora_fin: colab?.horaFin || "",
-                        total_horas: colab?.minutosTotales || "",
+                        total_horas: `${colab?.horas || 0}h ${colab?.minutos || 0}m`,
                     };
                 });
+                const check = (value) => value ? "X" : "";
+                // 1. Lógica de negocio para el Logo
+                const bSolicitante = selected.solicitante?.business || "";
+                // DEFINIMOS bUpper AQUÍ:
+                const bUpper = bSolicitante.toUpperCase();
+
+                let logoEmpresa = "/TOWER_LOGO.png"; // Default
+
+                // Ahora ya puedes usar bUpper sin errores
+                if (bUpper.includes("CORPEMSE")) {
+                    logoEmpresa = "/CORPEMSE_LOGO.png";
+                } else if (bUpper.includes("LURIN")) {
+                    logoEmpresa = "/INVERSIONES_LURIN_LOGO.png";
+                } else if (bUpper.includes("ECOLOGY")) {
+                    logoEmpresa = "/ECOLOGY_LOGO.png";
+                } else if (bUpper.includes("LABORATORIO")) {
+                    logoEmpresa = "/LADIAMB_LOGO.png";
+                }
+
                 const payload = {
-                    "logo_empresa": logoEmpresa,
+                    logo_empresa: logoEmpresa,
                     nombre_colaborador: selected.solicitante ? `${selected.solicitante.lastname}, ${selected.solicitante.name}` : "",
                     area_colaborador: selected.solicitante?.area ? selected.solicitante?.area : "",
                     fecha_solicitud: selected.fecha || "",
@@ -63,53 +62,71 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                     // firma_jefe_inmediato: "",
                     // fecha_recepcion_rrhh: "",
                 }
-                const file = await convertDocx(payload, plantilla, "");
-                if (!file) {
-                    sendMessage("Error al cargar el archivo", "Error");
-                    return;
-                }
-                const fechaConGuion = selected.fecha.replace(/\//g, "-");
-                const correlativa = selected.correlativo ? `_${selected.correlativo}` : "horas_extras";
-                const pathCloudinary = await documentoCloudinary(
-                    file,
-                    `${correlativa}_${fechaConGuion}`
-                );
-                setDocxContent(pathCloudinary.secure_url);
-                setShowDoc(true);
-                await axios.delete("/deleteDocument", {
-                    data: { public_id: pathCloudinary.public_id },
-                });
-                return
+
+                // 2. Generar el archivo en memoria (sin subirlo a ningún lado)
+                const nombreArchivo = `${selected.correlativo || 'HE'}_${selected.fecha.replace(/\//g, "-")}`;
+                const file = await convertDocx(payload, import.meta.env.VITE_PLANTILLA_HORAS_EXTRAS, nombreArchivo);
+
+                setFileGenerated(file);
+                setFileName(nombreArchivo);
+                setLoading(false);
             } catch (error) {
-                sendMessage(error, "Error");
+                console.error(error);
+                sendMessage("Error al preparar el documento", "Error");
+                setLoading(false);
             }
         };
-        renderDocx();
+
+        prepareFile();
     }, [selected]);
-    const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-        docxContent
-    )}`;
+
+    const handleDownload = () => {
+        if (fileGenerated) {
+            saveAs(fileGenerated, `${fileName}.docx`);
+        }
+    };
+
+    const handlePreview = () => {
+        if (fileGenerated) {
+            const fileURL = URL.createObjectURL(fileGenerated);
+            window.open(fileURL, '_blank');
+            // Nota: El navegador descargará el Word o lo abrirá si tiene extensión de Office.
+        }
+    };
+
     return (
-        <Details setShowDetail={setShowDetail} title="Detalle de Horas Extras" >
-            {showDoc ? (
+        <Details setShowDetail={setShowDetail} title="Detalle de Horas Extras">
+            {!loading && fileGenerated ? (
                 <div className="flex gap-8 mt-6 ml-10">
-                    <a href={officeViewerUrl} target="_blank" rel="noopener noreferrer" className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] w-60 p-2.5 text-white rounded-lg shadow-lg flex justify-center items-center cursor-pointer">
-                        <span>
-                            Visualizar Word
-                        </span>
-                        <span className="ml-2 pi pi-eye"></span>
-                    </a>
+                    {/* BOTÓN VISUALIZAR / ABRIR */}
                     <div
-                        className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] text-white w-60 p-2.5 rounded-lg shadow-lg flex justify-center items-center cursor-pointer"
-                        onClick={() => setShowDetail(false)}>
-                        Descargar <span className="ml-2 pi pi-download"></span>
+                        onClick={handleDownload}
+                        className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] w-60 p-2.5 text-white rounded-lg shadow-lg flex justify-center items-center cursor-pointer hover:opacity-90"
+                    >
+                        <span>Descargar Word</span>
+                        <span className="ml-2 pi pi-eye"></span>
+                    </div>
+
+                    {/* BOTÓN DESCARGAR PDF */}
+                    <div
+                        className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] text-white w-60 p-2.5 rounded-lg shadow-lg flex justify-center items-center cursor-pointer hover:opacity-90"
+                        onClick={() => {
+                            sendMessage("Funcionalidad de descarga PDF en desarrollo", "Info");
+                            // Aquí podrías implementar la lógica para convertir el Word a PDF o descargar el Word directamente, dependiendo de tus necesidades.
+                            // Por ejemplo, podrías usar una librería como docx-pdf para convertir el .docx a .pdf en el frontend, o simplemente descargar el .docx generado.
+                            // handleDownload(); // Si decides descargar el Word directamente
+                        }}
+                    >
+                        Descargar PDF <span className="ml-2 pi pi-download"></span>
                     </div>
                 </div>
             ) : (
-                <p>Cargando...</p>
+                <div className="flex flex-col items-center mt-10">
+                    <span className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></span>
+                    <p className="text-gray-500 animate-pulse">Generando documento ...</p>
+                </div>
             )}
         </Details>
-    )
-}
-
-export default DetailHorasExtras
+    );
+};
+export default DetailHorasExtras;

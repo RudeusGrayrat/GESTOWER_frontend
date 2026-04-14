@@ -45,7 +45,7 @@ const convertDocx = async (predata, archivo, nameDoc) => {
         const res = await axios.get(imageUrl, { responseType: "arraybuffer" });
         return res.data;
       },
-      getSize: () => [150, 60], // Tamaño [ancho, alto] por defecto en píxeles
+      getSize: () => [140, 70], // Tamaño [ancho, alto] por defecto en píxeles
     };
 
     const imageModule = new ImageModule(imageOptions);
