@@ -91,6 +91,7 @@ const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule, module }
         permissionApprove={permissionApprove}
         permissionDisapprove={permissionDisapprove}
         permissionSend={permissionSend}
+        user={user}
       />
     );
   } else if (change === "Reporte") {

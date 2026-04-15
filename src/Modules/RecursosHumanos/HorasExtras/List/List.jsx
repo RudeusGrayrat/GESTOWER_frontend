@@ -14,15 +14,18 @@ const ListHorasExtras = ({
     permissionApprove,
     permissionDisapprove,
     permissionEdit,
-    permissionSend
+    permissionSend,
+    user,
 }) => {
+    const sede = user.sede
     const fetchData = async (page, limit, search) => {
         try {
             const response = await axios.get("/rrhh/getHorasExtrasPaginacion", {
                 params: {
                     page,
                     limit,
-                    search
+                    search,
+                    sede
                 }
             });
             const data = response.data
@@ -37,7 +40,6 @@ const ListHorasExtras = ({
     return (
         <ListPrincipal
             permissionRead={permissionRead}
-            permissionDelete={permissionDelete}
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
             permissionEdit={permissionEdit}

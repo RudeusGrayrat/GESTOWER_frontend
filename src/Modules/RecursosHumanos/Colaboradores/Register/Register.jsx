@@ -61,19 +61,21 @@ const Register = () => {
 
   const { error, validateForm } = useValidation(formData);
   const register = async () => {
-    dispatch(setMessage("Espere por favor...", "Cargando"));
+    dispatch(setMessage("Espere por favor...", "Cargando", true));
     const formIsValid = validateForm(formData);
     let pathPhoto = null; // Definirlo antes del try
 
     try {
       if (formIsValid) {
-        const response = await imageCloudinary(formData.photo);
-        if (!response) {
-          dispatch(setMessage("Error subiendo la imagen", "Error"));
-          return;
+        if (formData.photo) {
+
+          const response = await imageCloudinary(formData.photo);
+          if (!response) {
+            dispatch(setMessage("Error subiendo la imagen", "Error"));
+            return;
+          }
+          pathPhoto = response.secure_url;
         }
-        pathPhoto = response.secure_url;
-        dispatch(setMessage(pathPhoto, "Cargando"));
         await signup({ ...formData, photo: pathPhoto });
       } else {
         dispatch(setMessage("Faltan datos", "Error"));

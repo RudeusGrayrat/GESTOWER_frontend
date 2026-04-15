@@ -24,7 +24,7 @@ const InputFiles = ({
   const styleError = "border-red-500 animate-shake";
   const styleNormal = "border-gray-300";
   const styleConstant =
-    "mt-1 px-3 py-2 border rounded-md shadow-sm sm:text-sm focus:outline-none";
+    "mt-1 px-3 py-2 bg-white border rounded-md shadow-sm sm:text-sm focus:outline-none";
   const estilo = `${styleConstant} ${ancho} ${animation ? styleError : styleNormal
     }`;
 
@@ -156,7 +156,7 @@ const InputFiles = ({
   };
 
   return (
-    <div className="flex flex-col mx-3">
+    <div className="flex flex-col mx-3 h-20">
       {/* LABEL */}
       <label
         className={`text-base font-medium ${error ? "text-red-500" : "text-gray-700"

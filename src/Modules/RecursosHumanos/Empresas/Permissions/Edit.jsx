@@ -12,7 +12,7 @@ import Representante from "../Register/Representante";
 import { getBusiness } from "../../../../redux/modules/Recursos Humanos/actions";
 import useSendMessage from "../../../../recicle/senMessage";
 
-const EditBusiness = ({ setShowEdit, selected }) => {
+const EditBusiness = ({ setShowEdit, selected, reload }) => {
   const _id = selected._id;
   const [form, setForm] = useState({ ...selected });
   const { updateBusiness, response } = useAuth();
@@ -20,7 +20,7 @@ const EditBusiness = ({ setShowEdit, selected }) => {
   const { error } = useValidation();
   const [hasChanges, setHasChanges] = useState({});
   useEffect(() => {
-    setHasChanges(deepDiff(selected, { ...form, logo: `${form.logo}` }));
+    setHasChanges(deepDiff(selected, form));
   }, [form, selected]);
   const sendMessage = useSendMessage();
   const upDate = async () => {
@@ -63,6 +63,9 @@ const EditBusiness = ({ setShowEdit, selected }) => {
           data: { public_id: pathSignature.public_id },
         });
       }
+    } finally {
+      reload();
+      setShowEdit(false);
     }
   };
 

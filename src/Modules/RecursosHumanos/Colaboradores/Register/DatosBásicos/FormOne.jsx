@@ -165,6 +165,7 @@ const FormOne = ({ setForm, error, form }) => {
       <Input
         label="Usuario"
         name="user"
+        autoComplete={false}
         value={form.user}
         setForm={setForm}
         errorOnclick={error.user}

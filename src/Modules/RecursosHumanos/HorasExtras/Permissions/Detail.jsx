@@ -1,132 +1,97 @@
 import { useEffect, useState } from "react";
 import Details from "../../../../components/Principal/Permissions/View";
 import useSendMessage from "../../../../recicle/senMessage";
-import convertDocx from "../../../../utils/convertDocx";
-import { saveAs } from "file-saver"; // npm install file-saver
+import axios from "../../../../api/axios"; 
 
 const DetailHorasExtras = ({ setShowDetail, selected }) => {
     const [loading, setLoading] = useState(true);
-    const [fileGenerated, setFileGenerated] = useState(null);
-    const [fileName, setFileName] = useState("");
+    const [pdfBlob, setPdfBlob] = useState(null);
     const sendMessage = useSendMessage();
 
+    // Nombre dinámico del archivo
+    const fileName = `HE_${selected?.solicitante?.lastname || 'Reporte'}_${selected?.fecha?.replace(/\//g, "-") || ''}`;
+
     useEffect(() => {
-        // Reset estados al cambiar de fila seleccionada
-        setLoading(true);
-        setFileGenerated(null);
+        const fetchPdf = async () => {
+            if (!selected) return;
+            
+            setLoading(true);
+            setPdfBlob(null);
 
-        const prepareFile = async () => {
             try {
-                if (!selected) return;
-                const listColaboradores = selected.colaboradores.map((colab) => {
-                    const colaboradorData = colab.colaborador || {};
-                    const nombre = colaboradorData.name && colaboradorData.lastname ? `${colaboradorData.lastname}, ${colaboradorData.name}` : "";
-                    return {
-                        nombre: nombre,
-                        cargo: colaboradorData?.charge || "",
-                        hora_inicio: colab?.horaInicio || "",
-                        hora_fin: colab?.horaFin || "",
-                        total_horas: `${colab?.horas || 0}h ${colab?.minutos || 0}m`,
-                    };
+                // Hacemos la petición al backend para que genere el PDF con LibreOffice
+                const response = await axios.get(`rrhh/getPdfHorasExtras/${selected._id}`, {
+                    responseType: 'blob' // CRÍTICO: Recibir el PDF como binario
                 });
-                const check = (value) => value ? "X" : "";
-                // 1. Lógica de negocio para el Logo
-                const bSolicitante = selected.solicitante?.business || "";
-                // DEFINIMOS bUpper AQUÍ:
-                const bUpper = bSolicitante.toUpperCase();
 
-                let logoEmpresa = "/TOWER_LOGO.png"; // Default
-
-                // Ahora ya puedes usar bUpper sin errores
-                if (bUpper.includes("CORPEMSE")) {
-                    logoEmpresa = "/CORPEMSE_LOGO.png";
-                } else if (bUpper.includes("LURIN")) {
-                    logoEmpresa = "/INVERSIONES_LURIN_LOGO.png";
-                } else if (bUpper.includes("ECOLOGY")) {
-                    logoEmpresa = "/ECOLOGY_LOGO.png";
-                } else if (bUpper.includes("LABORATORIO")) {
-                    logoEmpresa = "/LADIAMB_LOGO.png";
-                }
-
-                const payload = {
-                    logo_empresa: logoEmpresa,
-                    nombre_colaborador: selected.solicitante ? `${selected.solicitante.lastname}, ${selected.solicitante.name}` : "",
-                    area_colaborador: selected.solicitante?.area ? selected.solicitante?.area : "",
-                    fecha_solicitud: selected.fecha || "",
-                    retribucion_pago: check(selected.retribucion === "PAGO"),
-                    retribucion_compensacion: check(selected.retribucion === "COMPENSACION"),
-                    foma_compensacion: selected.formaCompensacion || "",
-                    sustento_requerimiento: selected.motivo || "",
-                    colaboradores: listColaboradores,
-                    // firma_solicitante: "",
-                    // firma_jefe_inmediato: "",
-                    // fecha_recepcion_rrhh: "",
-                }
-
-                // 2. Generar el archivo en memoria (sin subirlo a ningún lado)
-                const nombreArchivo = `${selected.correlativo || 'HE'}_${selected.fecha.replace(/\//g, "-")}`;
-                const file = await convertDocx(payload, import.meta.env.VITE_PLANTILLA_HORAS_EXTRAS, nombreArchivo);
-
-                setFileGenerated(file);
-                setFileName(nombreArchivo);
+                // Guardamos el archivo en el estado (como hacías con fileGenerated)
+                setPdfBlob(response.data);
                 setLoading(false);
             } catch (error) {
-                console.error(error);
-                sendMessage("Error al preparar el documento", "Error");
+                console.error("Error al obtener el PDF:", error);
+                sendMessage("Error al generar la vista previa del PDF", "Error");
                 setLoading(false);
             }
         };
 
-        prepareFile();
+        fetchPdf();
     }, [selected]);
 
     const handleDownload = () => {
-        if (fileGenerated) {
-            saveAs(fileGenerated, `${fileName}.docx`);
+        if (pdfBlob) {
+            const url = window.URL.createObjectURL(pdfBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `${fileName}.pdf`);
+            document.body.appendChild(link);
+            link.click();
+            
+            // Limpieza inmediata
+            link.parentNode.removeChild(link);
+            window.URL.revokeObjectURL(url);
         }
     };
 
     const handlePreview = () => {
-        if (fileGenerated) {
-            const fileURL = URL.createObjectURL(fileGenerated);
+        if (pdfBlob) {
+            const fileURL = window.URL.createObjectURL(pdfBlob);
             window.open(fileURL, '_blank');
-            // Nota: El navegador descargará el Word o lo abrirá si tiene extensión de Office.
+            // Nota: No revocamos la URL inmediatamente para que la pestaña pueda cargarla
         }
     };
 
     return (
         <Details setShowDetail={setShowDetail} title="Detalle de Horas Extras">
-            {!loading && fileGenerated ? (
+            {/* Solo mostramos los botones si ya no está cargando Y el archivo existe */}
+            {!loading && pdfBlob ? (
                 <div className="flex gap-8 mt-6 ml-10">
-                    {/* BOTÓN VISUALIZAR / ABRIR */}
+                    {/* BOTÓN VISUALIZAR */}
                     <div
-                        onClick={handleDownload}
+                        onClick={handlePreview}
                         className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] w-60 p-2.5 text-white rounded-lg shadow-lg flex justify-center items-center cursor-pointer hover:opacity-90"
                     >
-                        <span>Descargar Word</span>
+                        <span>Visualizar PDF</span>
                         <span className="ml-2 pi pi-eye"></span>
                     </div>
 
-                    {/* BOTÓN DESCARGAR PDF */}
+                    {/* BOTÓN DESCARGAR */}
                     <div
+                        onClick={handleDownload}
                         className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] text-white w-60 p-2.5 rounded-lg shadow-lg flex justify-center items-center cursor-pointer hover:opacity-90"
-                        onClick={() => {
-                            sendMessage("Funcionalidad de descarga PDF en desarrollo", "Info");
-                            // Aquí podrías implementar la lógica para convertir el Word a PDF o descargar el Word directamente, dependiendo de tus necesidades.
-                            // Por ejemplo, podrías usar una librería como docx-pdf para convertir el .docx a .pdf en el frontend, o simplemente descargar el .docx generado.
-                            // handleDownload(); // Si decides descargar el Word directamente
-                        }}
                     >
-                        Descargar PDF <span className="ml-2 pi pi-download"></span>
+                        <span>Descargar PDF</span>
+                        <span className="ml-2 pi pi-download"></span>
                     </div>
                 </div>
             ) : (
+                /* Spinner de carga mientras el i5-14600KF y LibreOffice hacen la magia */
                 <div className="flex flex-col items-center mt-10">
                     <span className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></span>
-                    <p className="text-gray-500 animate-pulse">Generando documento ...</p>
+                    <p className="text-gray-500 animate-pulse">Generando documento PDF...</p>
                 </div>
             )}
         </Details>
     );
 };
+
 export default DetailHorasExtras;

@@ -5,12 +5,12 @@ const useValidation = () => {
     ruc: false,
     razonSocial: false,
     domicilioFiscal: false,
-    logo: false,
+    // logo: false,
     representative: {
       name: false,
       documentType: false,
       documentNumber: false,
-      signature: false,
+      // signature: false,
     },
   });
 
@@ -20,12 +20,10 @@ const useValidation = () => {
       ruc: formData.ruc === "",
       razonSocial: formData.razonSocial === "",
       domicilioFiscal: formData.domicilioFiscal === "",
-      logo: !formData.logo,
       representative: {
         name: formData.representative.name === "",
         documentType: formData.representative.documentType === "",
         documentNumber: formData.representative.documentNumber === "",
-        signature: !formData.representative.signature,
       },
     };
 

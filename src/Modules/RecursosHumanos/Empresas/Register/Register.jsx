@@ -31,12 +31,12 @@ const Register = () => {
     },
   });
 
-  const responseRuc = useSelector((state) => state.recursosHumanos.ruc);
-  const colaboradores = useSelector((state) => state.recursosHumanos.employees);
+  const responseRuc = useSelector((state) => state.recursosHumanos?.ruc);
+  const colaboradores = useSelector((state) => state.recursosHumanos?.employees);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (colaboradores.length === 0) dispatch(getEmployees());
+    if (colaboradores?.length === 0) dispatch(getEmployees());
   }, [colaboradores]);
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const Register = () => {
   const { error, validateForm } = useValidation(form);
 
   const enviar = async () => {
-    dispatch(setMessage("Cargando...", "Espere"));
+    dispatch(setMessage("Cargando...", "Espere", true));
     setDeshabilitar(true);
     let pathLogo = null;
     let pathSignature = null;
@@ -70,16 +70,19 @@ const Register = () => {
       const formIsValid = validateForm(form);
 
       if (formIsValid) {
-        pathLogo = await imageCloudinary(form.logo);
-        pathSignature = await imageCloudinary(form.representative.signature);
+        if (form.logo) {
+          pathLogo = await imageCloudinary(form.logo);
+          pathSignature = await imageCloudinary(form.representative.signature);
+        }
         const newForm = {
           ...form,
-          logo: pathLogo.secure_url,
+          logo: pathLogo?.secure_url,
           representative: {
             ...form.representative,
-            signature: pathSignature.secure_url,
+            signature: pathSignature?.secure_url,
           },
         };
+
         await postBusiness(newForm);
         if (response) {
           dispatch(setMessage(response, "Ok"));
@@ -89,14 +92,14 @@ const Register = () => {
       }
     } catch (error) {
       dispatch(setMessage(error, "Error"));
-      if (pathLogo && pathLogo.public_id) {
+      if (pathLogo && pathLogo?.public_id) {
         await axios.delete("/deleteDocument", {
-          data: { public_id: pathLogo.public_id },
+          data: { public_id: pathLogo?.public_id },
         });
       }
-      if (pathSignature && pathSignature.public_id) {
+      if (pathSignature && pathSignature?.public_id) {
         await axios.delete("/deleteDocument", {
-          data: { public_id: pathSignature.public_id },
+          data: { public_id: pathSignature?.public_id },
         });
       }
     } finally {
