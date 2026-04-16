@@ -26,7 +26,7 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
 
       try {
         // Hacemos la petición al backend para que genere el PDF con LibreOffice
-        const response = await axios.get(`rrhh/getPdfManifiesto/${selected._id}`, {
+        const response = await axios.get(`rrhh/getpdfManifiesto/${selected._id}`, {
           responseType: 'blob' // CRÍTICO: Recibir el PDF como binario
         });
 
