@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Details from "../../../../components/Principal/Permissions/View";
 import useSendMessage from "../../../../recicle/senMessage";
-import axios from "../../../../api/axios"; 
+import axios from "../../../../api/axios";
 
 const DetailHorasExtras = ({ setShowDetail, selected }) => {
     const [loading, setLoading] = useState(true);
@@ -14,7 +14,7 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
     useEffect(() => {
         const fetchPdf = async () => {
             if (!selected) return;
-            
+
             setLoading(true);
             setPdfBlob(null);
 
@@ -45,7 +45,7 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
             link.setAttribute('download', `${fileName}.pdf`);
             document.body.appendChild(link);
             link.click();
-            
+
             // Limpieza inmediata
             link.parentNode.removeChild(link);
             window.URL.revokeObjectURL(url);
@@ -87,7 +87,9 @@ const DetailHorasExtras = ({ setShowDetail, selected }) => {
                 /* Spinner de carga mientras el i5-14600KF y LibreOffice hacen la magia */
                 <div className="flex flex-col items-center mt-10">
                     <span className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></span>
-                    <p className="text-gray-500 animate-pulse">Generando documento PDF...</p>
+                    <p className="text-gray-500 animate-pulse">
+                        Generando documento PDF... Esto puede tardar unos segundos dependiendo de la complejidad del documento y el rendimiento del servidor.
+                    </p>
                 </div>
             )}
         </Details>

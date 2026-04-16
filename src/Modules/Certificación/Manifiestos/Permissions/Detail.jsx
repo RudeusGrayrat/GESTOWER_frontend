@@ -6,126 +6,96 @@ import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import axios from "../../../../api/axios";
 import { limpiarPlantilla } from "./LimpiarPlantilla";
 import renderManifiesto from "./RenderManifiesto";
+import useSendMessage from "../../../../recicle/senMessage";
 
-const { VITE_PLANTILLA_MANIFIESTO_WORD } = import.meta.env;
 
 const DetailManifiesto = ({ setShowDetail, selected }) => {
-  const [showDoc, setShowDoc] = useState(false);
-  const [docxContent, setDocxContent] = useState("");
-  const [cargandoPDF, setCargandoPDF] = useState(false);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [pdfBlob, setPdfBlob] = useState(null);
+  const sendMessage = useSendMessage();
+
+  // Nombre dinámico del archivo
+  const fileName = `${selected?.numeroManifiesto || 'Reporte'}_${selected?.transporte?.fechaRecepcion?.replace(/\//g, "-") || ''}`;
 
   useEffect(() => {
-    if (!VITE_PLANTILLA_MANIFIESTO_WORD || !selected || error) return;
+    const fetchPdf = async () => {
+      if (!selected) return;
 
-    const renderDocx = async () => {
+      setLoading(true);
+      setPdfBlob(null);
+
       try {
-        // Usar la plantilla limpia (URL temporal)
-        const archivoWord = await renderManifiesto(
-          selected,
-          VITE_PLANTILLA_MANIFIESTO_WORD, // ← URL original de la plantilla
-          `Manifiesto_${selected.numeroManifiesto || selected._id}`
-        );
+        // Hacemos la petición al backend para que genere el PDF con LibreOffice
+        const response = await axios.get(`rrhh/getPdfManifiesto/${selected._id}`, {
+          responseType: 'blob' // CRÍTICO: Recibir el PDF como binario
+        });
 
-        if (!archivoWord) {
-          throw new Error("No se pudo generar el Word");
-        }
-
-        // Subir a Cloudinary (para tenerlo permanente)
-        const nombreArchivo = `Manifiesto_${selected.numeroManifiesto || selected._id}_${Date.now()}`;
-        const cloudinaryResponse = await documentoCloudinary(archivoWord, nombreArchivo);
-
-        if (!cloudinaryResponse?.secure_url) {
-          throw new Error("Error al subir a Cloudinary");
-        }
-
-        setDocxContent(cloudinaryResponse.secure_url);
-        setShowDoc(true);
-
-      } catch (err) {
-        console.error("❌ Error:", err);
-        setError(err.message);
+        // Guardamos el archivo en el estado (como hacías con fileGenerated)
+        setPdfBlob(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Error al obtener el PDF:", error);
+        sendMessage("Error al generar la vista previa del PDF", "Error");
+        setLoading(false);
       }
     };
 
-    renderDocx();
+    fetchPdf();
   }, [selected]);
-  const convertirAPDF = async () => {
-    setCargandoPDF(true);
-    try {
 
-      const pdfResponse = await axios.post("/returnPdf", {
-        archivoUrlDocx: docxContent
-      }, {
-        responseType: 'blob'
-      });
+  const handleDownload = () => {
+    if (pdfBlob) {
+      const url = window.URL.createObjectURL(pdfBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `${fileName}.pdf`);
+      document.body.appendChild(link);
+      link.click();
 
-      // Crear URL del PDF y abrirlo
-      const pdfUrl = URL.createObjectURL(pdfResponse.data);
-      window.open(pdfUrl, '_blank');
-
-    } catch (error) {
-      console.error("Error convirtiendo a PDF:", error);
-    } finally {
-      setCargandoPDF(false);
+      // Limpieza inmediata
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
     }
   };
-  const googleDocsViewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(docxContent)}&embedded=true`;
-  const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(docxContent)}`;
 
-  const descargarWord = () => {
-    window.open(docxContent, '_blank');
+  const handlePreview = () => {
+    if (pdfBlob) {
+      const fileURL = window.URL.createObjectURL(pdfBlob);
+      window.open(fileURL, '_blank');
+      // Nota: No revocamos la URL inmediatamente para que la pestaña pueda cargarla
+    }
   };
-
-  if (error) {
-    return (
-      <Details setShowDetail={setShowDetail} title="Error">
-        <div className="p-4 text-red-600">
-          Error: {error}
-        </div>
-      </Details>
-    );
-  }
-
   return (
     <Details setShowDetail={setShowDetail} title={`Manifiesto ${selected?.numeroManifiesto || ''}`}>
-      {showDoc ? (
-        <div className="flex flex-col space-y-4 h-full p-4">
-          <div className="flex justify-center space-x-4">
-            <ButtonOk type="ok" onClick={convertirAPDF}>
-              Ver como PDF
-            </ButtonOk>
-            <ButtonOk>
-              <a
-                href={googleDocsViewerUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-white no-underline"
-              >
-                Ver en una nueva pestaña
-              </a>
-            </ButtonOk>
+      {!loading && pdfBlob ? (
+        <div className="flex gap-8 mt-6 ml-10">
+          {/* BOTÓN VISUALIZAR */}
+          <div
+            onClick={handlePreview}
+            className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] w-60 p-2.5 text-white rounded-lg shadow-lg flex justify-center items-center cursor-pointer hover:opacity-90"
+          >
+            <span>Visualizar PDF</span>
+            <span className="ml-2 pi pi-eye"></span>
           </div>
 
-          {cargandoPDF ? (
-            <div className="flex justify-center items-center h-40">
-              <p className="text-gray-500">Convirtiendo a PDF, no cierre o se cancelará...</p>
-            </div>
-          ) : (
-            <div className="mt-4 border rounded-lg overflow-hidden h-full">
-              <iframe
-                src={googleDocsViewerUrl}
-                className="w-full h-full"
-                title="Vista previa del manifiesto"
-              />
-            </div>)}
+          {/* BOTÓN DESCARGAR */}
+          <div
+            onClick={handleDownload}
+            className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] text-white w-60 p-2.5 rounded-lg shadow-lg flex justify-center items-center cursor-pointer hover:opacity-90"
+          >
+            <span>Descargar PDF</span>
+            <span className="ml-2 pi pi-download"></span>
+          </div>
         </div>
       ) : (
-        <div className="flex justify-center items-center h-40">
-          <p className="text-gray-500">Generando manifiesto...</p>
+        /* Spinner de carga mientras el i5-14600KF y LibreOffice hacen la magia */
+        <div className="flex flex-col items-center mt-10">
+          <span className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></span>
+          <p className="text-gray-500 animate-pulse">
+            Generando documento PDF... Esto puede tardar unos segundos dependiendo de la complejidad del documento y el rendimiento del servidor.
+          </p>
         </div>
       )}
-
     </Details>
   );
 };

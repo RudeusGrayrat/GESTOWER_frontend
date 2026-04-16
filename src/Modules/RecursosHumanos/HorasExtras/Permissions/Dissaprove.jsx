@@ -4,6 +4,7 @@ import { useAuth } from "../../../../context/AuthContext";
 import axios from "../../../../api/axios";
 
 const DissaproveHorasExtras = ({ setShowDisapprove, selected, reload }) => {
+    console.log("Selected for disapproval:", selected);
     const sendMessage = useSendMessage();
     const { user } = useAuth();
     const handleDisapprove = async () => {
@@ -11,10 +12,6 @@ const DissaproveHorasExtras = ({ setShowDisapprove, selected, reload }) => {
         try {
             if (selected.estado === "RECHAZADO") {
                 sendMessage("Las horas extras ya han sido rechazadas.", "Advertencia");
-                return;
-            }
-            if (!selected.colaborador) {
-                sendMessage("No se encontró el colaborador asociado a las horas extras.", "Error");
                 return;
             }
             const response = await axios.patch(`/rrhh/patchHorasExtras/`,
