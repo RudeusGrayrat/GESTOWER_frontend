@@ -35,33 +35,33 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
       const fechaFormat = (fecha) => fecha ? dayjs(fecha).format("DD/MM/YYYY") : "";
 
       // Extraer referencias pobladas (asumiendo que vienen con populate)
-      const generador = manifiesto.generadorId || {};
-      const planta = manifiesto.planta || {};
-      const responsableGestion = manifiesto.responsableGestion || {};
+      const generador = selected.generadorId || {};
+      const planta = selected.planta || {};
+      const responsableGestion = selected.responsableGestion || {};
       const plantaUbigeo = planta.ubigeoId || {};
-      const transportista = manifiesto.transportistaId || {};
+      const transportista = selected.transportistaId || {};
       const transportistaUbigeo = transportista.ubigeoId || {};
-      const destinoFinal = manifiesto.destinoFinal || {};
-      const destino = manifiesto.destinoId || {};
+      const destinoFinal = selected.destinoFinal || {};
+      const destino = selected.destinoId || {};
       const destinoUbigeo = destino.ubigeoId || {};
 
       // Datos principales
-      const residuo = manifiesto.residuo || {};
-      const peligrosidad = manifiesto.peligrosidad || {};
-      const transporte = manifiesto.transporte || {};
-      const referendoEntrega = manifiesto.referendoEntrega || {};
-      const referendoRecepcion = manifiesto.referendoRecepcion || {};
-      const otrosManejos = manifiesto.otrosManejos || {}; // OBJETO
-      const otrasObligaciones = manifiesto.otrasObligaciones || {};
+      const residuo = selected.residuo || {};
+      const peligrosidad = selected.peligrosidad || {};
+      const transporte = selected.transporte || {};
+      const referendoEntrega = selected.referendoEntrega || {};
+      const referendoRecepcion = selected.referendoRecepcion || {};
+      const otrosManejos = selected.otrosManejos || {}; // OBJETO
+      const otrasObligaciones = selected.otrasObligaciones || {};
 
       // Contingencias (si existen en transportista)
       const contingencias = transportista.contingencias || {};
 
       const dataEnviar = {
         // ===== ENCABEZADO =====
-        numero_manifiesto: safe(manifiesto.numeroManifiesto),
-        año: safe(manifiesto.año),
-        mes: safe(manifiesto.mes ? manifiesto.mes.toUpperCase() : ""),
+        numero_manifiesto: safe(selected.numeroManifiesto),
+        año: safe(selected.año),
+        mes: safe(selected.mes ? selected.mes.toUpperCase() : ""),
 
         // ===== GENERADOR =====
         razon_social_generador: safe(generador.razonSocial),
