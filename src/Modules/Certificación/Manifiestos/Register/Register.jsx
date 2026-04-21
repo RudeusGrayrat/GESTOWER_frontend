@@ -264,7 +264,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
                     ) : (
                         <ButtonOk
                             type="ok"
-                            children="Registrar"
+                            children={editUpdate ? "Actualizar" : "Registrar"}
                             classe="!w-32"
                             onClick={editUpdate ? editUpdate : register}
                             disabled={deshabilitar}

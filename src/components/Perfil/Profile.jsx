@@ -1,3 +1,5 @@
+import PDetail from "../../recicle/PDtail";
+
 const Profile = ({ user }) => {
   const {
     name,
@@ -19,98 +21,66 @@ const Profile = ({ user }) => {
 
   return (
     <div
-      className="flex flex-col items-center  justify-center h-screen"
+      className="flex flex-col items-center z-50 h-full justify-start "
       style={{ fontFamily: "Roboto" }}
     >
-      <div className=" overflow-y-auto border-gray-50 shadow-xl border-2 rounded-xl h-[45%] bg-white w-[95%] m-3 flex items-center justify-center">
-        <div className="flex border-2 border-gray-50 shadow-lg m-4 items-center justify-center  rounded-full">
+      <div className="overflow-y-auto max-h-[400px] border-gray-50 shadow-xl border-2 rounded-xl  bg-white w-[95%] m-3 p-5 flex items-center justify-evenly">
+        <div className="flex w-96 items-center justify-center  rounded-full">
           <img
             src={photo}
-            className="shadow-inner rounded-full w-80 h-80 object-cover"
+            width={300}
+            height={300}
+            className="shadow-inner rounded-full object-cover"
             alt="Profile"
           />
         </div>
-        <div className="ml-32 h-[90%] w-[60%] flex flex-col justify-center">
-          <span className="text-6xl font-semibold mb-2 text-sky-600 ">
+        <div className="w-[65%] flex flex-col justify-center">
+          <span className="text-4xl font-semibold mb-2 text-sky-600 ">
             {lastname + " " + name}
           </span>
           <div className="flex flex-row ">
-            <div className="flex flex-col h-52  overflow-x-auto overflow-y-auto ">
-              <span className="text-2xl my-1 text-sky-600 ">
-                Cargo : <span className="text-black">{charge}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Empresa : <span className="text-black">{business}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Fecha de inicio :{" "}
-                <span className="text-black">{dateStart}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Fecha de cumpleaños :{" "}
-                <span className="text-black">{dateOfBirth}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Estado : <span className="text-black">{state}</span>
-              </span>
+            <div className="flex flex-col h-52 w-96 overflow-x-auto overflow-y-auto gap-1.5">
+              <PDetail content="Cargo:" value={charge} tamaño="text-xl" />
+              <PDetail content="Empresa:" value={business} tamaño="text-xl" />
+              <PDetail content="Fecha de inicio:" value={dateStart} tamaño="text-xl" />
+              <PDetail content="Fecha de cumpleaños:" value={dateOfBirth} tamaño="text-xl" />
+              <PDetail content="Estado:" value={state} tamaño="text-xl" />
             </div>
-            <div className="flex flex-col h-52 overflow-y-auto ml-9">
-              <span className="text-2xl my-1 text-sky-600 ">
-                Tipo de Documento :{" "}
-                <span className="text-black">{documentType}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Número de Documento :{" "}
-                <span className="text-black">{documentNumber}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Celular: <span className="text-black">{phone}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Sede: <span className="text-black">{sede}</span>
-              </span>
-              <span className="text-2xl my-1 text-sky-600 ">
-                Email : <span className="text-black">{email}</span>
-              </span>
+            <div className="flex flex-col w-96 h-52 overflow-y-auto ml-9 gap-1.5">
+              <PDetail content="Tipo de Documento:" value={documentType} tamaño="text-xl" />
+              <PDetail content="Número de Documento:" value={documentNumber} tamaño="text-xl" />
+              <PDetail content="Celular:" value={phone} tamaño="text-xl" />
+              <PDetail content="Sede:" value={sede} tamaño="text-xl" />
+              <PDetail content="Email:" value={email} tamaño="text-xl" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="border-2 border-gray-50 shadow-xl bg-white rounded-xl h-[45%] w-[95%] m-3 flex pt-10  justify-center">
-        <div className="w-[20%]  h-[90%] overflow-y-auto flex flex-col text-start">
-          <span className="text-5xl  text-sky-600 ">Dirección</span>
-          <br />
-          <span className="text-2xl my-1 text-sky-600 ">
-            Departamento :{" "}
-            <span className="text-black">{location.departamento}</span>
-          </span>
-          <span className="text-2xl my-1 text-sky-600 ">
-            Provincia: <span className="text-black">{location.provincia}</span>
-          </span>
-          <span className="text-2xl my-1 text-sky-600 ">
-            Distrito : <span className="text-black">{location.distrito}</span>
-          </span>
-          <span className="text-2xl my-1 text-sky-600 ">
-            Ubicación : <span className="text-black">{location.direccion}</span>
-          </span>
+      <div className="border-2 max-h-[300px]  flex justify-evenly border-gray-50 shadow-xl bg-white rounded-xl w-[95%] m-3 p-5   ">
+        <div className="w-96 overflow-y-auto flex flex-col text-start gap-1.5">
+          <span className="text-4xl mb-2 text-sky-600 ">Dirección</span>
+          <PDetail content="Sede:" value={sede} tamaño="text-xl" />
+          <PDetail content="Departamento:" value={location.departamento} tamaño="text-xl" />
+          <PDetail content="Provincia:" value={location.provincia} tamaño="text-xl" />
+          <PDetail content="Distrito:" value={location.distrito} tamaño="text-xl" />
+          <PDetail content="Ubicación:" value={location.direccion} tamaño="text-xl" />
         </div>
-        <div className="ml-32 w-[50%] h-[90%] flex flex-col text-start ">
-          <span className="text-5xl  text-sky-600 ">Módulos</span>
-          <br />
+        <div className="w-[65%]">
+          <span className="text-4xl text-sky-600 ">Módulos</span>
           {modules.length > 0 ? (
-            <div className="overflow-y-auto">
+            <div className="h-44 mt-2 overflow-y-auto grid gap-3">
               {modules?.map((module, index) => (
-                <div key={index} className="mt-2 ">
-                  <span className="text-2xl my-1 text-sky-600 ">
+                <div key={index} className="border flex flex-wrap rounded-lg p-3 gap-x-2">
+                  <span className="text-xl text-sky-600 ">
                     Módulo: <span className="text-black">{module.name}</span>
                   </span>
                   {"  "}
-                  <span className="text-2xl my-1 text-sky-600 ">
+                  <span className="text-xl text-sky-600 ">
                     Submódulo:{"  "}
                     <span className="text-black">{module.submodule.name}</span>
                   </span>{" "}
-                  <span className="text-2xl my-1 text-sky-600 ">
+                  <span className="text-xl text-sky-600 ">
                     Permisos:{" "}
                     <span className="text-black">
                       {module.submodule.permissions.join(", ")}

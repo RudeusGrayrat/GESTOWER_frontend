@@ -261,6 +261,7 @@ const Input = ({
           placeholder={label}
           editable={OtherProps.editable || true}
           disabled={disabled}
+          dataKey={OtherProps.dataKey || optionLabel}
           optionLabel={optionLabel}
           {...OtherProps}
         />

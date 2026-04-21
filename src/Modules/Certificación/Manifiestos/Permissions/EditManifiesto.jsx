@@ -1,70 +1,29 @@
 import { useState, useEffect } from "react";
 import { deepDiff } from "../../../validateEdit";
-// import Edit from "../../../../components/Principal/Permissions/Edit";
-import PopUp from "../../../../recicle/popUps";
 import RegisterManifiestos from "../Register/Register";
 import useSendMessage from "../../../../recicle/senMessage";
 import { setMessage } from "../../../../redux/actions";
-import { useDispatch } from "react-redux";
 import axios from "../../../../api/axios";
 import dayjs from "dayjs";
+import { useAuth } from "../../../../context/AuthContext";
 
 const EditManifiesto = ({ setShowEdit, selected, reload }) => {
     const sendMessage = useSendMessage();
-    const dispatch = useDispatch();
-    const [deshabilitar, setDeshabilitar] = useState(false);
-
+    const { user } = useAuth();
     // 🔥 IMPORTANTE: Normalizar los datos para edición
-    const [formData, setFormData] = useState(() => {
-        // Asegurar que todos los campos tengan la estructura correcta
-        return {
-            ...selected,
-            generadorId: selected.generadorId,
-            planta: selected.planta?.direccion,
-            responsableGestion: selected.responsableGestion?.nombreResponsable,
-            servicioTransporte: selected.transportistaId?.razonSocial?.includes("TOWER") ? selected.transportistaId.razonSocial : 'SERVICIO EO',
-            transportistaId: selected.transportistaId,
-            destinoId: selected.destinoId,
-
-            // Asegurar objetos anidados
-            residuo: {
-                descripcion: selected.residuo?.descripcion || '',
-                cantidadTotal: selected.residuo?.cantidadTotal || '',
-                estadoFisico: selected.residuo?.estadoFisico || 'SOLIDO',
-                tipoRecipiente: selected.residuo?.tipoRecipiente || '',
-                materialRecipiente: selected.residuo?.materialRecipiente || '',
-                numeroRecipientes: selected.residuo?.numeroRecipientes || 1,
-                codigoBasilea: selected.residuo?.codigoBasilea || '',
-                subcodigoBasilea: selected.residuo?.subcodigoBasilea || '',
-                informacionAdicional: selected.residuo?.informacionAdicional || ''
-            },
-
-            transporte: {
-                nombreConductor: selected.transporte?.nombreConductor || '',
-                tipoVehiculo: selected.transporte?.tipoVehiculo || '',
-                placaVehiculo: selected.transporte?.placaVehiculo || '',
-                fechaRecepcion: dayjs(selected.transporte?.fechaRecepcion).format("YYYY-MM-DD") || '',
-                cantidadRecibida: selected.transporte?.cantidadRecibida || '',
-                observaciones: selected.transporte?.observaciones || ''
-            },
-            tipoManejoSeleccionado: selected.tipoManejoSeleccionado,
-            destinoFinal: {
-                tipoManejo: selected.destinoFinal?.tipoManejo || '',
-                cantidadEntregada: selected.destinoFinal?.cantidadEntregada || '',
-                observaciones: selected.destinoFinal?.observaciones || ''
-            },
-
-            // ... asegurar todos los objetos anidados
-        };
+    const [formData, setFormData] = useState({
+        ...selected
     });
 
-    const [formEdit, setFormEdit] = useState({});
-
+    const [formEdit, setFormEdit] = useState(formData);
+    console.log("Datos para edición:", formData);
+    console.log("Datos originales:", selected);
+    console.log("Diferencias detectadas:", deepDiff(formData, selected));
+    console.log("Diferencias detectadas (formEdit):", deepDiff(formEdit, selected));
     // Detectar cambios
     const changes = deepDiff(formData, formEdit);
-
+    console.log("Cambios detectados:", changes);
     const upDate = async () => {
-        setDeshabilitar(true);
         setMessage("Actualizando manifiesto...", "Cargando", true);
 
         try {
@@ -72,7 +31,6 @@ const EditManifiesto = ({ setShowEdit, selected, reload }) => {
                 sendMessage("No hay cambios para guardar", "Advertencia");
                 return;
             }
-
             // Preparar datos para enviar
             const datosEnvio = {
                 _id: selected._id,
@@ -82,22 +40,22 @@ const EditManifiesto = ({ setShowEdit, selected, reload }) => {
                 plantaId: changes.plantaId?._id || changes.plantaId,
                 transportistaId: changes.transportistaId?._id || changes.transportistaId,
                 destinoId: changes.destinoId?._id || changes.destinoId,
+                modificadoPor: user._id
             };
 
-            const response = await axios.patch("/certificaciones/patchManifiesto", datosEnvio);
+            const response = await axios.patch(`/certificaciones/patchManifiesto/${selected._id}/`, datosEnvio);
             const data = response.data;
 
             sendMessage(data.message, data.type || "Correcto");
 
             if (data.type === "Correcto") {
                 reload();
-                setShowEdit(false);
             }
         } catch (error) {
             console.error("Error:", error);
             sendMessage(error.response?.data?.message || "Error al actualizar manifiesto", "Error");
         } finally {
-            setDeshabilitar(false);
+            setShowEdit(false);
         }
     };
 
@@ -155,7 +113,7 @@ const EditManifiesto = ({ setShowEdit, selected, reload }) => {
             <div className="flex flex-col h-[90%] space-y-4 p-2 overflow-y-auto">
                 <RegisterManifiestos
                     // Pasar datos para edición
-                    formEdit={formData}
+                    formEdit={formEdit}
                     setFormEdit={setFormEdit}
 
                     // Funciones de edición

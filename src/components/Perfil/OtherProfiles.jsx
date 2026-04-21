@@ -30,7 +30,7 @@ const OtherProfiles = () => {
   if (!user) return <p>Error al cargar el perfil.</p>;
 
   return (
-    <div className="ml-20">
+    <div className="ml-20 h-[90vh] overflow-hidden">
       <Profile user={user} />;
     </div>
   );

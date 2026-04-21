@@ -1,33 +1,34 @@
 import axios from "../../../../api/axios";
 import Approve from "../../../../components/Principal/Permissions/Approve";
+import Disapprove from "../../../../components/Principal/Permissions/Disapprove";
 import { useAuth } from "../../../../context/AuthContext";
 import useSendMessage from "../../../../recicle/senMessage";
 
-const AprobarManifiesto = ({ setShowApprove, selected, reload }) => {
+const RechazarManifiesto = ({ setShowDisapprove, selected, reload }) => {
     const id = selected._id;
     const { user } = useAuth();
     const sendMessage = useSendMessage();
     const onclick = async () => {
         try {
-            // Aquí puedes hacer la llamada a la API para aprobar el manifiesto
-            // Por ejemplo:
             const response = await axios.patch(`/certificaciones/editManifiesto/${id}`, {
-                estado: "APROBADO",
-                aprobadoPor: user._id,
+                estado: "RECHAZADO",
+                rechazadoPor: user._id,
             });
             if (response.status >= 200 && response.status < 400) {
                 sendMessage(response.data.message, response.data.type);
-                reload(); // Recargar los datos después de aprobar el manifiesto
+                reload(); // Recargar los datos después de rechazar el manifiesto
             }
         } catch (error) {
-            sendMessage(error || "Error al aprobar el manifiesto", "Error");
+            sendMessage(error || "Error al rechazar el manifiesto", "Error");
         } finally {
-            setShowApprove(false);
+            setShowDisapprove(false);
         }
     };
     return (
-        <Approve onclick={onclick} setShowApprove={setShowApprove} />
+        <Disapprove onclick={onclick}
+            text="¿Está seguro que desea rechazar este manifiesto?"
+            setShowDisapprove={setShowDisapprove} />
     );
 };
 
-export default AprobarManifiesto;
+export default RechazarManifiesto;

@@ -5,6 +5,7 @@ import axios from "../../../../api/axios";
 import DetailManifiesto from "../Permissions/Detail";
 import AprobarManifiesto from "../Permissions/Aprobar";
 import EditManifiesto from "../Permissions/EditManifiesto";
+import RechazarManifiesto from "../Permissions/Rechazar";
 
 const ListManifiestos = ({
     permissionRead,
@@ -46,6 +47,7 @@ const ListManifiestos = ({
             permissionDisapprove={permissionDisapprove}
             permissionSend={permissionSend}
             ApproveItem={AprobarManifiesto}
+            DisapproveItem={RechazarManifiesto}
             DetailItem={DetailManifiesto}
             EditItem={EditManifiesto}
             fetchData={fetchManifiestos}

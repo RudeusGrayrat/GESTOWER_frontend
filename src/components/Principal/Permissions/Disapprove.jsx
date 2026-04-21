@@ -22,14 +22,14 @@ const Disapprove = ({ setShowDisapprove, onclick, text }) => {
           <ButtonOk
             onClick={() => setShowDisapprove(false)}
             styles={"!w-full m-4 flex justify-center mx-4"}
-            classe={"!w-24"}
+            classe={"!w-32"}
             children="NO"
           />
           <ButtonOk
             onClick={onclick}
             type="ok"
             styles={"!w-full m-4 flex justify-center mx-4"}
-            classe={"!w-24"}
+            classe={"!w-32"}
             children="SI"
           />
         </div>
