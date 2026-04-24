@@ -111,7 +111,7 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
           }
           const newForm = {
             ...form,
-            colaborador: colaboradorId?._id,
+            colaborador: colaboradorId,
             fechaBoletaDePago: dayjs(form.fechaBoletaDePago)?.format("MM/YYYY"),
           };
           await postBoletasDePago(newForm);

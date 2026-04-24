@@ -8,7 +8,7 @@ const InputNormal = (props) => {
     } else if (setForm) {
       setForm((prev) => ({
         ...prev,
-        [name]: e.target.value.toUpperCase(),
+        [name]: e.target.value?.toUpperCase(),
       }));
     }
   };

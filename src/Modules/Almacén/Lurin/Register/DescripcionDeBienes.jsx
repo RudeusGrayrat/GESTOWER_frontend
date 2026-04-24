@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 import unidadesDeMedida from "../../../../api/unidadDeMedida";
+import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const DescripcionDeBienes = ({ set, error, initialData }) => {
   const validateForm = (
@@ -8,7 +9,6 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
     selectedCantidad,
     selectedDescripcion,
     selectedUnidadDeMedida,
-    selectedPesoNeto,
     selectedPesoBruto,
     selectedEstadoEnvase,
     selectedSubItem
@@ -20,7 +20,6 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
       errors.selectedDescripcion = "Se requiere una descripción";
     if (!selectedUnidadDeMedida)
       errors.selectedUnidadDeMedida = "Se requiere una unidad de medida";
-    if (!selectedPesoNeto) errors.selectedPesoNeto = "Se requiere el peso neto";
     if (!selectedPesoBruto)
       errors.selectedPesoBruto = "Se requiere el peso bruto";
     if (!selectedEstadoEnvase)
@@ -63,7 +62,6 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
     data.cantidad,
     data.descripcion,
     data.unidadDeMedida,
-    data.pesoNeto,
     data.pesoBruto,
     data.estadoEnvase,
     data.subItem
@@ -134,7 +132,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         setForm={setData}
         errorOnclick={error.unidadDeMedida}
       />
-      <Input
+      <InputNormal
         label="Peso Neto (Kg)"
         name="pesoNeto"
         onKeyPress={(e) => {
@@ -144,7 +142,6 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         }}
         value={data.pesoNeto}
         setForm={setData}
-        errorOnclick={error.pesoNeto}
       />
       <Input
         label="Peso Bruto (kg)"
@@ -179,7 +176,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         errorOnclick={error.subItem}
       />
       {initialData.descripcion && (
-        <div className=" flex flex-col mx-3 w-[90%] ">
+        <div className=" flex flex-col mx-3 w-full ">
           <label className={`text-base font-medium  "text-gray-700" `}>
             Observaciones
           </label>

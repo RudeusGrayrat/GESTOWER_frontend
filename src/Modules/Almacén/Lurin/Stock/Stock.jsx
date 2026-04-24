@@ -36,10 +36,10 @@ const StockAlmacenLurin = ({
         field="movimientoId.numeroDeActa"
         header="Numero de Acta"
       ></Column>
-      <Column field="productoId.descripcion" header="Producto"></Column>
-      <Column field="productoId.unidadDeMedida" header="Unidad"></Column>
-      <Column field="cantidadTotal" header="Cantidad Total"></Column>
-      <Column field="contratoId.cliente" header="Contrato"></Column>
+      <Column field="contratoId.cliente" header="Contrato"/>
+      <Column field="productoId.descripcion" header="Descripción del Bien"></Column>
+      <Column field="cantidadTotal" header="Cantidad"></Column>
+      <Column field="productoId.unidadDeMedida" header="Unidad de Medida"></Column>
     </ListPrincipal>
   );
 };

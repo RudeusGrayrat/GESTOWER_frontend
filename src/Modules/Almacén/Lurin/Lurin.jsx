@@ -48,7 +48,7 @@ const Lurin = () => {
       setChange(vistaSeleccionada);
     } else if (permisos.includes("VER")) {
       setChange("Movimientos");
-    } else if (permisos.includes("Registrar")) {
+    } else if (permisos.includes("CREAR")) {
       setChange("Registrar");
     } else if (permisos.includes("REPORTAR")) {
       setChange("Reporte");
@@ -109,7 +109,7 @@ const Lurin = () => {
     children = "No hay opciones disponibles para esta vista.";
   }
 
-  const options = ["Movimientos", "Stock", "Registrar", "Ubicar", "Reporte"];
+  const options = ["Movimientos", "Registrar", "Ubicar", "Stock", "Reporte"];
 
   return (
     <div className="w-full ">

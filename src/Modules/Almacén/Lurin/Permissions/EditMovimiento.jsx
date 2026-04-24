@@ -14,7 +14,7 @@ import { deepDiff } from "../../../validateEdit";
 import axios from "../../../../api/axios";
 import { useAuth } from "../../../../context/AuthContext";
 
-const EditMovimiento = ({ setShowEdit, selected }) => {
+const EditMovimiento = ({ setShowEdit, selected, reload }) => {
   const idSelected = selected._id;
   const { patchMovimientoAlmacen, user, patchProductosAlmacen, } = useAuth()
 
@@ -116,6 +116,8 @@ const EditMovimiento = ({ setShowEdit, selected }) => {
       );
     } finally {
       setHabilitar(false);
+      setShowEdit(false);
+      reload();
     }
   };
   return (

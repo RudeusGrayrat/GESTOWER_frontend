@@ -9,7 +9,7 @@ const InputFiles = ({
   ancho,
   setForm,
   type,
-  toBase64,
+  toBase64 = true,
   value,
 }) => {
   const dispatch = useDispatch();

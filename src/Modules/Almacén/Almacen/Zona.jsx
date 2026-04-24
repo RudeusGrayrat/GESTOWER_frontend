@@ -1,19 +1,38 @@
 import SeccionAlmacen from "./Section";
 
-const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
+const ZonaAlmacen = ({ zona, ubicaciones, onclick, totalCols = 20, totalRows = 21 }) => {
+  // Guard: si zona no está lista aún, no renderizar
+  if (!zona || !zona.racks?.length) return null;
+
+  const calcularDimensiones = () => {
+    if (zona.orientacion === "HORIZONTAL") {
+      const maxSecciones = Math.max(...zona.racks.map((r) => r.seccionesPorNivel));
+      const anchoTotal = 1 + maxSecciones;
+      const altoTotal = 1 + zona.racks.reduce((acc, r) => acc + r.niveles + 1, 0);
+      return { anchoTotal, altoTotal };
+    } else {
+      const anchoTotal = zona.racks.reduce((acc, r) => acc + r.niveles + 1, 0) + 1;
+      const maxSecciones = Math.max(...zona.racks.map((r) => r.seccionesPorNivel));
+      const altoTotal = 2 + maxSecciones;
+      return { anchoTotal, altoTotal };
+    }
+  };
+
+  const { anchoTotal, altoTotal } = calcularDimensiones();
+
+  const offsetX = Math.max(1, Math.floor((totalCols - anchoTotal) / 2) + 1);
+  const offsetY = Math.max(1, Math.floor((totalRows - altoTotal) / 2) + 1);
+
   const etiquetaZona =
     zona.orientacion === "HORIZONTAL" ? (
       <div
         key={`zona-${zona._id}`}
         className="text-[17px] font-semibold flex items-center justify-center text-white bg-sky-500"
         style={{
-          gridColumnStart: zona.xInicio,
-          gridRowStart: zona.yInicio,
-          gridColumnEnd:
-            zona.xInicio +
-            Math.max(...zona.racks.map((r) => r.seccionesPorNivel)) +
-            1,
-          gridRowEnd: zona.yInicio + 1,
+          gridColumnStart: offsetX,
+          gridRowStart: offsetY,
+          gridColumnEnd: offsetX + anchoTotal,
+          gridRowEnd: offsetY + 1,
         }}
       >
         {zona.nombre}
@@ -23,19 +42,17 @@ const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
         key={`zona-${zona._id}`}
         className="text-[17px] font-semibold flex items-center justify-center text-white bg-sky-500"
         style={{
-          gridColumnStart: zona.xInicio + 1,
-          gridRowStart: zona.yInicio,
-          gridColumnEnd:
-            zona.xInicio +
-            zona.racks.reduce((acc, rack) => acc + rack.niveles + 1, 0),
-          gridRowEnd: zona.yInicio + 1,
+          gridColumnStart: offsetX + 1,
+          gridRowStart: offsetY,
+          gridColumnEnd: offsetX + anchoTotal - 1,
+          gridRowEnd: offsetY + 1,
         }}
       >
         {zona.nombre}
       </div>
     );
 
-  let acumuladorY = zona.yInicio + 1; // Comienza después de la etiqueta de zona
+  let acumuladorY = offsetY + 1;
 
   const renderRack = (rack, rackIndex) => {
     const niveles = rack.niveles;
@@ -43,15 +60,16 @@ const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
 
     const rackOffsetX =
       zona.orientacion === "HORIZONTAL"
-        ? zona.xInicio + 1
-        : zona.xInicio + 1 + rackIndex * (niveles + 1);
+        ? offsetX + 1
+        : offsetX + 1 + rackIndex * (niveles + 1);
 
     const rackOffsetY =
-      zona.orientacion === "HORIZONTAL" ? acumuladorY : zona.yInicio + 2;
+      zona.orientacion === "HORIZONTAL"
+        ? acumuladorY
+        : offsetY + 2;
 
-    // Actualiza el acumulador solo para orientación horizontal
     if (zona.orientacion === "HORIZONTAL") {
-      acumuladorY += niveles + 1; // niveles + 1 fila de separación
+      acumuladorY += niveles + 1;
     }
 
     const celdas = [];
@@ -82,10 +100,7 @@ const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
         celdas.push(
           <div
             key={`rack-${rack.nombre}-${nivel}-${seccion}`}
-            style={{
-              gridColumnStart: x,
-              gridRowStart: y,
-            }}
+            style={{ gridColumnStart: x, gridRowStart: y }}
           >
             <SeccionAlmacen
               nivel={nivel}
@@ -106,7 +121,7 @@ const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
           gridColumnStart:
             zona.orientacion === "HORIZONTAL" ? rackOffsetX - 1 : rackOffsetX,
           gridRowStart:
-            zona.orientacion === "HORIZONTAL" ? rackOffsetY : zona.yInicio + 1,
+            zona.orientacion === "HORIZONTAL" ? rackOffsetY : offsetY + 1,
           gridColumnEnd:
             zona.orientacion === "HORIZONTAL"
               ? rackOffsetX
@@ -114,7 +129,7 @@ const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
           gridRowEnd:
             zona.orientacion === "HORIZONTAL"
               ? rackOffsetY + niveles
-              : zona.yInicio + 2,
+              : offsetY + 2,
           ...(zona.orientacion === "HORIZONTAL"
             ? { textAlign: "center", writingMode: "sideways-lr" }
             : {}),
@@ -134,4 +149,5 @@ const ZonaAlmacen = ({ zona, ubicaciones, onclick }) => {
     </>
   );
 };
+
 export default ZonaAlmacen;

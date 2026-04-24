@@ -15,7 +15,7 @@ const List = ({
   permissionApprove,
   permissionDisapprove,
 }) => {
-  
+
   const sendMessage = useSendMessage();
   const fetchData = async (page, limit, search) => {
     try {
@@ -53,11 +53,13 @@ const List = ({
       <Column
         field="lastname"
         header="Apellidos"
-         
+
       ></Column>
       <Column field="name" header="Nombres"></Column>
       <Column field="email" header="Email"></Column>
-      <Column field="business" header="Empresa"></Column>
+      <Column field="business" header="Empresa"
+        body={(rowData) => rowData.business ? (rowData.business.length > 50 ? `${rowData.business.substring(0, 50)}...` : rowData.business) : "N/A"}
+      />
       <Column
         field="state"
         header="Estado"
@@ -65,7 +67,6 @@ const List = ({
         body={(rowData) => {
           const color =
             rowData.state === "ACTIVO" ? " text-green-500 " : " text-red-500 ";
-
           return (
             <div
               className={`text-center bg-gradient-to-tr from-white to-gray-100 

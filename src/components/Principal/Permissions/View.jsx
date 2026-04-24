@@ -18,9 +18,15 @@ const Details = ({ setShowDetail, children }) => {
     }
   }, [children]); // Se recalcula si cambian los datos internos
 
+  // Details.jsx
   const handleCloseDetail = () => {
     setShowDetail(false);
-    navigate(location.pathname);
+
+    const searchParams = new URLSearchParams(location.search);
+    searchParams.delete("view"); // Solo elimina el param de detalle
+
+    const newSearch = searchParams.toString();
+    navigate(`${location.pathname}${newSearch ? `?${newSearch}` : ""}`);
   };
 
 

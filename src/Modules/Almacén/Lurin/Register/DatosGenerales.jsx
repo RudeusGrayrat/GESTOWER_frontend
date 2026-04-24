@@ -46,20 +46,6 @@ const DatosGenerales = ({ form, setForm, error }) => {
 
   return (
     <form className="w-full flex flex-wrap" autoComplete="off">
-      <InputDate
-        label="Fecha De Ingreso"
-        name="fecha"
-        value={localform.fecha}
-        setForm={setLocalForm}
-        errorOnclick={error.datosGenerales?.fecha}
-      />
-      <InputTime
-        label="Hora de Ingreso"
-        name="horaIngreso"
-        value={localform.horaIngreso}
-        setForm={setLocalForm}
-        errorOnclick={error.datosGenerales?.horaIngreso}
-      />
       <Input
         label="Recepcionado Por"
         name="recepcionadoPor"
@@ -102,6 +88,21 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.estadoActa}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.estadoActa}
+      />
+      <InputDate
+        label="Fecha De Ingreso"
+        name="fecha"
+        value={localform.fecha}
+        setForm={setLocalForm}
+        errorOnclick={error.datosGenerales?.fecha}
+      />
+      <Input
+        label="Hora de Ingreso"
+        name="horaIngreso"
+        type="time"
+        value={localform.horaIngreso}
+        setForm={setLocalForm}
+        errorOnclick={error.datosGenerales?.horaIngreso}
       />
     </form>
   );

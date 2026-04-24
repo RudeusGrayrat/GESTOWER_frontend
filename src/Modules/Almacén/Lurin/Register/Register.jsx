@@ -3,7 +3,7 @@ import CardPlegable from "../../../../recicle/Divs/CardPlegable";
 import DatosBasicos from "./DatosBasicos";
 import DatosGenerales from "./DatosGenerales";
 import DescripcionDeBienes from "./DescripcionDeBienes";
-import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd copy";
+import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import Otros from "./Otros";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
@@ -15,7 +15,6 @@ import axios from "../../../../api/axios";
 const RegisterLurin = ({ contratos, contratos_id }) => {
   const sendMessage = useSendMessage();
 
-  const [habilitar, setHabilitar] = useState(false);
   const { user } = useAuth();
   const [initialform, setInitialform] = useState({
     movimiento: "INGRESO",
@@ -33,6 +32,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         pesoBruto: "",
         estadoEnvase: "",
         subItem: "",
+        observaciones: "",
       },
     ],
     datosGenerales: {
@@ -87,6 +87,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
                 pesoBruto: producto.pesoBruto,
                 estadoEnvase: producto.estadoEnvase,
                 subItem: producto.productoId.subItem,
+                observaciones: producto.observaciones,
               })),
             }));
           }
@@ -104,7 +105,6 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
 
   //aquí empieza el cambio con lo de producto y stock
   const register = async () => {
-    setHabilitar(true);
     sendMessage("Registrando movimiento...", "Info", true);
     const erroresDeStock = [];
 
@@ -314,8 +314,6 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         "Error al registrar el movimiento",
         "Error"
       );
-    } finally {
-      setHabilitar(false);
     }
   };
 
@@ -355,7 +353,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         <ButtonOk
           type="ok"
           onClick={register}
-          classe="!w-60"
+          classe="!w-64 !text-xl !p-3"
           children="Registrar"
         />
       </div>
