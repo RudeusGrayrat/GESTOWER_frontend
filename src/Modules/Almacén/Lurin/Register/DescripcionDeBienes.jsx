@@ -29,7 +29,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
   };
   const [data, setData] = useState({
     item: "",
-    cantidad: "",
+    cantidadIngresada: "",
     descripcion: "",
     unidadDeMedida: "UNIDAD",
     pesoNeto: "",
@@ -43,7 +43,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
       setData((prevData) => ({
         ...prevData,
         item: initialData.item || initialData.productoId?.item,
-        cantidad: initialData.cantidad || initialData.productoId?.cantidad,
+        cantidadIngresada: initialData.cantidadIngresada || initialData.productoId?.cantidadIngresada,
         descripcion:
           initialData.descripcion || initialData.productoId?.descripcion,
         unidadDeMedida: initialData.unidadDeMedida || "UNIDAD",
@@ -59,7 +59,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
   }, [initialData]);
   const validateFormMultiple = validateForm(
     data.item,
-    data.cantidad,
+    data.cantidadIngresada,
     data.descripcion,
     data.unidadDeMedida,
     data.pesoBruto,
@@ -70,7 +70,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
     if (Object.keys(validateFormMultiple).length === 0) {
       set({
         item: data.item,
-        cantidad: data.cantidad,
+        cantidadIngresada: data.cantidadIngresada,
         descripcion: data.descripcion,
         unidadDeMedida: data.unidadDeMedida,
         pesoNeto: data.pesoNeto,
@@ -81,7 +81,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
     }
   }, [
     data.item,
-    data.cantidad,
+    data.cantidadIngresada,
     data.descripcion,
     data.unidadDeMedida,
     data.pesoNeto,
@@ -106,15 +106,15 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
       />
       <Input
         label="Cantidad"
-        name="cantidad"
+        name="cantidadIngresada"
         onKeyPress={(e) => {
           if (!/[0-9]/.test(e.key)) {
             e.preventDefault();
           }
         }}
-        value={data.cantidad}
+        value={data.cantidadIngresada}
         setForm={setData}
-        errorOnclick={error.cantidad}
+        errorOnclick={error.cantidadIngresada}
       />
       <Input
         label="Descripción"
@@ -132,17 +132,6 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         setForm={setData}
         errorOnclick={error.unidadDeMedida}
       />
-      <InputNormal
-        label="Peso Neto (Kg)"
-        name="pesoNeto"
-        onKeyPress={(e) => {
-          if (!/[0-9.]/.test(e.key)) {
-            e.preventDefault();
-          }
-        }}
-        value={data.pesoNeto}
-        setForm={setData}
-      />
       <Input
         label="Peso Bruto (kg)"
         name="pesoBruto"
@@ -154,6 +143,17 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         value={data.pesoBruto}
         setForm={setData}
         errorOnclick={error.pesoBruto}
+      />
+      <InputNormal
+        label="Peso Neto (Kg)"
+        name="pesoNeto"
+        onKeyPress={(e) => {
+          if (!/[0-9.]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        value={data.pesoNeto}
+        setForm={setData}
       />
       <Input
         label="Estado del Envase"

@@ -26,20 +26,54 @@ const StockAlmacenLurin = ({
   return (
     <ListPrincipal
       permissionRead={permissionRead}
-      permissionEdit={permissionEdit}
+      // permissionEdit={permissionEdit}
       // permissionDelete={permissionDelete}
       DetailItem={DetaiStock}
       DeleteItem={DeleteStock}
       fetchData={fetchStock}
     >
+      <Column field="correlativa" header="Correlativa Manifiesto" />
       <Column
-        field="movimientoId.numeroDeActa"
+        field="numeroDeActa"
         header="Numero de Acta"
-      ></Column>
-      <Column field="contratoId.cliente" header="Contrato"/>
-      <Column field="productoId.descripcion" header="Descripción del Bien"></Column>
-      <Column field="cantidadTotal" header="Cantidad"></Column>
-      <Column field="productoId.unidadDeMedida" header="Unidad de Medida"></Column>
+      />
+      <Column field="contrato" header="Contrato" />
+      <Column field="descripcion" header="Descripción del Bien" />
+      <Column field="cantidadTotal" header="Cantidad Total" />
+      <Column field="detallesBien.unidad" header="Unidad de Medida" />
+      <Column field="fechaIngreso" header="Fecha de Ingreso" />
+      <Column
+        field="estado"
+        header="Estado"
+        style={{
+          justifyItems: "center",
+        }}
+        body={(rowData) => {
+          let color = "";
+          switch (rowData.estado) {
+            case "ACTIVO":
+              color = "text-green-500";
+              break;
+            case "AGOTADO":
+              color = "text-red-500";
+              break;
+            case "PARCIAL":
+              color = "text-blue-500";
+              break;
+            default:
+              color = "text-gray-500";
+          }
+
+          return (
+            <div
+              className={`text-center bg-gradient-to-tr from-white to-gray-100 
+                            shadow-inner rounded-xl font-medium  px-5 py-1  ${color} `}
+            >
+              {rowData.estado}
+            </div>
+          );
+        }}
+      />
     </ListPrincipal>
   );
 };

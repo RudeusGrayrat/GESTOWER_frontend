@@ -7,27 +7,27 @@ import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import Otros from "./Otros";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import useSendMessage from "../../../../recicle/senMessage";
-import PopUp from "../../../../recicle/popUps";
 import { useAuth } from "../../../../context/AuthContext";
 import useValidation from "./Validate";
 import axios from "../../../../api/axios";
 
 const RegisterLurin = ({ contratos, contratos_id }) => {
   const sendMessage = useSendMessage();
-
   const { user } = useAuth();
-  const [initialform, setInitialform] = useState({
+
+  const [initialform] = useState({
     movimiento: "INGRESO",
     contrato: "",
     numeroDeActa: "",
     contribuyente: "",
     numeroDocumento: "",
-    productos: [
+    descripcionBienes: [
       {
-        item: "",
-        cantidad: "",
+        item: 1,
         descripcion: "",
-        unidadDeMedida: "",
+        unidadDeMedida: "UNIDAD",
+        cantidadIngresada: "", // Unificado con el Backend
+        cantidadDisponible: "", // Unificado con el Backend
         pesoNeto: "",
         pesoBruto: "",
         estadoEnvase: "",
@@ -51,10 +51,10 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
     observaciones: "",
     codigoIngreso: "",
   });
-  const [form, setForm] = useState({
-    ...initialform
-  });
 
+  const [form, setForm] = useState(initialform);
+
+  // Lógica para cargar datos si es una SALIDA basada en un INGRESO previo
   useEffect(() => {
     if (form.movimiento === "SALIDA" && form.codigoIngreso) {
       const fetchIngresoData = async () => {
@@ -62,7 +62,9 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
           const res = await axios.get("/getMovimientoByCodigo", {
             params: { codigoIngreso: form.codigoIngreso },
           });
+
           const ingreso = res.data;
+
           if (ingreso) {
             setForm((prev) => ({
               ...prev,
@@ -71,23 +73,14 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
               contribuyente: ingreso.contribuyente,
               numeroDocumento: ingreso.numeroDocumento,
               datosGenerales: {
-                fecha: ingreso.datosGenerales.fecha,
-                horaIngreso: ingreso.datosGenerales.horaIngreso,
-                recepcionadoPor: ingreso.datosGenerales.recepcionadoPor,
-                dniRecepcionadoPor: ingreso.datosGenerales.dniRecepcionadoPor,
-                responsableEntrega: ingreso.datosGenerales.responsableEntrega,
-                registroOCIP: ingreso.datosGenerales.registroOCIP,
+                ...ingreso.datosGenerales,
               },
-              productos: ingreso.descripcionBienes.map((producto) => ({
-                item: producto.item,
-                cantidad: producto.cantidad,
-                descripcion: producto.productoId.descripcion,
-                unidadDeMedida: producto.productoId.unidadDeMedida,
-                pesoNeto: producto.pesoNeto,
-                pesoBruto: producto.pesoBruto,
-                estadoEnvase: producto.estadoEnvase,
-                subItem: producto.productoId.subItem,
-                observaciones: producto.observaciones,
+              descripcionBienes: ingreso.descripcionBienes.map((bien) => ({
+                ...bien,
+                bienIdOriginal: bien._id,
+                // Al ser una salida, la "cantidadIngresada" del formulario 
+                // se pre-carga con lo que había disponible
+                cantidadIngresada: bien.cantidadDisponible,
               })),
             }));
           }
@@ -95,6 +88,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
           sendMessage("Error al buscar el ingreso por código", "Error");
         }
       };
+
       fetchIngresoData();
     }
   }, [form.movimiento, form.codigoIngreso]);
@@ -103,222 +97,58 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
 
   const contratoOptions = contratos || [];
 
-  //aquí empieza el cambio con lo de producto y stock
+  const resetForm = () => {
+    setForm(initialform);
+  };
+
   const register = async () => {
     sendMessage("Registrando movimiento...", "Info", true);
-    const erroresDeStock = [];
 
     try {
-      // ========================
-      // 🛑 Validación del formulario
-      // ========================
-      const formAntesDeValidar = { ...form };
-      delete formAntesDeValidar.horaSalida;
-      delete formAntesDeValidar.fechaSalida;
-      delete formAntesDeValidar.observaciones;
-      delete formAntesDeValidar.detallesDePeso;
-      delete formAntesDeValidar.referenciaImagen;
-      delete formAntesDeValidar.codigoIngreso;
+      // Limpiamos campos opcionales para la validación estricta si fuera necesario
+      const formParaValidar = { ...form };
 
-      const { isValid, firstInvalidPath } = validateForm(formAntesDeValidar);
+      const { isValid, firstInvalidPath } = validateForm(formParaValidar);
 
       if (!isValid) {
         sendMessage(`Debes completar: ${firstInvalidPath}`, "Error");
         return;
       }
 
-      const findSede = contratos_id[0].sedeId;
-      const findContrato = contratos_id.find(
-        (contrato) => contrato.cliente === form.contrato
-      );
+      // Buscamos IDs de Sede y Contrato
+      const findSede = contratos_id[0]?.sedeId;
+      const findContrato = contratos_id.find(c => c.cliente === form.contrato);
 
       if (!findContrato) {
-        sendMessage("Contrato no encontrado", "Error");
-        return;
+        return sendMessage("Contrato no válido", "Error");
       }
 
-      // ========================
-      // 🚨 FASE 1: VALIDACIÓN PREVIA
-      // ========================
-      const productosProcesados = [];
-
-      for (const producto of form.productos) {
-        const { cantidad, ...restProducto } = producto;
-
-        // Buscar si ya existe
-        const responseProducto = await axios.get("/getProductoAlmacen", {
-          params: {
-            descripcion: restProducto.descripcion,
-            unidadDeMedida: restProducto.unidadDeMedida,
-            subItem: restProducto.subItem,
-          },
-        });
-
-        let productoId = responseProducto.data?._id || null;
-        let stockActual = 0;
-        let stockId = null;
-        if (!productoId && form.movimiento === "INGRESO") {
-          const nuevoProducto = await axios.post("/postProductoAlmacen", {
-            descripcion: producto.descripcion,
-            unidadDeMedida: producto.unidadDeMedida,
-            subItem: producto.subItem,
-          });
-          productoId = nuevoProducto.data.producto._id;
-        }
-
-        if (productoId) {
-          const responseStockArray = await axios.get("/getStockByParams", {
-            params: { productoId },
-          });
-          const responseStock = responseStockArray.data[0] || {};
-
-          stockActual = Number(responseStock?.cantidadTotal || 0);
-          stockId = responseStock._id || null;
-
-          if (form.movimiento === "SALIDA" && stockActual < cantidad) {
-            erroresDeStock.push({
-              descripcion: restProducto.descripcion,
-              stockActual,
-              cantidadSolicitada: cantidad,
-            });
-          }
-        } else {
-          if (form.movimiento === "SALIDA") {
-            erroresDeStock.push({
-              descripcion: restProducto.descripcion,
-              motivo: "El producto no existe en el almacén",
-            });
-          }
-        }
-
-        productosProcesados.push({
-          ...restProducto,
-          cantidad: Number(cantidad),
-          productoId,
-          stockId,
-          stockActual,
-        });
-      }
-
-      // 🚫 Detener si hay errores
-      if (erroresDeStock.length > 0) {
-        let mensaje =
-          "No se pudo registrar el movimiento. Revisa los siguientes productos:\n\n";
-        erroresDeStock.forEach((error, i) => {
-          if (error.motivo) {
-            mensaje += `${i + 1}. ${error.descripcion} - ${error.motivo}\n`;
-          } else {
-            mensaje += `${i + 1}. ${error.descripcion} - Solicitado: ${error.cantidad
-              }, Stock disponible: ${error.stockActual}\n`;
-          }
-        });
-        sendMessage(mensaje, "Advertencia");
-        return;
-      }
-
-      // ========================
-      // ✅ FASE 2: CREAR MOVIMIENTO
-      // ========================
-      const descripcionBienes = productosProcesados.map((p, i) => ({
+      // Preparamos los bienes asegurando tipos de datos correctos (Numbers)
+      const descripcionBienes = form.descripcionBienes.map((bien, i) => ({
+        ...bien,
         item: i + 1,
-        productoId: p.productoId, // puede ser null si no existía → se resolverá después
-        cantidad: p.cantidad,
-        descripcion: p.descripcion,
-        unidadDeMedida: p.unidadDeMedida,
-        pesoNeto: p.pesoNeto,
-        pesoBruto: p.pesoBruto,
-        estadoEnvase: p.estadoEnvase,
-        subItem: p.subItem,
-        observaciones: p.observaciones || "",
+        // Convertimos a número para evitar problemas en el Backend
+        cantidadIngresada: Number(bien.cantidadIngresada),
+        cantidadDisponible: Number(bien.cantidadIngresada), // En el ingreso, ambos son iguales
+        pesoNeto: Number(bien.pesoNeto) || 0,
+        pesoBruto: Number(bien.pesoBruto) || 0,
       }));
 
-      const responseMovimiento = await axios.post("/postMovimientoAlmacen", {
+      // Petición única: Crea Movimiento y genera los documentos de Stock
+      await axios.post("/postMovimientoAlmacen", {
         ...form,
         contratoId: findContrato._id,
         sedeId: findSede._id,
-        descripcionBienes: descripcionBienes,
+        descripcionBienes,
         creadoPor: user._id,
       });
 
-      const movimientoId = responseMovimiento.data?.data?._id;
-      if (!movimientoId) throw new Error("No se pudo obtener movimientoId");
-
-      // ========================
-      // 🔄 FASE 3: ACTUALIZAR / CREAR STOCKS
-      // ========================
-      for (const p of productosProcesados) {
-        let productoId = p.productoId;
-
-        // Si no existe producto y es ingreso → lo creamos
-        if (!productoId && form.movimiento === "INGRESO") {
-          const nuevoProducto = await axios.post("/postProductoAlmacen", {
-            descripcion: p.descripcion,
-            unidadDeMedida: p.unidadDeMedida,
-            subItem: p.subItem,
-          });
-          productoId = nuevoProducto.data.producto._id;
-        }
-
-        if (productoId) {
-          if (p.stockId !== null) {
-            const nuevaCantidad =
-              form.movimiento === "SALIDA"
-                ? p.stockActual - p.cantidad
-                : p.stockActual + p.cantidad;
-
-            if (nuevaCantidad < 0) {
-              // 🚨 Evitar que el stock quede negativo
-              throw new Error(
-                `No hay suficiente stock de ${p.descripcion}. Disponible: ${p.stockActual}, solicitado: ${p.cantidad}`
-              );
-            }
-
-            await axios.patch("/patchStockAlmacen", {
-              _id: p.stockId,
-              cantidadTotal: nuevaCantidad,
-              actualizadoPor: user._id,
-            });
-          } else {
-            if (form.movimiento === "INGRESO") {
-              // ✅ Solo en ingreso se permite crear un nuevo stock
-              await axios.post("/postStockAlmacen", {
-                sedeId: findSede._id,
-                productoId,
-                contratoId: findContrato._id,
-                cantidadTotal: p.cantidad,
-                cantidadDisponible: p.cantidad,
-                movimientoId,
-                creadoPor: user._id,
-              });
-            } else {
-              // 🚨 Evitar crear stock en salida si no existe
-              throw new Error(
-                `No existe stock para ${p.descripcion}, no se puede realizar salida`
-              );
-            }
-          }
-        }
-      }
-
-      // ========================
-      // 🎉 FIN
-      // ========================
-      sendMessage("Registrado correctamente", "Bien");
+      sendMessage("Registrado correctamente en Movimientos y Stock", "Bien");
       resetForm();
-      return;
     } catch (error) {
-      return sendMessage(
-        error?.response?.data?.message?._message ||
-        error?.response?.data?.message ||
-        error.message ||
-        "Error al registrar el movimiento",
-        "Error"
-      );
+      console.error(error);
+      sendMessage(error.response?.data?.message || error.message, "Error");
     }
-  };
-
-  const resetForm = () => {
-    setForm(initialform);
   };
 
   return (
@@ -331,15 +161,17 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
           error={error}
         />
       </CardPlegable>
+
       <CardPlegable title="Datos Generales">
         <DatosGenerales form={form} setForm={setForm} error={error} />
       </CardPlegable>
-      <CardPlegable title="Descripción de los Bienes Involucrados (Productos)">
+
+      <CardPlegable title="Descripción de los Bienes Involucrados">
         <Directorio
           ItemComponent={DescripcionDeBienes}
-          data="productos"
-          estilos=" flex justify-center items-center"
-          directory={form.productos}
+          data="descripcionBienes"
+          estilos="flex justify-center items-center"
+          directory={form.descripcionBienes}
           sendMessage={sendMessage}
           setForm={setForm}
           error={error}
@@ -349,13 +181,15 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       <CardPlegable title="Otros">
         <Otros form={form} setForm={setForm} error={error} />
       </CardPlegable>
-      <div className="flex justify-center m-10 ">
+
+      <div className="flex justify-center m-10">
         <ButtonOk
           type="ok"
           onClick={register}
           classe="!w-64 !text-xl !p-3"
-          children="Registrar"
-        />
+        >
+          Registrar
+        </ButtonOk>
       </div>
     </div>
   );

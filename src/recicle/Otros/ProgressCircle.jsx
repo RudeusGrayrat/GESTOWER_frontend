@@ -19,18 +19,7 @@ const ProgressCircle = ({
   const circleRef = useRef(null);
 
   useEffect(() => {
-    if (!isEditing) {
-      let start = 0;
-      const interval = setInterval(() => {
-        start += 1;
-        if (start > percentage) {
-          clearInterval(interval);
-        } else {
-          setProgress(start);
-        }
-      }, 15);
-      return () => clearInterval(interval);
-    }
+    if (!isEditing) setProgress(percentage);
   }, [percentage, isEditing]);
 
   const handleMouseDown = (e) => {
@@ -43,33 +32,18 @@ const ProgressCircle = ({
 
   const handleMouseMove = (e) => {
     if (!isEditing || !circleRef.current) return;
-
     const rect = circleRef.current.getBoundingClientRect();
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
-
-    const mouseX = e.clientX;
-    const mouseY = e.clientY;
-
-    const angle = Math.atan2(mouseY - centerY, mouseX - centerX);
+    const angle = Math.atan2(e.clientY - centerY, e.clientX - centerX);
     let newPercentage = ((angle * 180) / Math.PI + 90) / 3.6;
-
-    if (newPercentage < 0) {
-      newPercentage += 100;
-    }
-
-    const finalPercentage = Math.min(
-      100,
-      Math.max(0, Math.round(newPercentage))
-    );
-
+    if (newPercentage < 0) newPercentage += 100;
+    const finalPercentage = Math.min(100, Math.max(0, Math.round(newPercentage)));
     setProgress(finalPercentage);
     onEditChange(finalPercentage);
   };
 
-  const handleMouseUp = () => {
-    setIsEditing(false);
-  };
+  const handleMouseUp = () => setIsEditing(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -82,8 +56,6 @@ const ProgressCircle = ({
     };
   }, [isEditing]);
 
-  const strokeWidth = 30;
-  const radius = (size - strokeWidth) / 2;
   const rotationAngle = (progress / 100) * 360;
   const gradientStops = colors.map((c) => `${c.color} ${c.stop}%`).join(", ");
 
@@ -93,60 +65,50 @@ const ProgressCircle = ({
       className="relative flex justify-center items-center"
       style={{ width: size, height: size }}
     >
-      {/* Fondo con gradiente circular */}
-      <div
-        className="absolute rounded-full"
-        style={{
-          width: size,
-          height: size,
-          background: `conic-gradient(${gradientStops})`,
-        }}
-      ></div>
+      {/* 1. Capa de Fondo y Progreso (Base) */}
+      <div className="absolute inset-[1px] rounded-full" style={{ background: `conic-gradient(${gradientStops})` }} />
+      <div className="absolute inset-0  shadow-inner border border-gray-100 rounded-full"
+        style={{ background: `conic-gradient(transparent 0% ${progress}%, white ${progress}% 100%)` }} />
 
-      {/* Círculo que TAPA */}
-      <div
-        className="absolute rounded-full shadow-inner"
-        style={{
-          width: size + 2,
-          height: size + 2,
-          background: `conic-gradient(transparent 0% ${progress}%, white ${progress}% 100%)`,
-        }}
-      ></div>
-
-      {/* Nuevo contenedor para el puntero */}
-      <div
-        className="absolute z-20"
-        style={{
-          width: "100%",
-          height: "100%",
-          left: 0,
-          top: 0,
-          transform: `rotate(${rotationAngle}deg)`,
-        }}
-      >
-        {/* Puntero centrado en el anillo */}
-        <div
-          className="absolute rounded-full flex justify-center items-center  border p-1 border-gray-400 bg-white shadow-lg transition-all duration-100"
-          style={{
-            width: 40,
-            height: 40,
-            left: "50%",
-            top: 15, // Posiciona en la parte superior del círculo
-            transform: "translate(-50%, -50%)", // Centra el puntero en su posición
-            cursor: isEditing ? "grabbing" : "grab",
-          }}
-          onMouseDown={handleMouseDown}
-        >
-          <div className=" bg-gradient-to-br from-sky-600 to-teal-300 rounded-full w-[80%] h-[80%] "></div>
-        </div>
-      </div>
-
-      {/* Círculo interior con el porcentaje */}
+      {/* 2. Círculo interior con INPUT (z-10) */}
       <div
         className="absolute bg-white z-10 rounded-full flex items-center justify-center shadow-md"
         style={{ width: size - 50, height: size - 50 }}
       >
-        <span className="text-3xl font-bold">{progress}%</span>
+        <div className="flex items-center">
+          <input
+            type="text"
+            value={progress}
+            onChange={(e) => {
+              const val = Math.min(100, Math.max(0, parseInt(e.target.value) || 0));
+              setProgress(val);
+              onEditChange(val);
+            }}
+            className="w-16 text-3xl font-bold text-center bg-transparent focus:outline-none text-sky-900"
+          />
+          <span className="text-xl font-bold -ml-2 text-sky-600">%</span>
+        </div>
+      </div>
+
+      {/* 3. Capa del Puntero (z-20 para estar encima del input) */}
+      <div
+        className="absolute inset-0 z-20 pointer-events-none"
+        style={{ transform: `rotate(${rotationAngle}deg)` }}
+      >
+        <div
+          className="absolute rounded-full flex justify-center items-center border p-1 border-gray-400 bg-white shadow-lg pointer-events-auto transition-transform hover:scale-110"
+          style={{
+            width: 40,
+            height: 40,
+            left: "50%",
+            top: 15,
+            transform: "translate(-50%, -50%)",
+            cursor: isEditing ? "grabbing" : "grab",
+          }}
+          onMouseDown={handleMouseDown}
+        >
+          <div className="bg-gradient-to-br from-sky-600 to-teal-300 rounded-full w-[80%] h-[80%]"></div>
+        </div>
       </div>
     </div>
   );

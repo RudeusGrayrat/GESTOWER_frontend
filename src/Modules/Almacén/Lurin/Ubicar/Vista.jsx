@@ -89,14 +89,22 @@ const VistaGeneral = () => {
   }, [naveId, naveParam]);
 
   // Cargar ubicaciones cuando se selecciona zona
+  const getUbicaciones = async () => {
+    setIsLoadingUbicaciones(true);
+    try {
+      axios
+        .get("/getUbicacionByParams", { params: { zonaId: zonaParam } })
+        .then((res) => setUbicaciones(res.data))
+        .catch((err) => sendMessage(err?.response?.data?.message, "Error"))
+        .finally(() => setIsLoadingUbicaciones(false));
+    } catch (error) {
+      sendMessage(error?.response?.data?.message, "Error");
+      setIsLoadingUbicaciones(false);
+    }
+  };
   useEffect(() => {
     if (!zonaParam) return;
-    setIsLoadingUbicaciones(true);
-    axios
-      .get("/getUbicacionByParams", { params: { zonaId: zonaParam } })
-      .then((res) => setUbicaciones(res.data))
-      .catch((err) => sendMessage(err?.response?.data?.message, "Error"))
-      .finally(() => setIsLoadingUbicaciones(false));
+    getUbicaciones();
   }, [zonaParam]);
 
   const seleccionarNave = (nombre) => {
@@ -181,6 +189,7 @@ const VistaGeneral = () => {
             <ViewUbicacion
               setViewUbicacion={setViewUbicacion}
               ubicacionSeleccionada={ubicacionSeleccionada}
+              reload={getUbicaciones}
             />
           )}
           <div className="w-full">
@@ -230,8 +239,8 @@ const VistaGeneral = () => {
         {zonas.map((zona, idx) => (
           <div
             key={idx}
-            className="flex items-center justify-center bg-blue-100 hover:bg-sky-700
-              text-blue-700 hover:!text-white border rounded-lg cursor-pointer
+            className="flex items-center justify-center bg-white hover:bg-sky-600
+              text-sky-600 hover:!text-white border rounded-lg cursor-pointer
               transition-all hover:scale-95 shadow-md"
             style={{
               gridColumnStart: zona.xInicio,

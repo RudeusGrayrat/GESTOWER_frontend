@@ -89,9 +89,10 @@ const DatosGenerales = ({ form, setForm, error }) => {
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.estadoActa}
       />
-      <InputDate
+      <Input
         label="Fecha De Ingreso"
         name="fecha"
+        type="date"
         value={localform.fecha}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.fecha}

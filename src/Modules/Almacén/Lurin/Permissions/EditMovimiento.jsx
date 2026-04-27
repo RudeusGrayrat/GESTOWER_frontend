@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import Edit from "../../../../components/Principal/Permissions/Edit";
-import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd copy";
+import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable";
-import PopUp from "../../../../recicle/popUps";
 import DatosBasicos from "../Register/DatosBasicos";
 import DatosGenerales from "../Register/DatosGenerales";
 import DescripcionDeBienes from "../Register/DescripcionDeBienes";
@@ -16,110 +15,54 @@ import { useAuth } from "../../../../context/AuthContext";
 
 const EditMovimiento = ({ setShowEdit, selected, reload }) => {
   const idSelected = selected._id;
-  const { patchMovimientoAlmacen, user, patchProductosAlmacen, } = useAuth()
+  const { user } = useAuth();
 
-  const [formInicial, setFormInicial] = useState({
+  const [formInicial] = useState({
     ...selected,
-    contrato: selected.contratoId.cliente,
-    productos: selected.descripcionBienes || [],
-  });
-  const [form, setForm] = useState({
-    ...formInicial
+    contrato: selected.contratoId?.cliente || "",
   });
 
+  const [form, setForm] = useState(formInicial);
+  console.log("🚀 ~ file: EditMovimiento.jsx:24 ~ EditMovimiento ~ form:", form)
   const contratos = useSelector((state) => state.almacen.allContratos);
+
   const contratoSede = contratos.filter(
-    (contrato) => contrato.sedeId.nombre === "LURIN"
+    (contrato) => contrato.sedeId?.nombre === "LURIN"
   );
+
   const contratoOptions = contratoSede.map((c) => c.cliente);
-  useEffect(() => {
-    if (contratos.length === 0) {
-      dispatch(getAllContratosAlmacen());
-    }
-  }, [contratos.length]);
+
   const sendMessage = useSendMessage();
-  const { error, validateForm } = useValidation(form);
-  const [habilitar, setHabilitar] = useState(false);
+  const { error } = useValidation(form);
 
   const diferencias = deepDiff(formInicial, form);
+  console.log("🚀 ~ file: EditMovimiento.jsx:35 ~ EditMovimiento ~ diferencias:", diferencias)
   const actualizar = async () => {
-    setHabilitar(true);
-    if (diferencias.productos) {
-      diferencias.descripcionBienes = diferencias.productos;
-      delete diferencias.productos;
-    }
     try {
       if (Object.keys(diferencias).length === 0) {
         sendMessage("No se realizaron cambios", "Info");
         return;
       }
-      if (!idSelected) {
-        sendMessage("ID de movimiento no válido", "Error");
-        return;
-      }
-      if (!user || !user._id) {
-        sendMessage("Usuario no autenticado", "Error");
-        return;
-      }
-      await patchMovimientoAlmacen({
-        actualizadoPor: user._id,
+      await axios.patch("/patchMovimientoAlmacen", {
         _id: idSelected,
+        actualizadoPor: user._id,
         ...diferencias,
-      })
-      //si se modificio la descripcion, subitem o la unidad de medida se debe actualizar el productoId
-      if (diferencias.descripcionBienes) {
-        for (const producto of diferencias.descripcionBienes) {
-          //verfificar cambios en descripcion, subitem o unidad de medida
-          const cambiosProducto = {};
-          if (producto.descripcion) {
-            cambiosProducto.descripcion = producto.descripcion;
-          }
-          if (producto.subItem) {
-            cambiosProducto.subItem = producto.subItem;
-          }
-          if (producto.unidadDeMedida) {
-            cambiosProducto.unidadDeMedida = producto.unidadDeMedida;
-          }
-          if (producto.cantidad) {
-            cambiosProducto.cantidad = producto.cantidad;
-          }
-          if (Object.keys(cambiosProducto).length > 0 && producto.productoId) {
-            await patchProductosAlmacen({
-              _id: producto.productoId,
-              ...cambiosProducto,
-            });
-            //opcional: actualizar stock del producto
-            const stockProducto = await axios.get(`/getStockByParams`, {
-              params: { productoId: producto.productoId },
-            });
-            const data = stockProducto.data.data[0]
-            const newCambios = {
-              _id: data._id,
-              actualizadoPor: user._id,
-              cantidadTotal: producto.cantidad
-            }
-            if (data) {
-              await axios.patch(`/patchStockAlmacen`, newCambios);
-            }
+      });
 
-
-          }
-
-        }
-      }
-
+      sendMessage("Movimiento actualizado correctamente", "Bien");
     } catch (error) {
-      console.log("error", error);
       sendMessage(
-        error || "Error al actualizar el movimiento",
+        error?.response?.data?.message ||
+        error.message ||
+        "Error al actualizar el movimiento",
         "Error"
       );
     } finally {
-      setHabilitar(false);
       setShowEdit(false);
       reload();
     }
   };
+
   return (
     <Edit setShowEdit={setShowEdit} upDate={actualizar}>
       <CardPlegable title="Datos Básicos">
@@ -130,15 +73,17 @@ const EditMovimiento = ({ setShowEdit, selected, reload }) => {
           error={error}
         />
       </CardPlegable>
+
       <CardPlegable title="Datos Generales">
         <DatosGenerales form={form} setForm={setForm} error={error} />
       </CardPlegable>
-      <CardPlegable title="Descripción de los Bienes Involucrados (Productos)">
+
+      <CardPlegable title="Descripción de los Bienes Involucrados">
         <Directorio
           ItemComponent={DescripcionDeBienes}
-          data="productos"
-          estilos=" flex justify-center items-center"
-          directory={form.productos}
+          data="descripcionBienes"
+          estilos="flex justify-center items-center"
+          directory={form.descripcionBienes}
           sendMessage={sendMessage}
           setForm={setForm}
           error={error}
