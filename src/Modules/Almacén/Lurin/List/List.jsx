@@ -9,11 +9,14 @@ import DetailLurin from "../Permissions/Detail";
 import DeleteMovimientoAlmacen from "../Permissions/DeleteMovimiento";
 import EditMovimiento from "../Permissions/EditMovimiento";
 import axios from "../../../../api/axios";
+import ApproveMovimiento from "../Permissions/ApproveMovimiento";
 
 const ListLurin = ({
   permissionEdit,
   permissionRead,
   permissionDelete,
+  permissionApprove,
+  permissionDisapprove,
   contratos,
   contratos_id,
   contratoSeleccionado,
@@ -40,30 +43,28 @@ const ListLurin = ({
     }
   }, [contratoSeleccionado]);
 
-  const recargar = useCallback(
-    async (page = 0, limit = 10, search = "") => {
-      if (!form.contrato || !form.movimiento) {
-        return {
-          data: [],
-          total: 0,
-        };
-      }
-      const response = await axios.get("/getAllMovimientosBySede", {
-        params: {
-          contratoId: contratoId._id,
-          movimiento: form.movimiento,
-          page,
-          limit,
-          search,
-        },
-      });
+  const recargar = async (page = 0, limit = 10, search = "") => {
+    if (!form.contrato || !form.movimiento) {
       return {
-        data: response.data?.data,
-        total: response.data?.total,
+        data: [],
+        total: 0,
       };
-    },
-    [form.contrato, form.movimiento]
-  );
+    }
+    const response = await axios.get("/getAllMovimientosBySede", {
+      params: {
+        contratoId: contratoId._id,
+        movimiento: form.movimiento,
+        page,
+        limit,
+        search,
+      },
+    });
+    console.log("response movimientos", response);
+    return {
+      data: response.data?.data,
+      total: response.data?.total,
+    };
+  }
 
   const seleccionarContrato = (e) => {
     const selected = e.value;
@@ -115,9 +116,12 @@ const ListLurin = ({
             DetailItem={DetailLurin}
             EditItem={EditMovimiento}
             DeleteItem={DeleteMovimientoAlmacen}
+            ApproveItem={ApproveMovimiento}
             permissionEdit={permissionEdit}
             permissionDelete={permissionDelete}
             permissionRead={permissionRead}
+            permissionApprove={permissionApprove}
+            permissionDisapprove={permissionDisapprove}
             fetchData={recargar}
 
             key={`${form.contrato}-${form.movimiento}`}
@@ -137,6 +141,33 @@ const ListLurin = ({
             />
             <Column field="numeroDeActa" header="Número de Acta" />
             <Column field="datosGenerales.estadoActa" header="Estado de Acta" />
+            <Column field="estado" header="Estado"
+              body={(rowData) => {
+                let color = "";
+                switch (rowData.estado) {
+                  case "APROBADO":
+                    color = "text-green-500";
+                    break;
+                  case "ANULADO":
+                    color = "text-red-500";
+                    break;
+                  case "PENDIENTE":
+                    color = "text-yellow-500";
+                    break;
+                  default:
+                    color = "text-gray-500";
+                }
+
+                return (
+                  <div
+                    className={`text-center bg-gradient-to-tr from-white to-gray-100 
+                            shadow-inner rounded-xl font-medium  px-5 py-1  ${color} `}
+                  >
+                    {rowData.estado}
+                  </div>
+                );
+              }}
+            />
           </ListPrincipal>
         </div>
       </div>

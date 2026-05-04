@@ -10,43 +10,91 @@ import { useAuth } from "../../../../context/AuthContext";
 import { deepDiff } from "../../../validateEdit";
 
 const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
+  console.log("ubicacionSeleccionada en ViewUbicacion", ubicacionSeleccionada);
   const sendMessage = useSendMessage();
   const { user } = useAuth();
 
+  // ... dentro de ViewUbicacion ...
   const formOriginal = {
-    estado: ubicacionSeleccionada?.estado,
     porcentaje: ubicacionSeleccionada?.porcentaje || 0,
     bienes: ubicacionSeleccionada?.bienes?.map((b) => ({
-      bienId: b.bienId?._id || b.bienId,
-      movimientoId: b.movimientoId?._id || b.movimientoId,
-      cantidad: b.cantidad,
+      // Extraemos los datos del populate que viene en ubicacionSeleccionada.bienes
+      stockId: b.stockId?._id || b.stockId,
+      cantidadIngresada: b.cantidadIngresada,
       descripcion: b.descripcion,
+      // Estos campos son cruciales para que el input del hijo no salga vacío
+      correlativa: b.stockId?.movimientoId?.correlativa || "",
     })) || [],
   };
-
+  console.log("formOriginal", formOriginal);
   const [edit, setEdit] = useState({ ...formOriginal });
 
-  // Cálculos de información valiosa
   const totalItems = edit.bienes.length;
-  const cantidadTotal = edit.bienes.reduce((acc, curr) => acc + Number(curr.cantidad), 0);
+  const cantidadTotal = edit.bienes.reduce((acc, curr) => acc + Number(curr.cantidadIngresada || 0), 0);
+
+  const editNormalizado = {
+    ...edit,
+    bienes: edit.bienes.map((b) => ({
+      stockId: b.stockId?._id || b.stockId,
+      cantidadIngresada: Number(b.cantidadIngresada),
+      descripcion: b.descripcion,
+      correlativa: b.correlativa || b.stockId?.movimientoId?.correlativa || "",
+    }))
+  };
+  console.log("editNormalizado", editNormalizado);
+
+  const cambios = deepDiff(formOriginal, editNormalizado);
+  console.log("cambios detectados antes de enviar al backend", cambios);
 
   const editUbicacion = async () => {
-    const cambios = deepDiff(formOriginal, edit);
+    // 1. VALIDACIÓN DE DUPLICADOS
+    const stockIds = edit.bienes.map(b => (b.stockId?._id || b.stockId)?.toString());
+    const tieneDuplicados = stockIds.some((id, index) => stockIds.indexOf(id) !== index);
+
+    if (tieneDuplicados) {
+      return sendMessage("No puedes asignar el mismo producto varias veces a la misma ubicación.", "Error");
+    }
+
+    // 2. VALIDACIÓN DE CANTIDADES VACÍAS
+    const tieneVacios = edit.bienes.some(b => !b.cantidadIngresada || Number(b.cantidadIngresada) <= 0);
+    if (tieneVacios) {
+      return sendMessage("Todos los productos deben tener una cantidad válida.", "Error");
+    }
+
+    // 3. NORMALIZACIÓN PARA EL BACKEND
     if (Object.keys(cambios).length === 0) {
       return sendMessage("No se detectaron cambios.", "Info");
     }
 
+    // Limpieza estricta para el Backend
+    const bienesParaEnviar = edit.bienes.map(({ stockId, cantidadIngresada, descripcion }) => ({
+      stockId,
+      cantidadIngresada: Number(cantidadIngresada),
+      descripcion
+    }));
+
     sendMessage("Sincronizando...", "Info", true);
     try {
-      await axios.patch(`/ubicacion/update-complete/${ubicacionSeleccionada._id}`, {
-        ...edit,
+      // Lógica de estado simplificada (el backend también la tiene, pero la enviamos para asegurar)
+      let nuevoEstado = "PARCIALMENTE OCUPADO";
+      if (edit.porcentaje === 0 && bienesParaEnviar.length === 0) nuevoEstado = "LIBRE";
+      if (edit.porcentaje === 100) nuevoEstado = "OCUPADO";
+
+      const response = await axios.patch("/patchUbicacionProducto", {
+        _id: ubicacionSeleccionada._id,
+        bienes: bienesParaEnviar,
+        porcentaje: edit.porcentaje,
+        estado: nuevoEstado,
         actualizadoPor: user._id
       });
-      sendMessage("Inventario actualizado", "Correcto");
-      reload();
-      setViewUbicacion(false);
+
+      if (response.status < 400) {
+        sendMessage(response.data.message, "Correcto");
+        reload();
+        setViewUbicacion(false);
+      }
     } catch (error) {
-      sendMessage(error?.response?.data?.message || "Error", "Error");
+      sendMessage(error?.response?.data?.message || "Error al actualizar", "Error");
     }
   };
 

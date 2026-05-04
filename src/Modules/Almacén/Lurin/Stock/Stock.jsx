@@ -6,8 +6,6 @@ import DetaiStock from "../Permissions/DetailStock";
 
 const StockAlmacenLurin = ({
   permissionRead,
-  permissionEdit,
-  // permissionDelete,
 }) => {
   const fetchStock = async (page, limit, search) => {
     try {
@@ -26,21 +24,15 @@ const StockAlmacenLurin = ({
   return (
     <ListPrincipal
       permissionRead={permissionRead}
-      // permissionEdit={permissionEdit}
-      // permissionDelete={permissionDelete}
       DetailItem={DetaiStock}
-      DeleteItem={DeleteStock}
       fetchData={fetchStock}
+      key={"stock-almacen-lurin"}
     >
-      <Column field="correlativa" header="Correlativa Manifiesto" />
-      <Column
-        field="numeroDeActa"
-        header="Numero de Acta"
-      />
+      <Column field="correlativaActa" header="Correlativa Manifiesto" />
+      <Column field="numeroDeActa" header="Número de Acta" />
       <Column field="contrato" header="Contrato" />
-      <Column field="descripcion" header="Descripción del Bien" />
+      <Column field="descripcion" header="Descripción" />
       <Column field="cantidadTotal" header="Cantidad Total" />
-      <Column field="detallesBien.unidad" header="Unidad de Medida" />
       <Column field="fechaIngreso" header="Fecha de Ingreso" />
       <Column
         field="estado"

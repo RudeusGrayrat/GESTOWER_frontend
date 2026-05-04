@@ -167,7 +167,7 @@ const ListPrincipal = ({
           <Button
             icon={"pi pi-times"}
             rounded
-            title="Desaprobar o Desactivar"
+            title="Anular o Rechazar"
             outlined
             className={`text-orange-600 rounded-full
               ${(isRejected && !isActivated) ? "cursor-not-allowed opacity-30" : ""}

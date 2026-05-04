@@ -1,8 +1,10 @@
+import axios from "../../../../api/axios";
 import { useAuth } from "../../../../context/AuthContext";
 import ButtonOk from "../../../../recicle/Buttons/Buttons"
 import useSendMessage from "../../../../recicle/senMessage";
 
 const SendHorasExtras = ({ setShowSend, selected, reload }) => {
+    console.log("selected en SendHorasExtras", selected);
     const sendMessage = useSendMessage();
     const { user } = useAuth();
     const handleSend = async () => {
@@ -12,7 +14,7 @@ const SendHorasExtras = ({ setShowSend, selected, reload }) => {
                 sendMessage("Las horas extras ya han sido enviadas.", "Advertencia");
                 return;
             }
-            if (!selected.colaborador) {
+            if (selected.colaboradores?.length === 0) {
                 sendMessage("No se encontró el colaborador asociado a las horas extras.", "Error");
                 return;
             }
@@ -24,7 +26,7 @@ const SendHorasExtras = ({ setShowSend, selected, reload }) => {
                 }
             );
             if (response.data.type === "Correcto") {
-                sendMessage("Horas extras enviadas exitosamente.", "Correcto");
+                sendMessage("Se envió para su aprobación.", "Correcto");
             }
             reload();
         } catch (error) {

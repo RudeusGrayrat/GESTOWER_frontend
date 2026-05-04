@@ -20,8 +20,8 @@ const DetailLurin = ({ setShowDetail, selected }) => {
 
   return (
     <Details setShowDetail={setShowDetail}>
-      <div className="flex justify-evenly gap-4 ">
-        <div className=" rounded-2xl shadow-md bg-white p-4">
+      <div className="flex justify-evenly gap-4 h-full w-full overflow-hidden ">
+        <div className="flex-1 flex flex-col overflow-y-auto rounded-2xl shadow-md bg-white p-4">
           <h3 className="text-2xl text-sky-700 mb-3 font-bold">DESCRIPCIONES DE BIENES</h3>
           {descripcionBienes?.map((item, index) => (
             <div
@@ -56,7 +56,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
             </div>
           ))}
         </div>
-        <div className="rounded-2xl shadow-md bg-white p-4">
+        <div className="flex-1 overflow-y-auto rounded-2xl shadow-md bg-white p-4">
           <div>
             <h3 className="text-3xl font-bold mb-5">DATOS BÁSICOS</h3>
             <PDetail content="CONTRATO: " value={contratoId?.cliente} />
@@ -82,7 +82,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
             <PDetail content="OBSERVACIONES: " value={observaciones} />
           </div>
         </div>
-        <div className="rounded-2xl shadow-md bg-white p-4">
+        <div className="flex-1 overflow-y-auto rounded-2xl shadow-md bg-white p-4">
           <h3 className="text-3xl mb-5 font-bold">DATOS GENERALES</h3>
           <PDetail content="FECHA: " value={datosGenerales?.fecha} />
           <PDetail

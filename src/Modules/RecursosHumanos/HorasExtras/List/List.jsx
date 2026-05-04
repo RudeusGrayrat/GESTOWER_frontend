@@ -28,6 +28,7 @@ const ListHorasExtras = ({
                     sede
                 }
             });
+            console.log("response horas extras", response);
             const data = response.data
             return {
                 data: data.data,

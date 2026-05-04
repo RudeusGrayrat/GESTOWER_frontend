@@ -54,7 +54,7 @@ const Details = ({ setShowDetail, children }) => {
 
   return (
     <div className="w-screen pl-20 h-screen fixed top-0 right-0 z-40 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-      <div ref={containerRef} className="relative min-w-[80%] max-w-[90%]  max-h-[90%] min-h-[50%] flex flex-col">
+      <div ref={containerRef} className="relative min-w-[80%] max-w-[90%]  max-h-[90%] min-h-[50%] flex flex-col overflow-hidden">
 
         {/* SVG DINÁMICO (Capa de fondo) */}
         <div className="absolute inset-0 -z-10">
@@ -86,7 +86,7 @@ const Details = ({ setShowDetail, children }) => {
           </button>
         </div>
 
-        <div className="p-10 grid  gap-8 pr-40" >
+        <div className="p-10 grid gap-8 pr-40 overflow-hidden w-full h-full" >
           {children}
         </div>
       </div>
