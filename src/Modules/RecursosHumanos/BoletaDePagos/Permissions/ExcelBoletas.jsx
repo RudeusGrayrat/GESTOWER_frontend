@@ -24,12 +24,11 @@ const ExcelBoletas = () => {
   }, [colaboradores, dispatch]);
 
   const handleUpload = async () => {
-    setDeshabilitar(true);
+    sendMessage("Enviando boletas...", "Cargando", true);
     if (!file || !file.archivo) {
       sendMessage("Debe seleccionar un archivo", "Error");
       return;
     }
-
     try {
       const reader = new FileReader();
       reader.onload = async (event) => {
@@ -85,10 +84,10 @@ const ExcelBoletas = () => {
             );
 
             if (!colaborador) return null;
-            console.log();
+            console.log("Colaborador encontrado:", colaborador);
 
             return {
-              colaborador: colaborador._id,
+              colaborador: colaborador,
               diasTrabajados: row["Dias Trabajados"]?.toString(),
               fechaBoletaDePago: row["Fecha de la Boleta"]?.toString(),
               diasSubsidiados: "0",
@@ -128,7 +127,7 @@ const ExcelBoletas = () => {
         } else {
           sendMessage(
             "Todas las boletas se registraron correctamente.",
-            "Bien"
+            "Correcto"
           );
         }
       };
@@ -137,8 +136,6 @@ const ExcelBoletas = () => {
     } catch (error) {
       console.error("Error al procesar Excel:", error);
       sendMessage("Error al procesar archivo", "Error");
-    } finally {
-      setDeshabilitar(false);
     }
   };
   return (
