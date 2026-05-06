@@ -129,6 +129,7 @@ const ExcelBoletas = () => {
             "Todas las boletas se registraron correctamente.",
             "Correcto"
           );
+          setFile(null);
         }
       };
 

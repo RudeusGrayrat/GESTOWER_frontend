@@ -1,3 +1,4 @@
+import ButtonOk from "../../../recicle/Buttons/Buttons";
 import useref from "../../../recicle/useRef";
 
 const Delete = ({ setShowDelete, onclick, text }) => {
