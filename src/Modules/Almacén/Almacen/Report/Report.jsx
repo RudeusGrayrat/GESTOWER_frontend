@@ -45,7 +45,7 @@ const ReportAlmacen = ({
             children
           )}
           <ButtonOk
-            classe="mt-4"
+            classe="mt-3"
             children="Generar Reporte"
             type="ok"
             onClick={descargar}

@@ -43,7 +43,7 @@ const POSICIONES = {
 const COLS = 20;
 const ROWS = 21;
 
-const VistaGeneral = () => {
+const VistaGeneral = ({ sedeId }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const naveParam = searchParams.get("nave") || "TODAS";
   const zonaParam = searchParams.get("zona") || "";
@@ -62,12 +62,7 @@ const VistaGeneral = () => {
   const sendMessage = useSendMessage();
 
   useEffect(() => {
-    if (allSedesAlmacen.length === 0) dispatch(getAllSedesAlmacen());
-  }, [dispatch, allSedesAlmacen.length]);
-
-  const sedeId = allSedesAlmacen.find((s) => s.nombre === Sede);
-  useEffect(() => {
-    if (sedeId) getNaveBySede(sedeId._id).then(setNavesLurin);
+    if (sedeId) getNaveBySede(sedeId).then(setNavesLurin);
   }, [sedeId]);
 
   const naveSeleccionadaObj = navesLurin.find((n) => n.nombre === naveParam);

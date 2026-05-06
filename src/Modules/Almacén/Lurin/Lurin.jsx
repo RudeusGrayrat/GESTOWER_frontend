@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useSearchParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllContratosAlmacen } from "../../../redux/modules/Almacen/actions";
+import { getAllContratosAlmacen, getAllSedesAlmacen } from "../../../redux/modules/Almacen/actions";
 
 // Componentes
 import RadioOption from "../../../recicle/Otros/Radio";
@@ -50,7 +50,12 @@ const Lurin = () => {
   const contratos = useSelector((state) => state.almacen.allContratos);
   const contratoSede = contratos.filter((c) => c.sedeId.nombre === submodule);
   const contratoOptions = contratoSede.map((c) => c.cliente);
-
+  const allSedesAlmacen = useSelector((state) => state.almacen.allSedes);
+  useEffect(() => {
+    if (allSedesAlmacen.length === 0) dispatch(getAllSedesAlmacen());
+  }, [dispatch, allSedesAlmacen.length]);
+  const Sede = "LURIN";
+  const sedeId = allSedesAlmacen.find((s) => s.nombre === Sede)?._id;
   // --- EFECTO DE NAVEGACIÓN (Sincronización con URL) ---
   useEffect(() => {
     const vista = searchParams.get("select");
@@ -95,7 +100,7 @@ const Lurin = () => {
       children = <RegisterLurin contratos={contratoOptions} contratos_id={contratoSede} />;
       break;
     case "Ubicar":
-      children = <VistaGeneral />;
+      children = <VistaGeneral sedeId={sedeId} />;
       break;
     case "Movimientos":
       // Evitamos renderizar si faltan datos de contratos para esta vista específica

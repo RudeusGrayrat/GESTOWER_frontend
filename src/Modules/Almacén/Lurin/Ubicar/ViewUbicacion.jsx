@@ -98,6 +98,16 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
     }
   };
 
+  let color = "text-gray-900";
+  if (ubicacionSeleccionada?.estado === "LIBRE") {
+    color = "text-green-700";
+  } else if (ubicacionSeleccionada?.estado === "PARCIALMENTE OCUPADO") {
+    color = "text-orange-700";
+  } else if (ubicacionSeleccionada?.estado === "OCUPADO") {
+    color = "text-red-600";
+  }
+
+
   return (
     <div className="w-[90%] h-[89%] bg-white flex flex-col justify-between border shadow-2xl fixed top-[5vh] z-50 rounded-xl overflow-hidden">
       <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
@@ -114,12 +124,8 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
               <PDetail content="SECCIÓN:" value={ubicacionSeleccionada?.seccion} />
               <PDetail content="PRODUCTOS DISTINTOS:" value={totalItems} />
               <PDetail content="STOCK TOTAL AQUÍ:" value={cantidadTotal} />
-            </div>
+              <PDetail content="ESTADO:" tamaño={color + " font-semibold"} value={ubicacionSeleccionada?.estado} />
 
-            <div className="pt-2">
-              <span className={`px-4 py-1 rounded-full text-xs font-bold ${edit.estado === 'LIBRE' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'}`}>
-                ESTADO: {edit.estado}
-              </span>
             </div>
           </div>
 
@@ -147,9 +153,9 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
         </div>
       </div>
 
-      <div className="p-4 bg-white border-t flex justify-end gap-4">
-        <ButtonOk onClick={() => setViewUbicacion(false)}>Cancelar</ButtonOk>
-        <ButtonOk onClick={editUbicacion} type="ok">Confirmar y Guardar</ButtonOk>
+      <div className="px-10 p-3 bg-white border-t flex justify-end gap-10">
+        <ButtonOk classe={" !px-10 "} styles={" my-4 px-0"} onClick={() => setViewUbicacion(false)}>Cancelar</ButtonOk>
+        <ButtonOk classe={" !px-10 "} styles={" my-4 px-0"}  onClick={editUbicacion} type="ok">Confirmar y Guardar</ButtonOk>
       </div>
     </div>
   );

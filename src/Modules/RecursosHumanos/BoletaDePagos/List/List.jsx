@@ -43,7 +43,7 @@ const ListBoletaDePagos = ({
   };
   useEffect(() => {
     if (datosContables.length === 0) dispatch(getDatosContables());
-  }, [datosContables]);
+  }, [dispatch]);
 
   return (
     <ListPrincipal

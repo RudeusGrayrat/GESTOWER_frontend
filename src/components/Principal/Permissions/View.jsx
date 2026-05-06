@@ -58,7 +58,7 @@ const Details = ({ setShowDetail, children }) => {
 
         {/* SVG DINÁMICO (Capa de fondo) */}
         <div className="absolute inset-0 -z-10">
-          <svg width="100%" height="100%" className="drop-shadow-2xl">
+          <svg width="100%" height="100%" className="">
             <defs>
               <linearGradient id="modalGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                 <stop offset="0%" stopColor="#f9fafb" />
@@ -77,10 +77,10 @@ const Details = ({ setShowDetail, children }) => {
         </div>
 
         {/* BOTÓN X - Siempre calza en el hueco de 140px */}
-        <div className="absolute top-0 right-0  flex items-center justify-center z-50">
+        <div className="absolute top-1 right-1  flex items-center justify-center z-50">
           <button
             onClick={handleCloseDetail}
-            className="h-24 w-24 text-3xl text-white rounded-full bg-gradient-to-tr from-[#2b5993] to-[#418fda] shadow-xl hover:scale-105 transition-transform"
+            className="h-24 w-24 text-3xl text-white rounded-full bg-gradient-to-tr from-[#2b5993] to-[#418fda] shadow-xl hover:scale-90 transition-transform"
           >
             X
           </button>

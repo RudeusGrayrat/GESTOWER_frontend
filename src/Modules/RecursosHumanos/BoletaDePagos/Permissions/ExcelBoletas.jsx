@@ -12,10 +12,12 @@ const ExcelBoletas = () => {
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
   const [file, setFile] = useState(null);
+  console.log("Archivo seleccionado:", file);
   const [deshabilitar, setDeshabilitar] = useState(false);
   const colaboradores = useSelector(
     (state) => state.recursosHumanos.allEmployees
   );
+  console.log("Colaboradores en estado:", colaboradores);
 
   useEffect(() => {
     if (colaboradores.length === 0) dispatch(getEmployees());

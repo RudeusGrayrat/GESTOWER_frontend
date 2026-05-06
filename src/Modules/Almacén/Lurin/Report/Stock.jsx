@@ -5,7 +5,7 @@ import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
 import Input from "../../../../recicle/Inputs/Inputs";
 
-const Stock = ({ contratos, plantilla, contratosId }) => {
+const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
   const naves = [];
   const zonas = [];
   const [form, setForm] = useState({
@@ -101,8 +101,8 @@ const Stock = ({ contratos, plantilla, contratosId }) => {
       <Input
         label="Nave"
         name="nave"
-        type="select"
-        options={naves}
+        type="autoComplete"
+        fetchData={"/getNavesBySede?sede=" + sedeId}
         value={form.nave}
         setForm={setForm}
       />
