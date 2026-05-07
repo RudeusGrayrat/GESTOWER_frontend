@@ -174,7 +174,7 @@ const Enviar = () => {
           return formattedData;
         };
 
-        const datosBoleta = arrayBoletas.map(async (item) => {
+        const datosBoleta = arrayBoletas.map((item) => {
           const newForm = {
             situacion: "ACTIVO O SUBSIDIADO",
             tipoT: "EMPLEADO",
