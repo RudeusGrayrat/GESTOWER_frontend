@@ -1,18 +1,37 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReportAlmacen from "../../Almacen/Report/Report";
 import modificarPlantillaExcel from "../../../../utils/convertToExcel";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
 import Input from "../../../../recicle/Inputs/Inputs";
+import { getNaveBySede, getZonasByParams } from "../../../../redux/modules/Almacen/actions";
 
 const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
-  const naves = [];
-  const zonas = [];
+  const [naves, setNaves] = useState([]);
+  console.log("NAVES", naves);
+  const [zonas, setZonas] = useState([]);
   const [form, setForm] = useState({
     contrato: "",
     nave: "",
-    Zona: "",
+    zona: "",
   });
+  console.log("FORM EN STOCK", form);
+  useEffect(() => {
+    if (!form.contrato) {
+      return
+    } else {
+
+      if (sedeId && !naves.length) {
+        getNaveBySede(sedeId).then(setNaves);
+      }
+      if (form.nave) {
+        getZonasByParams({ almacenId: form.nave?._id }).then(setZonas);
+      }
+    }
+    console.log("SEDEID EN STOCK", sedeId);
+    console.log("Naves en Stock", naves);
+  }, [sedeId, form.nave, form.contrato]);
+
   const sendMessage = useSendMessage();
   const findContrato = contratosId?.find(
     (contrato) => contrato.cliente === form.contrato
@@ -28,7 +47,7 @@ const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
         params: {
           contratoId: findContrato._id,
           nave: form.nave,
-          zona: form.Zona,
+          zona: form.zona,
         },
       });
       const findStock = response.data;
@@ -101,18 +120,21 @@ const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
       <Input
         label="Nave"
         name="nave"
-        type="autoComplete"
-        fetchData={"/getNavesBySede?sede=" + sedeId}
+        type="select"
+        options={naves}
+        optionLabel="nombre"
         value={form.nave}
         setForm={setForm}
       />
       <Input
         label="Zona"
-        name="Zona"
+        name="zona"
         type="select"
         options={zonas}
-        value={form.Zona}
+        optionLabel="nombre"
+        value={form.zona}
         setForm={setForm}
+        disabled={!form.nave}
       />
     </ReportAlmacen>
   );

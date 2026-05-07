@@ -44,6 +44,7 @@ const COLS = 20;
 const ROWS = 21;
 
 const VistaGeneral = ({ sedeId }) => {
+  console.log("SEDEID EN VISTA GENERAL", sedeId);
   const [searchParams, setSearchParams] = useSearchParams();
   const naveParam = searchParams.get("nave") || "TODAS";
   const zonaParam = searchParams.get("zona") || "";

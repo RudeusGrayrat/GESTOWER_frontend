@@ -10,7 +10,6 @@ const Paso6_OtrasObligaciones = ({ formData, setFormData }) => {
         fecha: "",
         hora: ""
     });
-    console.log("devolucionForm:", devolucionForm);
     useEffect(() => {
         if (formData.transportistaId) {
             const representantes = formData.transportistaId.responsables || [];

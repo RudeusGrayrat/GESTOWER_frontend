@@ -119,7 +119,10 @@ const Lurin = () => {
       ) : <div className="p-6">Cargando datos de movimientos...</div>;
       break;
     case "Reporte":
-      children = <ReporteMovimientos contratos={contratoOptions} contratos_id={contratoSede} />;
+      children = <ReporteMovimientos
+        contratos={contratoOptions}
+        sedeId={sedeId}
+        contratos_id={contratoSede} />;
       break;
     case "Stock":
       children = (
