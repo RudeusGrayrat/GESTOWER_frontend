@@ -193,9 +193,8 @@ const Enviar = () => {
           };
         });
 
-        const resolvedDatosBoleta = await Promise.all(datosBoleta);
         const response = await enviarBoletasDePago({
-          datosBoleta: resolvedDatosBoleta,
+          datosBoleta: datosBoleta,
           business: form.empresa,
         });
         if (!response)
