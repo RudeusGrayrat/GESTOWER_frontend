@@ -32,14 +32,16 @@ const Enviar = () => {
   const sendMessage = useSendMessage();
   useEffect(() => {
     if (datosContables.length === 0) dispatch(getDatosContables());
-  }, [dispatch, datosContables]);
-  const business = useSelector((state) => state.recursosHumanos.business);
+  }, [dispatch]);
+  const business = useSelector((state) => state.recursosHumanos?.business);
   useEffect(() => {
     if (business.length === 0) {
       dispatch(getBusiness());
     }
-  }, [business]);
+  }, [dispatch]);
+  console.log("BUSINESS EN ENVIAR", business);
   const businessName = business?.map((item) => item.razonSocial);
+  console.log("BUSINESSNAME EN ENVIAR", businessName);
 
   const { error, validateForm } = useValidation();
 
@@ -147,11 +149,11 @@ const Enviar = () => {
             (sum, descuento) => sum + descuento.monto,
             0
           );
-
+          const findBusiness = business.find((b) => b.razonSocial === data.colaborador.business);
           const total = parseFloat((totalIngresos - totalDescuentos).toFixed(2));
           const formattedData = {
-            ruc_empresa: business.ruc,
-            razonSocial_empresa: business.razonSocial,
+            ruc_empresa: findBusiness?.ruc || "",
+            razonSocial_empresa: findBusiness?.razonSocial || "",
             fechaBoletaDePago: data.fechaBoletaDePago,
             tipoD: data.colaborador.documentType,
             numeroD: data.colaborador.documentNumber,
