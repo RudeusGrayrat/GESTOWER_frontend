@@ -12,8 +12,10 @@ const isContentEmpty = (obj) => {
   // puedes usar una verificación más profunda, pero para tu caso {} es suficiente.
   return false;
 };
-const Directorio = (props) => {
-  const { ItemComponent, setForm, directory, estilos, error, data } = props;
+const Directorio = ({ ItemComponent, setForm, directory, estilos, error, data,
+  addToTop = false,
+}) => {
+
   const [formData, setFormData] = useState(
     directory?.map((dir, index) => ({
       id: index + 1,
@@ -21,7 +23,16 @@ const Directorio = (props) => {
     })) || [] // <-- ¡Cambiado a []!
   );
   const handleAddForm = () => {
-    setFormData([...formData, { id: Date.now(), initialData: {} }]);
+    const newItem = {
+      id: Date.now(),
+      initialData: {},
+    };
+
+    setFormData(
+      addToTop
+        ? [newItem, ...formData]
+        : [...formData, newItem]
+    );
   };
 
   const handleRemoveForm = (id) => {
@@ -55,6 +66,17 @@ const Directorio = (props) => {
   }, [formData, setForm, data]); // Asegúrate de incluir 'data' en las dependencias si no lo estaba
   return (
     <div className="w-full mt-0 flex flex-col gap-4">
+      {addToTop && (
+        <div className="w-full">
+          <ButtonOk
+            type="ok"
+            children="+"
+            classe="w-full !from-gray-300 !to-gray-400"
+            styles="mt-2 px-20 mb-0 "
+            onClick={handleAddForm}
+          />
+        </div>
+      )}
       {formData?.map((form) => (
         <div
           key={form.id}
@@ -64,7 +86,6 @@ const Directorio = (props) => {
             initialData={form.initialData}
             set={(newData) => handleUpdateFormData(form.id, newData)}
             error={error}
-            {...props}
           />
           <ButtonOk
             classe="w-full"
@@ -74,7 +95,7 @@ const Directorio = (props) => {
           />
         </div>
       ))}
-      <div className="w-full">
+      {!addToTop && <div className="w-full">
         <ButtonOk
           type="ok"
           children="+"
@@ -82,7 +103,7 @@ const Directorio = (props) => {
           styles="mt-2 px-20 mb-0 "
           onClick={handleAddForm}
         />
-      </div>
+      </div>}
     </div>
   );
 };

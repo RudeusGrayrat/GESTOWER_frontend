@@ -20,6 +20,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
     bienes: ubicacionSeleccionada?.bienes?.map((b) => ({
       // Extraemos los datos del populate que viene en ubicacionSeleccionada.bienes
       stockId: b.stockId?._id || b.stockId,
+      cantidadDisponible: b.stockId?.cantidadDisponible || 0,
       cantidadIngresada: b.cantidadIngresada,
       descripcion: b.descripcion,
       // Estos campos son cruciales para que el input del hijo no salga vacío
@@ -109,7 +110,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
 
 
   return (
-    <div className="w-[90%] h-[89%] bg-white flex flex-col justify-between border shadow-2xl fixed top-[5vh] z-50 rounded-xl overflow-hidden">
+    <div className="w-[90%] h-[89%] bg-white flex flex-col justify-between border shadow-2xl fixed top-[5vh] z-40 rounded-xl overflow-hidden">
       <div className="flex-1 overflow-y-auto p-6 bg-slate-50">
         {/* CABECERA CON DATOS VALIOSOS */}
         <div className="bg-white shadow-sm rounded-xl p-6 border flex flex-wrap justify-around items-center mb-6">
@@ -147,6 +148,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
             ItemComponent={ProductosUbicacion}
             estilos=" flex justify-center items-center"
             data="bienes"
+            addToTop={true}
             setForm={setEdit}
             directory={edit.bienes}
           />
@@ -155,7 +157,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
 
       <div className="px-10 p-3 bg-white border-t flex justify-end gap-10">
         <ButtonOk classe={" !px-10 "} styles={" my-4 px-0"} onClick={() => setViewUbicacion(false)}>Cancelar</ButtonOk>
-        <ButtonOk classe={" !px-10 "} styles={" my-4 px-0"}  onClick={editUbicacion} type="ok">Confirmar y Guardar</ButtonOk>
+        <ButtonOk classe={" !px-10 "} styles={" my-4 px-0"} onClick={editUbicacion} type="ok">Confirmar y Guardar</ButtonOk>
       </div>
     </div>
   );

@@ -8,14 +8,12 @@ import { getNaveBySede, getZonasByParams } from "../../../../redux/modules/Almac
 
 const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
   const [naves, setNaves] = useState([]);
-  console.log("NAVES", naves);
   const [zonas, setZonas] = useState([]);
   const [form, setForm] = useState({
     contrato: "",
     nave: "",
     zona: "",
   });
-  console.log("FORM EN STOCK", form);
   useEffect(() => {
     if (!form.contrato) {
       return
@@ -28,56 +26,55 @@ const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
         getZonasByParams({ almacenId: form.nave?._id }).then(setZonas);
       }
     }
-    console.log("SEDEID EN STOCK", sedeId);
-    console.log("Naves en Stock", naves);
   }, [sedeId, form.nave, form.contrato]);
 
   const sendMessage = useSendMessage();
   const findContrato = contratosId?.find(
     (contrato) => contrato.cliente === form.contrato
   );
+
   const enviar = async () => {
-    sendMessage("Descargando archivo...", "Info");
+    sendMessage("Descargando archivo...", "Info", true);
     try {
-      if (!findContrato) {
+      if (!form.contrato) {
         sendMessage("Seleccione un contrato válido", "Error");
         return null;
       }
       const response = await axios.get("/getStockByParams", {
         params: {
-          contratoId: findContrato._id,
-          nave: form.nave,
-          zona: form.zona,
+          almacenId: form.nave?._id,
+          zonaId: form.zona?._id,
+          contratoId: form?.contrato?._id,
         },
       });
       const findStock = response.data;
+      console.log("STOCK ENVIAR", findStock);
       if (findStock.length === 0)
         return sendMessage("No hay datos para descargar", "Error");
       const archivo = plantilla;
       let PesoTotal = 0;
-      const datos = findStock?.map((item) => {
-        PesoTotal += item.productoId?.pesoNeto || 0;
+      const datos = findStock?.data?.map((item) => {
+        PesoTotal += Number(item.pesoNeto) || 0;
+        console.log("Peso Neto actual:", item.pesoNeto, "Peso Total acumulado:", PesoTotal);
         return {
           clase: item.clase || "",
           codigoInterno: item.movimientoId?.correlativa,
           numeroDeActa: item.movimientoId?.numeroDeActa,
           fechaRecepcion: item.movimientoId?.datosGenerales.fecha,
-          peso: item.productoId?.pesoNeto,
-          cantidad: item.productoId?.cantidad,
-          unidadDeMedida: item.productoId?.unidadDeMedida,
-          item: item.productoId?.item,
-          descripcion: item.productoId?.descripcion,
+          peso: Number(item.pesoNeto) || 0,
+          cantidad: Number(item.cantidadTotal) || 0,
+          unidadDeMedida: item.unidadDeMedida,
+          item: item.item,
+          descripcion: item.descripcion,
           numeroDocumento: item.movimientoId?.numeroDocumento,
           contribuyente: item.movimientoId?.contribuyente,
-          ubicacion:
-            item.ubicacionId?.rack +
-            " - " +
-            "SECCION: " +
-            item.ubicacionId?.nivel +
-            "-" +
-            item.ubicacionId?.seccion,
+          ubicacion: item.ubicaciones?.map(
+            (u) => `Rack: ${u.rack || ""} - Sección: ${u.seccion || ""} - Nivel: ${u.nivel || ""} `
+
+          ),
         };
       });
+      console.log("Datos para Excel", datos);
       const variablesIndividuales = {
         C2: `${PesoTotal} KG`,
       };
@@ -103,10 +100,17 @@ const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
         variablesIndividuales,
         5
       );
-      if (respose) sendMessage("Archivo descargado con éxito", "Bien");
+      if (respose) {
+        sendMessage("Archivo descargado con éxito", "Bien");
+        setForm({
+          contrato: "",
+          nave: "",
+          zona: "",
+        });
+      }
       else sendMessage("Error al descargar el archivo", "Error");
     } catch (error) {
-      sendMessage(error?.message || error, "Error");
+      sendMessage(error, "Error");
     }
   };
   return (
@@ -115,7 +119,8 @@ const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
       setForm={setForm}
       descargar={enviar}
       title="Reporte de Stock (EXCEL)"
-      options={contratos}
+      options={contratosId}
+      optionLabel="cliente"
     >
       <Input
         label="Nave"

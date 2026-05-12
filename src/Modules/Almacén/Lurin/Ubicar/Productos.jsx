@@ -9,6 +9,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
 
   const [data, setData] = useState({
     stockId: "", // Identificador clave ahora
+    cantidadDisponible: 0, // Nuevo campo para mostrar la cantidad disponible
     cantidadIngresada: "", // Nombre exacto del modelo Ubicacion
     descripcion: "",
     correlativa: "",
@@ -38,6 +39,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
       stockId: stockItem._id,
       descripcion: stockItem.bienId?.descripcion || stockItem.descripcion,
       cantidadIngresada: "",
+      cantidadDisponible: stockItem.cantidadDisponible || 0,
       correlativa: stockItem.correlativaActa || ""
     };
 
@@ -59,8 +61,14 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
   };
 
   const handleInputChange = (name, value) => {
-    // Si es cantidad, lo convertimos a número para evitar problemas en el patch
-    const val = name === "cantidadIngresada" ? (value === "" ? "" : Number(value)) : value;
+    let val = name === "cantidadIngresada" ? (value === "" ? "" : Number(value)) : value;
+
+    // Si el usuario intenta escribir más de lo que hay, lo frenamos en seco
+    if (name === "cantidadIngresada" && val > data.cantidadDisponible) {
+      sendMessage(`La cantidad máxima disponible es ${data.cantidadDisponible}`, "Error");
+      val = data.cantidadDisponible; // Opcional: forzar al máximo
+    }
+
     const newData = { ...data, [name]: val };
     setData(newData);
     set(newData);
@@ -83,9 +91,24 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
                 <li
                   key={item._id}
                   onClick={() => handleSelect(item)}
-                  className="px-4 py-2 hover:bg-sky-100 cursor-pointer text-sm"
+                  className="px-4 py-2 hover:bg-sky-100 cursor-pointer text-sm border-b last:border-none"
                 >
-                  {item?.descripcion} | Disp: <strong>{item.cantidadDisponible}</strong> | Acta: {item.numeroDeActa}
+                  <div className="flex justify-between">
+                    <span className="font-semibold text-sky-800">{item.descripcion}</span>
+
+                  </div>
+                  <div className="text-xs text-gray-600 mt-1 gap-3 flex">
+                    <span>
+                      Disponible: <span className="font-bold text-green-700">{item.cantidadDisponible}</span>
+                    </span>
+                    <span>
+                      Unidad de medida: <span className="text-gray-500"> {item.unidadDeMedida}</span>
+                    </span>
+                    <span>
+                      Número de Acta: <span className="text-gray-500"> {item.numeroDeActa}</span>
+                    </span>
+                    {item.pesoNeto > 0 && `Peso Neto: ${item.pesoNeto} kg`}
+                  </div>
                 </li>
               ))}
             </ul>
@@ -98,11 +121,15 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
           <Input
             label="Cant. a Ubicar"
             name="cantidadIngresada"
+            ancho={"w-44 min-w-32"}
             type="number"
+            // Añadimos el máximo disponible para que el navegador ayude
+            max={data?.cantidadDisponible}
             value={data.cantidadIngresada}
             onChange={(e) => handleInputChange("cantidadIngresada", e.target.value)}
             errorOnclick={error?.cantidadIngresada}
           />
+          <Input ancho={"w-44 min-w-32"} label="Cantidad sin ubicar" value={data.cantidadDisponible} disabled />
         </div>
       )}
     </div>

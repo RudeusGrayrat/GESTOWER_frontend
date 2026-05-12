@@ -30,17 +30,15 @@ const ListZonas = ({ permissionRead, permissionEdit, permissionDelete }) => {
       permissionDelete={permissionDelete}
       DeleteItem={DeleteZonaAlmacen}
       fetchData={recargar}
-       
+
     >
       <Column
         field="nombre"
         header="Nombre"
-        sortable
-         
       />
-      <Column field="almacenId.nombre" header="Almacén" sortable />
-      <Column field="orientacion" header="Orientación" sortable />
-      <Column field="racks.length" header="Cantidad de Racks" sortable />
+      <Column field="almacenId.nombre" header="Almacén" />
+      <Column field="orientacion" header="Orientación" />
+      <Column field="racks.length" header="Cantidad de Racks" />
     </ListPrincipal>
   );
 };

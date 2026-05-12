@@ -6,10 +6,10 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { AuthProvider } from "./context/AuthContext";
 import { PrimeReactProvider } from "primereact/api";
-import "./index.css";
 import "primereact/resources/themes/saga-blue/theme.css";
 import "primereact/resources/primereact.min.css";
 import "primeicons/primeicons.css";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

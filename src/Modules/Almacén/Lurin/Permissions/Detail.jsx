@@ -20,29 +20,8 @@ const DetailLurin = ({ setShowDetail, selected }) => {
 
   return (
     <Details setShowDetail={setShowDetail}>
-      <style>
-        {`
-          .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-          }
-            
-          .custom-scroll::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .custom-scroll::-webkit-scrollbar-thumb {
-            background-color: #bae6fd; /* un celeste muy suave (sky-200) */
-            border-radius: 20px;
-          }
-          .custom-scroll::-webkit-scrollbar-button:single-button {
-      background-color: transparent;
-      display: block;
-      height: 10px; /* Aquí controlas exactamente cuánto "aire" hay arriba y abajo */
-      width: 20px;
-    }
-        `}
-      </style>
       <div className="flex justify-evenly gap-6 h-full w-full overflow-hidden p-3">
-        <div className="flex-1 overflow-y-auto custom-scroll rounded-2xl shadow-md bg-white p-4">
+        <div className="flex-1 overflow-y-auto  rounded-2xl shadow-md bg-white p-4">
           <h3 className="text-2xl text-sky-700 mb-3 font-bold">DESCRIPCIONES DE BIENES</h3>
           {descripcionBienes?.map((item, index) => (
             <div

@@ -2,12 +2,11 @@ import Ingresos from "./Ingreso";
 import Movimientos from "./Movimientos";
 import Salidas from "./Salida";
 import Stock from "./Stock";
-
+const {
+  VITE_REPORTE_STOCK_LURIN
+} = import.meta.env;
 const Reporte = ({ contratos, contratos_id, sedeId }) => {
-  const plantillaSegura =
-    "https://res.cloudinary.com/ddci9jvnh/raw/upload/v1753196301/REPORTE_STOCK_ALMACEN_wnwk1t.xlsx";
-  const plantillaSimple =
-    "http://res.cloudinary.com/ddci9jvnh/raw/upload/v1753196301/REPORTE_STOCK_ALMACEN_wnwk1t.xlsx";
+  const plantillaSegura = VITE_REPORTE_STOCK_LURIN;
   return (
     <div className="px-1 gap-1  flex flex-col">
       <Stock

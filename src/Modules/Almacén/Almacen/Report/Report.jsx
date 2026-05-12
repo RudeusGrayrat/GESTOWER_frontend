@@ -10,6 +10,7 @@ const ReportAlmacen = ({
   title,
   children,
   options,
+  optionLabel,
 }) => {
   return (
     <div>
@@ -22,6 +23,7 @@ const ReportAlmacen = ({
             value={form.contrato}
             setForm={setForm}
             options={options}
+            optionLabel={optionLabel}
           />
           {!children ? (
             <div className="flex">

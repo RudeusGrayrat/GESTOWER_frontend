@@ -40,7 +40,8 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                             <thead className="bg-slate-100">
                                 <tr>
                                     <th className="p-3 text-sm font-semibold">Fecha</th>
-                                    <th className="p-3 text-sm font-semibold">Ubicación / Acción</th>
+                                    <th className="p-3 text-sm font-semibold">Ubicación</th>
+                                    <th className="p-3 text-sm font-semibold">Acción</th>
                                     <th className="p-3 text-sm font-semibold">Modificado Por</th>
                                     <th className="p-3 text-sm font-semibold">Cant. Ingresada</th>
                                     <th className="p-3 text-sm font-semibold">Cant. Libre</th>
@@ -57,6 +58,9 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                                                 {h.ubicacion}
                                             </td>
                                             <td className="p-3 text-sm">
+                                                {h.accion}
+                                            </td>
+                                            <td className="p-3 text-sm">
                                                 {h.actualizadoPor.name + " " + h.actualizadoPor.lastname}
                                             </td>
                                             <td className="p-3 text-sm font-bold">
@@ -69,7 +73,7 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                                     ))
                                 ) : (
                                     <tr>
-                                        <td colSpan="4" className="p-4 text-center text-gray-500 italic">
+                                        <td colSpan="6" className="p-4 text-center text-gray-500 italic">
                                             Sin movimientos registrados aún.
                                         </td>
                                     </tr>
