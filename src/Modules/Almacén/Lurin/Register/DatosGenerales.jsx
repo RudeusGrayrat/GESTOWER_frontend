@@ -3,46 +3,32 @@ import Input from "../../../../recicle/Inputs/Inputs";
 import InputTime from "../../../../recicle/Inputs/tipos/InputTime";
 import InputDate from "../../../../recicle/Inputs/tipos/InputDate";
 
-const DatosGenerales = ({ form, setForm, error }) => {
+const DatosGenerales = ({ form, setForm, error, salida }) => {
   const [options, setOptions] = useState([]);
+  console.log("DatosGenerales ~ salida:", salida)
   useEffect(() => {
     if (form.movimiento === "SALIDA") {
-      setOptions([
-        "DEVOLUCIÓN",
-        "DISPOSICIÓN FINAL",
-        "DESTRUCCIÓN",
-        "EXTRACCIÓN DE MUESTRAS",
-      ]);
-      // //esto provoca el cambio del estado del acta a vacio cuando se cambia el tipo de movimiento
-      // setForm((prev) => ({
-      //   ...prev,
-      //   datosGenerales: {
-      //     ...prev.datosGenerales,
-      //     estadoActa: "",
-      //   },
-      // }));
+      setOptions(["DEVOLUCIÓN", "DISPOSICIÓN FINAL", "DESTRUCCIÓN", "EXTRACCIÓN DE MUESTRAS"]);
     } else {
-      setOptions([
-        "INCAUTACIÓN",
-        "TRASLADO INTERNO",
-        "INMOVILIZACION",
-        "DETECCIÓN DE INFRACCIONES",
-        "ACTA DE PROVATORIA",
-      ]);
-      //esto provoca el cambio del estado del acta a vacio cuando se cambia el tipo de movimiento
-      // setForm((prev) => ({
-      //   ...prev,
-      //   datosGenerales: {
-      //     ...prev.datosGenerales,
-      //     estadoActa: "",
-      //   },
-      // }));
+      setOptions(["INCAUTACIÓN", "TRASLADO INTERNO", "INMOVILIZACION", "DETECCIÓN DE INFRACCIONES", "ACTA DE PROVATORIA"]);
     }
   }, [form.movimiento]);
+
   const [localform, setLocalForm] = useState(form.datosGenerales);
+
+  // ✅ Propaga cambios locales hacia el padre
   useEffect(() => {
-    setForm((prev) => ({ ...prev, datosGenerales: localform }));
+    if (!salida) {
+      setForm((prev) => ({ ...prev, datosGenerales: localform }));
+    }
   }, [localform]);
+
+  // ✅ Solo para cuando llega data de salida (precarga)
+  useEffect(() => {
+    if (salida) {
+      setLocalForm({ ...form.datosGenerales });
+    }
+  }, [salida, form.datosGenerales]);
 
   return (
     <form className="w-full flex flex-wrap" autoComplete="off">
@@ -52,6 +38,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.recepcionadoPor}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.recepcionadoPor}
+        disabled={salida}
       />
       <Input
         label="DNI Recepcionado Por"
@@ -64,6 +51,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.dniRecepcionadoPor}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.dniRecepcionadoPor}
+        disabled={salida}
       />
       <Input
         label="Responsable Entrega"
@@ -71,6 +59,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.responsableEntrega}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.responsableEntrega}
+        disabled={salida}
       />
 
       <Input
@@ -79,6 +68,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.registroOCIP}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.registroOCIP}
+        disabled={salida}
       />
       <Input
         label="Estado de Acta"
@@ -88,6 +78,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.estadoActa}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.estadoActa}
+        disabled={salida}
       />
       <Input
         label="Fecha De Ingreso"
@@ -96,6 +87,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.fecha}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.fecha}
+        disabled={salida}
       />
       <Input
         label="Hora de Ingreso"
@@ -104,6 +96,7 @@ const DatosGenerales = ({ form, setForm, error }) => {
         value={localform.horaIngreso}
         setForm={setLocalForm}
         errorOnclick={error.datosGenerales?.horaIngreso}
+        disabled={salida}
       />
     </form>
   );

@@ -47,28 +47,24 @@ const InputFiles = ({
       return;
     }
 
-    // 🔹 Caso URL (backend)
+    // URL de Cloudinary
     if (typeof value === "string" && value.startsWith("http")) {
       setPreview(value);
-
-      const extractedName = value.split("/").pop();
-      setNameFile(extractedName);
+      setNameFile(value.split("/").pop());
       return;
     }
 
-    // 🔹 Caso base64 (NO TOCAR EL NOMBRE)
-    if (typeof value === "string") {
-      setPreview(`data:image/*;base64,${value}`);
-      // ❌ NO setNameFile aquí
+    // ✅ CAMBIO: base64 completo ya trae "data:image/...;base64,..."
+    if (typeof value === "string" && value.startsWith("data:image")) {
+      setPreview(value); // directo, sin concatenar prefijo
       return;
     }
 
-    // 🔹 Caso File
+    // File object
     if (value instanceof File) {
       const url = URL.createObjectURL(value);
       setPreview(url);
       setNameFile(value.name);
-
       return () => URL.revokeObjectURL(url);
     }
   }, [value]);
@@ -96,7 +92,6 @@ const InputFiles = ({
         return;
       }
 
-      // limpiar preview anterior (🔥 FIX MEMORIA)
       if (preview) URL.revokeObjectURL(preview);
 
       const objectUrl = URL.createObjectURL(file);
@@ -106,11 +101,12 @@ const InputFiles = ({
         const reader = new FileReader();
 
         reader.onload = () => {
-          const base64 = reader.result.split(",")[1];
+          // ✅ CAMBIO: guardar result completo con prefijo "data:image/jpeg;base64,..."
+          const base64Completo = reader.result;
 
           setForm((prev) => ({
             ...prev,
-            [name]: base64,
+            [name]: base64Completo,
           }));
 
           setIsLoading(false);
@@ -132,7 +128,7 @@ const InputFiles = ({
         setErrorMessage("");
       }
 
-      e.target.value = null; // 🔥 permitir mismo archivo
+      e.target.value = null;
     } catch (err) {
       dispatch(setMessage("Error al cargar el archivo", "Error"));
       setIsLoading(false);

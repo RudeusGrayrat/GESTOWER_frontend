@@ -1,19 +1,9 @@
+import { useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 import AsyncSelectInput from "../../../../recicle/Inputs/tipos/InputSearch";
 
-const DatosBasicos = ({ form, setForm, contratoOptions, error }) => {
-  // const fetchCodigosIngreso = async (query) => {
-  //   const res = await axios.get("/api/codigos-ingreso", {
-  //     params: {
-  //       search: query,
-  //       limit: 10,
-  //     },
-  //   });
-  //   return res.data.map((item) => ({
-  //     label: item.codigo, // lo que se ve en el dropdown
-  //     value: item.codigo, // lo que se guarda en el estado
-  //   }));
-  // };
+const DatosBasicos = ({ form, setForm, contratoOptions, error, salida }) => {
+  const [ingresoOptions, setIngresoOptions] = useState([]);
   return (
     <div className="w-full flex flex-wrap">
       <Input
@@ -29,11 +19,14 @@ const DatosBasicos = ({ form, setForm, contratoOptions, error }) => {
         <Input
           label="Código de Ingreso"
           name="codigoIngreso"
-          type="select"
-          options={[]}
+          type="autocomplete"
+          fetchData={"/getMovimientoByCodigo"}
+          setOptions={setIngresoOptions}
           value={form.codigoIngreso}
           setForm={setForm}
-          errorOnclick={error.codigoIngreso}
+          placeholder="Escriba el código de ingreso para precargar datos"
+          field="correlativa"
+          options={ingresoOptions}
         />
       )}
 
@@ -45,6 +38,7 @@ const DatosBasicos = ({ form, setForm, contratoOptions, error }) => {
         value={form.contrato}
         setForm={setForm}
         errorOnclick={error.contrato}
+        disabled={salida}
       />
       <Input
         label="Número de Acta"
@@ -52,6 +46,7 @@ const DatosBasicos = ({ form, setForm, contratoOptions, error }) => {
         value={form.numeroDeActa}
         setForm={setForm}
         errorOnclick={error.numeroDeActa}
+        disabled={salida}
       />
       <Input
         label="Contribuyente"
@@ -59,6 +54,7 @@ const DatosBasicos = ({ form, setForm, contratoOptions, error }) => {
         value={form.contribuyente}
         setForm={setForm}
         errorOnclick={error.contribuyente}
+        disabled={salida}
       />
       <Input
         label="Numero de Documento"
@@ -71,6 +67,7 @@ const DatosBasicos = ({ form, setForm, contratoOptions, error }) => {
         value={form.numeroDocumento}
         setForm={setForm}
         errorOnclick={error.numeroDocumento}
+        disabled={salida}
       />
     </div>
   );

@@ -3,7 +3,7 @@ import Input from "../../../../recicle/Inputs/Inputs";
 import unidadesDeMedida from "../../../../api/unidadDeMedida";
 import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
-const DescripcionDeBienes = ({ set, error, initialData }) => {
+const DescripcionDeBienes = ({ set, error, initialData, salida }) => {
   const validateForm = (
     selectedItem,
     selectedCantidad,
@@ -40,6 +40,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
 
   useEffect(() => {
     if (initialData) {
+      console.log("🚀 initialData:", initialData)
       setData((prevData) => ({
         ...prevData,
         item: initialData.item || initialData.productoId?.item,
@@ -103,6 +104,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         value={data.item}
         setForm={setData}
         errorOnclick={error.item}
+        disabled={salida}
       />
       <Input
         label="Cantidad"
@@ -121,6 +123,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         name="descripcion"
         value={data.descripcion}
         setForm={setData}
+        disabled={salida}
         errorOnclick={error.descripcion}
       />
       <Input
@@ -130,6 +133,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         options={unidadesDeMedida.sort()}
         value={data.unidadDeMedida}
         setForm={setData}
+        disabled={salida}
         errorOnclick={error.unidadDeMedida}
       />
       <Input
@@ -172,6 +176,7 @@ const DescripcionDeBienes = ({ set, error, initialData }) => {
         type={"select"}
         options={["1.1", "1.2", "1.3"]}
         value={data.subItem}
+        disabled={salida}
         setForm={setData}
         errorOnclick={error.subItem}
       />

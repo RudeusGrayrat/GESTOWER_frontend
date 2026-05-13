@@ -23,7 +23,7 @@ const EditMovimiento = ({ setShowEdit, selected, reload }) => {
   });
 
   const [form, setForm] = useState(formInicial);
-  console.log("🚀 ~ file: EditMovimiento.jsx:24 ~ EditMovimiento ~ form:", form)
+  console.log("EditMovimiento ~ form:", form)
   const contratos = useSelector((state) => state.almacen.allContratos);
 
   const contratoSede = contratos.filter(
@@ -36,16 +36,18 @@ const EditMovimiento = ({ setShowEdit, selected, reload }) => {
   const { error } = useValidation(form);
 
   const diferencias = deepDiff(formInicial, form);
-  console.log("🚀 ~ file: EditMovimiento.jsx:35 ~ EditMovimiento ~ diferencias:", diferencias)
+  console.log("🚀 diferencias:", diferencias)
   const actualizar = async () => {
     try {
       if (Object.keys(diferencias).length === 0) {
         sendMessage("No se realizaron cambios", "Info");
         return;
       }
+      sendMessage("Actualizando movimiento...", "Cargando", true);
       await axios.patch("/patchMovimientoAlmacen", {
         _id: idSelected,
         actualizadoPor: user._id,
+        correlativa: form.correlativa,
         ...diferencias,
       });
 

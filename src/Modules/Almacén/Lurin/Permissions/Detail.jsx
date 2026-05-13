@@ -16,8 +16,12 @@ const DetailLurin = ({ setShowDetail, selected }) => {
     numeroDeActa,
     numeroDocumento,
     observaciones,
+    referenciaImagen,
+    fechaSalida,
+    horaSalida,
+    detallesDePeso,
   } = selected;
-
+  console.log(selected)
   return (
     <Details setShowDetail={setShowDetail}>
       <div className="flex justify-evenly gap-6 h-full w-full overflow-hidden p-3">
@@ -33,7 +37,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
                 content="PRODUCTO: "
                 value={item.descripcion}
               />
-              <PDetail content="CANTIDAD: " value={item.cantidad} />
+              <PDetail content="CANTIDAD INGRESADA: " value={item.cantidadIngresada} />
               <PDetail
                 content="UNIDAD: "
                 value={item.unidadDeMedida}
@@ -47,10 +51,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
                 content="PESO BRUTO: "
                 value={item.pesoBruto}
               />
-              <PDetail
-                content="UBICACIÓN: "
-                value={item.ubicacionId ? `${item.ubicacionId?.zonaId?.nombre || ""}, ${item.ubicacionId?.rack || ""}, SECCION: ${item.ubicacionId?.nivel || ""} - ${item.ubicacionId?.seccion || ""}` : "Aún no asignado"}
-              />
+
               <PDetail content="ESTADO ENVASE: " value={item.estadoEnvase} />
               <PDetail content="OBSERVACIONES: " value={item.observaciones || ""} />
             </div>
@@ -67,19 +68,18 @@ const DetailLurin = ({ setShowDetail, selected }) => {
             )}
             <PDetail content="N° ACTA: " value={numeroDeActa} />
             <PDetail
-              content="N° DOCUMENTO (DNI/RUC): "
+              content="N° DOCUMENTO: "
               value={numeroDocumento}
             />
           </div>
           <div className="mt-6">
             <h3 className="text-3xl mb-5 font-bold">OTROS</h3>
-            <PDetail
-              content="NOMBRES:"
-              value={`${creadoPor?.name || ""} ${creadoPor?.lastname || ""}`}
-            />
-            <PDetail content="EMAIL: " value={creadoPor?.email} />
-            <PDetail content="SEDE: " value={sedeId?.nombre} />
+            <PDetail content="FECHA DE SALIDA: " value={fechaSalida} />
+            <PDetail content="HORA DE SALIDA: " value={horaSalida} />
+            <PDetail content="DETALLES DE PESO: " value={detallesDePeso} />
             <PDetail content="OBSERVACIONES: " value={observaciones} />
+            <PDetail content="CREADO POR: " value={`${selected?.creadoPor?.name || ""} ${selected?.creadoPor?.lastname || ""}`} />
+            <PDetail content="APROBADO POR: " value={`${selected?.aprobadoPor?.name || ""} ${selected?.aprobadoPor?.lastname || ""}`} />
           </div>
         </div>
         <div className="flex-1 overflow-y-auto rounded-2xl shadow-md bg-white p-4">
@@ -106,6 +106,12 @@ const DetailLurin = ({ setShowDetail, selected }) => {
             value={datosGenerales?.registroOCIP}
           />
           <PDetail content="ESTADO ACTA: " value={datosGenerales?.estadoActa} />
+          {referenciaImagen && (
+            <div className="mt-4">
+              <h4 className="text-xl font-semibold mb-2">REFERENCIA FOTOGRÁFICA</h4>
+              <img src={referenciaImagen} alt="Referencia Fotográfica" className="max-w-full h-auto" />
+            </div>
+          )}
         </div>
       </div>
     </Details>

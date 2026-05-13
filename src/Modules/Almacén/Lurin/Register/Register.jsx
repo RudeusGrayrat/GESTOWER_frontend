@@ -14,7 +14,7 @@ import axios from "../../../../api/axios";
 const RegisterLurin = ({ contratos, contratos_id }) => {
   const sendMessage = useSendMessage();
   const { user } = useAuth();
-
+  const [salida, setSalida] = useState(false);
   const [initialform] = useState({
     movimiento: "INGRESO",
     contrato: "",
@@ -53,45 +53,43 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
   });
 
   const [form, setForm] = useState(initialform);
+  // Dentro de RegisterLurin.jsx
 
-  // Lógica para cargar datos si es una SALIDA basada en un INGRESO previo
+  // 1. Efecto para resetear el formulario si cambia el tipo de movimiento
   useEffect(() => {
-    if (form.movimiento === "SALIDA" && form.codigoIngreso) {
-      const fetchIngresoData = async () => {
-        try {
-          const res = await axios.get("/getMovimientoByCodigo", {
-            params: { codigoIngreso: form.codigoIngreso },
-          });
+    // Solo reseteamos si el usuario cambia manualmente el switch de INGRESO/SALIDA
+    // Mantenemos el movimiento seleccionado pero limpiamos lo demás
+    setForm({
+      ...initialform,
+      movimiento: form.movimiento,
+    });
+    setSalida(form.movimiento === "SALIDA");
+  }, [form.movimiento]); // Este efecto solo corre cuando cambia el tipo de movimiento
 
-          const ingreso = res.data;
+  // 2. Efecto para precargar datos cuando se selecciona un código de ingreso (SALIDA)
+  useEffect(() => {
+    if (form.movimiento === "SALIDA" && form.codigoIngreso && typeof form.codigoIngreso === "object") {
+      const ingreso = form.codigoIngreso;
 
-          if (ingreso) {
-            setForm((prev) => ({
-              ...prev,
-              contrato: ingreso.contratoId.cliente,
-              numeroDeActa: ingreso.numeroDeActa,
-              contribuyente: ingreso.contribuyente,
-              numeroDocumento: ingreso.numeroDocumento,
-              datosGenerales: {
-                ...ingreso.datosGenerales,
-              },
-              descripcionBienes: ingreso.descripcionBienes.map((bien) => ({
-                ...bien,
-                bienIdOriginal: bien._id,
-                // Al ser una salida, la "cantidadIngresada" del formulario 
-                // se pre-carga con lo que había disponible
-                cantidadIngresada: bien.cantidadDisponible,
-              })),
-            }));
-          }
-        } catch (err) {
-          sendMessage("Error al buscar el ingreso por código", "Error");
-        }
-      };
-
-      fetchIngresoData();
+      setForm((prev) => ({
+        ...prev,
+        contrato: ingreso.contratoId?.cliente || "",
+        numeroDeActa: ingreso.numeroDeActa || "",
+        contribuyente: ingreso.contribuyente || "",
+        numeroDocumento: ingreso.numeroDocumento || "",
+        datosGenerales: {
+          ...ingreso.datosGenerales,
+        },
+        descripcionBienes: ingreso.descripcionBienes || [],
+        observaciones: ingreso.observaciones || "",
+        detallesDePeso: ingreso.detallesDePeso || "",
+        horaSalida: ingreso.horaSalida || "",
+        fechaSalida: ingreso.fechaSalida || "",
+        referenciaImagen: ingreso.referenciaImagen || "",
+      }));
     }
-  }, [form.movimiento, form.codigoIngreso]);
+  }, [form.codigoIngreso]); // Solo corre cuando cambia el objeto seleccionado en el autocomplete
+
 
   const { error, validateForm } = useValidation(form);
 
@@ -159,11 +157,12 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
           setForm={setForm}
           contratoOptions={contratoOptions}
           error={error}
+          salida={salida}
         />
       </CardPlegable>
 
       <CardPlegable title="Datos Generales">
-        <DatosGenerales form={form} setForm={setForm} error={error} />
+        <DatosGenerales form={form} setForm={setForm} error={error} salida={salida} />
       </CardPlegable>
 
       <CardPlegable title="Descripción de los Bienes Involucrados">
@@ -174,12 +173,13 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
           directory={form.descripcionBienes}
           sendMessage={sendMessage}
           setForm={setForm}
+          salida={salida}
           error={error}
         />
       </CardPlegable>
 
       <CardPlegable title="Otros">
-        <Otros form={form} setForm={setForm} error={error} />
+        <Otros form={form} setForm={setForm} error={error} salida={salida} />
       </CardPlegable>
 
       <div className="flex justify-center m-10">

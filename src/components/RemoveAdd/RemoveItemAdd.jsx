@@ -13,7 +13,7 @@ const isContentEmpty = (obj) => {
   return false;
 };
 const Directorio = ({ ItemComponent, setForm, directory, estilos, error, data,
-  addToTop = false,
+  addToTop = false, ...props
 }) => {
 
   const [formData, setFormData] = useState(
@@ -51,7 +51,21 @@ const Directorio = ({ ItemComponent, setForm, directory, estilos, error, data,
       [data]: updatedForms?.map((form) => form.initialData),
     }));
   };
+  useEffect(() => {
+    const newData =
+      directory?.map((dir, index) => ({
+        id: index + 1,
+        initialData: dir,
+      })) || [];
 
+    setFormData((prev) => {
+      // Comparación segura para evitar re-renderizados y bucles
+      const prevSerialized = JSON.stringify(prev);
+      const newSerialized = JSON.stringify(newData);
+      if (prevSerialized === newSerialized) return prev;
+      return newData;
+    });
+  }, [directory]);
   useEffect(() => {
     // Mapeamos los datos para obtener solo los 'initialData'
     const rawData = formData?.map((form) => form.initialData);
@@ -86,6 +100,7 @@ const Directorio = ({ ItemComponent, setForm, directory, estilos, error, data,
             initialData={form.initialData}
             set={(newData) => handleUpdateFormData(form.id, newData)}
             error={error}
+            {...props}
           />
           <ButtonOk
             classe="w-full"
