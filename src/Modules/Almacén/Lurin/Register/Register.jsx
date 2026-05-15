@@ -53,24 +53,12 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
   });
 
   const [form, setForm] = useState(initialform);
-  // Dentro de RegisterLurin.jsx
+  const [directorioKey, setDirectorioKey] = useState(0);
 
-  // 1. Efecto para resetear el formulario si cambia el tipo de movimiento
-  useEffect(() => {
-    // Solo reseteamos si el usuario cambia manualmente el switch de INGRESO/SALIDA
-    // Mantenemos el movimiento seleccionado pero limpiamos lo demás
-    setForm({
-      ...initialform,
-      movimiento: form.movimiento,
-    });
-    setSalida(form.movimiento === "SALIDA");
-  }, [form.movimiento]); // Este efecto solo corre cuando cambia el tipo de movimiento
-
-  // 2. Efecto para precargar datos cuando se selecciona un código de ingreso (SALIDA)
+  // En el useEffect del codigoIngreso, al final añades:
   useEffect(() => {
     if (form.movimiento === "SALIDA" && form.codigoIngreso && typeof form.codigoIngreso === "object") {
       const ingreso = form.codigoIngreso;
-
       setForm((prev) => ({
         ...prev,
         contrato: ingreso.contratoId?.cliente || "",
@@ -87,14 +75,18 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         fechaSalida: ingreso.fechaSalida || "",
         referenciaImagen: ingreso.referenciaImagen || "",
       }));
+      setDirectorioKey(k => k + 1);
     }
   }, [form.codigoIngreso]); // Solo corre cuando cambia el objeto seleccionado en el autocomplete
 
+  useEffect(() => {
+    setForm({ ...initialform, movimiento: form.movimiento });
+    setSalida(form.movimiento === "SALIDA");
+    setDirectorioKey(k => k + 1); // 👈 fuerza reset también aquí
+  }, [form.movimiento]);
 
   const { error, validateForm } = useValidation(form);
-
   const contratoOptions = contratos || [];
-
   const resetForm = () => {
     setForm(initialform);
   };
@@ -104,9 +96,15 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
 
     try {
       // Limpiamos campos opcionales para la validación estricta si fuera necesario
-      const formParaValidar = { ...form };
-
-      const { isValid, firstInvalidPath } = validateForm(formParaValidar);
+      const formValidacion = {
+        ...form,
+      }
+      if (form.movimiento === "SALIDA") {
+        formValidacion.codigoIngreso = form.codigoIngreso?.correlativa
+        delete formValidacion.referenciaImagen
+        form.codigoIngreso = form.codigoIngreso?.correlativa
+      }
+      const { isValid, firstInvalidPath } = validateForm(formValidacion);
 
       if (!isValid) {
         sendMessage(`Debes completar: ${firstInvalidPath}`, "Error");
@@ -122,7 +120,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       }
 
       // Preparamos los bienes asegurando tipos de datos correctos (Numbers)
-      const descripcionBienes = form.descripcionBienes.map((bien, i) => ({
+      const descripcionBienes = form.descripcionBienes?.map((bien, i) => ({
         ...bien,
         item: i + 1,
         // Convertimos a número para evitar problemas en el Backend
@@ -168,6 +166,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       <CardPlegable title="Descripción de los Bienes Involucrados">
         <Directorio
           ItemComponent={DescripcionDeBienes}
+          key={directorioKey}
           data="descripcionBienes"
           estilos="flex justify-center items-center"
           directory={form.descripcionBienes}

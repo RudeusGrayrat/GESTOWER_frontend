@@ -43,7 +43,7 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                                     <th className="p-3 text-sm font-semibold">Ubicación</th>
                                     <th className="p-3 text-sm font-semibold">Acción</th>
                                     <th className="p-3 text-sm font-semibold">Modificado Por</th>
-                                    <th className="p-3 text-sm font-semibold">Cant. Ingresada</th>
+                                    <th className="p-3 text-sm font-semibold">Cantidad</th>
                                     <th className="p-3 text-sm font-semibold">Cant. Libre</th>
                                 </tr>
                             </thead>
@@ -55,7 +55,7 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                                                 {new Date(h.fecha).toLocaleString()}
                                             </td>
                                             <td className="p-3 text-sm font-medium text-sky-700">
-                                                {h.ubicacion}
+                                                {h.ubicacion || "Sin ubicar"}
                                             </td>
                                             <td className="p-3 text-sm">
                                                 {h.accion}

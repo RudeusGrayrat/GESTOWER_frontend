@@ -20,64 +20,37 @@ const Directorio = ({ ItemComponent, setForm, directory, estilos, error, data,
     directory?.map((dir, index) => ({
       id: index + 1,
       initialData: dir,
-    })) || [] // <-- ¡Cambiado a []!
+    })) || []
   );
+  const syncParent = (updated) => {
+    const filteredData = updated
+      .map((f) => f.initialData)
+      .filter((item) => typeof item === "object" && item !== null && Object.keys(item).length > 0);
+    setForm((prev) => ({ ...prev, [data]: filteredData }));
+  };
   const handleAddForm = () => {
-    const newItem = {
-      id: Date.now(),
-      initialData: {},
-    };
-
-    setFormData(
-      addToTop
-        ? [newItem, ...formData]
-        : [...formData, newItem]
-    );
+    const updated = addToTop
+      ? [{ id: Date.now(), initialData: {} }, ...formData]
+      : [...formData, { id: Date.now(), initialData: {} }];
+    setFormData(updated);
+    syncParent(updated);
   };
 
   const handleRemoveForm = (id) => {
-    setFormData(formData.filter((form) => form.id !== id));
+    const updated = formData.filter((f) => f.id !== id);
+    setFormData(updated);
+    syncParent(updated);
   };
 
   const handleUpdateFormData = (id, newData) => {
-    const updatedForms = formData?.map((form) =>
-      form.id === id
-        ? { ...form, initialData: { ...form.initialData, ...newData } }
-        : form
+    const updated = formData.map((f) =>
+      f.id === id ? { ...f, initialData: { ...f.initialData, ...newData } } : f
     );
-    setFormData(updatedForms);
-    setForm((prevEdition) => ({
-      ...prevEdition,
-      [data]: updatedForms?.map((form) => form.initialData),
-    }));
+    setFormData(updated);
+    syncParent(updated);
   };
-  useEffect(() => {
-    const newData =
-      directory?.map((dir, index) => ({
-        id: index + 1,
-        initialData: dir,
-      })) || [];
 
-    setFormData((prev) => {
-      // Comparación segura para evitar re-renderizados y bucles
-      const prevSerialized = JSON.stringify(prev);
-      const newSerialized = JSON.stringify(newData);
-      if (prevSerialized === newSerialized) return prev;
-      return newData;
-    });
-  }, [directory]);
-  useEffect(() => {
-    // Mapeamos los datos para obtener solo los 'initialData'
-    const rawData = formData?.map((form) => form.initialData);
 
-    // ⭐️ FILTRAMOS LOS OBJETOS VACÍOS {} ⭐️
-    const filteredData = rawData.filter((item) => !isContentEmpty(item));
-
-    setForm((prevEdition) => ({
-      ...prevEdition,
-      [data]: filteredData, // <--- Enviamos los datos filtrados
-    }));
-  }, [formData, setForm, data]); // Asegúrate de incluir 'data' en las dependencias si no lo estaba
   return (
     <div className="w-full mt-0 flex flex-col gap-4">
       {addToTop && (
