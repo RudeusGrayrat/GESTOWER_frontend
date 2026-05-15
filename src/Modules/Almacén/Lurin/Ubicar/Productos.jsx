@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 import axios from "../../../../api/axios";
 import useSendMessage from "../../../../recicle/senMessage";
+import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const ProductosUbicacion = ({ set, error, initialData }) => {
   console.log("initialData en ProductosUbicacion", initialData);
@@ -10,7 +11,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
   const [data, setData] = useState({
     stockId: "", // Identificador clave ahora
     cantidadDisponible: 0, // Nuevo campo para mostrar la cantidad disponible
-    cantidadIngresada: "", // Nombre exacto del modelo Ubicacion
+    cantidadIngresada: 0, // Nombre exacto del modelo Ubicacion
     descripcion: "",
     correlativa: "",
   });
@@ -26,7 +27,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
       setData({
         ...initialData, // Copia todo lo que venga (incluyendo cantidadDisponible)
         stockId: initialData.stockId?._id || initialData.stockId,
-        cantidadIngresada: initialData.cantidadIngresada || "",
+        cantidadIngresada: initialData.cantidadIngresada || 0,
         correlativa: initialData.correlativa || "",
       });
       setShowSearch(false);
@@ -38,7 +39,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
     const newData = {
       stockId: stockItem._id,
       descripcion: stockItem.bienId?.descripcion || stockItem.descripcion,
-      cantidadIngresada: "",
+      cantidadIngresada: 0,
       cantidadDisponible: stockItem.cantidadDisponible || 0,
       correlativa: stockItem.correlativaActa || ""
     };
@@ -62,7 +63,8 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
 
   const handleInputChange = (name, value) => {
     let val = name === "cantidadIngresada" ? (value === "" ? "" : Number(value)) : value;
-
+    // Agrega este log para ver qué llega al Input
+    console.log("Valor que se pasa al Input:", val);
     // Si el usuario intenta escribir más de lo que hay, lo frenamos en seco
     if (name === "cantidadIngresada" && val > data.cantidadDisponible) {
       sendMessage(`La cantidad máxima disponible es ${data.cantidadDisponible}`, "Error");
@@ -118,7 +120,7 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
         <div className="w-full flex flex-wrap justify-center gap-2">
           <Input label="Descripción" value={data.descripcion} disabled />
           <Input label="Correlativa" value={data.correlativa} disabled />
-          <Input
+          <InputNormal
             label="Cant. a Ubicar"
             name="cantidadIngresada"
             ancho={"w-44 min-w-32"}

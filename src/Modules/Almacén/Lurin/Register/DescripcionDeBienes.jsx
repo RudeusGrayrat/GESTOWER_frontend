@@ -93,6 +93,7 @@ const DescripcionDeBienes = ({ set, error, initialData, salida }) => {
 
   return (
     <div className="w-full flex flex-wrap p-2">
+      {salida && <p className="text-blue-500 w-full ml-3 mb-2 -mt-3">Aunque no se quite todos los productos o las cantidades, se quitarán automáticamente de las ubicaciones para evitar errores</p>}
       <Input
         label="Item"
         name="item"

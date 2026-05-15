@@ -47,6 +47,12 @@ const Input = ({
   const handleAnimation = () => {
     setAnimation(true);
   };
+
+  // Función auxiliar para determinar si un valor está "vacío" (excluye el 0)
+  const isEmpty = (val) => {
+    return val === undefined || val === null || val === "";
+  };
+
   useEffect(() => {
     if (errorOnclick) {
       handleAnimation();
@@ -56,8 +62,10 @@ const Input = ({
       setErrorState(false);
     }
   }, [errorOnclick]);
+
+  // Sincronización con el padre - ahora el 0 no se considera vacío
   useEffect(() => {
-    if (value) {
+    if (!isEmpty(value)) {
       if (type === "multiSelect") {
         setForm(value);
       } else {
@@ -69,19 +77,39 @@ const Input = ({
   }, [value, name, setForm, type]);
 
   const handleChange = (e) => {
-    const { value } = e.target;
-    let newValue = value;
+    const { value: newVal } = e.target;
+    let newValue = newVal;
 
-    if (type === "email" || type === "correo" || name === "email" || name === "correoElectronico" || name === "username" || name === "correo") {
-      newValue = value.toLowerCase();
-    } else if (name === "password" || name === "permissions") {
-      newValue = value;
-    } else if (type === "autocomplete") {
-      newValue = value;
-    } else if (typeof value === "object") {
-      newValue = value;
-    } else {
-      newValue = mayus ? value.toUpperCase() : value;
+    // Manejo específico para type="number"
+    if (type === "number") {
+      newValue = newVal === "" ? "" : Number(newVal);
+    }
+    // Emails y correos a minúsculas
+    else if (
+      type === "email" ||
+      type === "correo" ||
+      name === "email" ||
+      name === "correoElectronico" ||
+      name === "username" ||
+      name === "correo"
+    ) {
+      newValue = newVal.toLowerCase();
+    }
+    // Password y permisos se dejan igual
+    else if (name === "password" || name === "permissions") {
+      newValue = newVal;
+    }
+    // Autocomplete se maneja aparte
+    else if (type === "autocomplete") {
+      newValue = newVal;
+    }
+    // Si es objeto, no transformar
+    else if (typeof newVal === "object") {
+      newValue = newVal;
+    }
+    // Texto normal: aplicar mayúsculas si corresponde
+    else {
+      newValue = mayus ? newVal.toUpperCase() : newVal;
     }
 
     if (type === "multiSelect") {
@@ -90,7 +118,8 @@ const Input = ({
       setForm((prev) => ({ ...prev, [name]: newValue }));
     }
 
-    if (value) {
+    // Validación de error: solo si está vacío (0 no se considera vacío)
+    if (!isEmpty(newValue)) {
       setErrorState(false);
       setAnimation(false);
     } else {
@@ -100,7 +129,7 @@ const Input = ({
   };
 
   const handleBlur = () => {
-    if (!value && !disabled) {
+    if (isEmpty(value) && !disabled) {
       setErrorState(true);
       handleAnimation();
     }
@@ -123,17 +152,25 @@ const Input = ({
         />
       );
       break;
+
     case "phone":
       content = (
         <PhoneInput
           value={value}
-          onChange={handleChange}
+          onChange={(val) => {
+            setForm((prev) => ({ ...prev, [name]: val }));
+            if (!isEmpty(val)) {
+              setErrorState(false);
+              setAnimation(false);
+            }
+          }}
           className={clase}
           placeholder={label}
           disabled={disabled}
         />
       );
       break;
+
     case "password":
       content = (
         <Password
@@ -146,12 +183,13 @@ const Input = ({
         />
       );
       break;
+
     case "autocomplete":
       let opcionesConOtro = [];
       if (otro && OtherProps?.options) {
         opcionesConOtro = [
           ...OtherProps.options,
-          { [name]: "OTRO", value: "OTRO", label: "OTRO" }
+          { [name]: "OTRO", value: "OTRO", label: "OTRO" },
         ];
       } else {
         opcionesConOtro = [...(OtherProps?.options || [])];
@@ -165,37 +203,36 @@ const Input = ({
               suggestions={opcionesConOtro}
               completeMethod={(e) => {
                 clearTimeout(debounceRef.current);
-
                 debounceRef.current = setTimeout(() => {
                   if (e.query === "OTRO") return;
                   let allParams = {
                     page: 0,
                     limit: 10,
                     search: e.query,
-                  }
+                  };
                   if (extraParams) {
-                    allParams = {
-                      ...allParams,
-                      ...extraParams
-                    }
+                    allParams = { ...allParams, ...extraParams };
                   }
                   axios
-                    .get(fetchData, {
-                      params: allParams
-                    })
+                    .get(fetchData, { params: allParams })
                     .then((res) => {
                       if (setOptions) {
                         setOptions(res.data.data);
                       }
                     })
-                    .catch(err => console.error("Error fetching autocomplete:", err));
+                    .catch((err) =>
+                      console.error("Error fetching autocomplete:", err)
+                    );
                 }, 250);
               }}
-              field={typeof OtherProps.field === 'function' ? 'label' : (OtherProps.field || name)}
+              field={
+                typeof OtherProps.field === "function"
+                  ? "label"
+                  : OtherProps.field || name
+              }
               itemTemplate={(item) => {
-                // Template personalizado para mostrar correctamente los items
                 if (item.value === "OTRO") return "OTRO";
-                if (typeof OtherProps.field === 'function') {
+                if (typeof OtherProps.field === "function") {
                   return OtherProps.field(item);
                 }
                 return item[OtherProps.field || name];
@@ -208,9 +245,7 @@ const Input = ({
                   setOtroMode(true);
                   setForm((prev) => ({ ...prev, [name]: "" }));
                 } else {
-                  // Aquí también necesitas manejar correctamente el valor
-                  if (typeof OtherProps.field === 'function' && e.value) {
-                    // Si es un objeto completo, guárdalo así
+                  if (typeof OtherProps.field === "function" && e.value) {
                     setForm((prev) => ({ ...prev, [name]: e.value }));
                   } else {
                     handleChange(e);
@@ -228,7 +263,9 @@ const Input = ({
                 value={otroValor}
                 placeholder="Ingrese otro valor..."
                 onChange={(e) => {
-                  const upper = mayus ? e.target.value.toUpperCase() : e.target.value;
+                  const upper = mayus
+                    ? e.target.value.toUpperCase()
+                    : e.target.value;
                   setOtroValor(upper);
                   setForm((prev) => ({ ...prev, [name]: upper }));
                 }}
@@ -267,6 +304,7 @@ const Input = ({
         />
       );
       break;
+
     case "checkbox":
       content = (
         <div className="flex items-center mt-2">
@@ -279,16 +317,38 @@ const Input = ({
             className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             disabled={disabled}
           />
-          <span className="ml-2 text-sm text-gray-600">{OtherProps.checkboxLabel || label}</span>
+          <span className="ml-2 text-sm text-gray-600">
+            {OtherProps.checkboxLabel || label}
+          </span>
         </div>
       );
       break;
+
+    case "number":
+      content = (
+        <input
+          type="number"
+          name={name}
+          value={value ?? ""}
+          autoComplete="off"
+          placeholder={error ? "Este campo es obligatorio" : label}
+          onChange={(e) => {
+            const num = e.target.value === "" ? "" : Number(e.target.value);
+            handleChange({ target: { value: num } });
+          }}
+          onBlur={handleBlur}
+          disabled={disabled}
+          className={estilo}
+        />
+      );
+      break;
+
     default:
       content = (
         <input
           type={type}
           name={name}
-          value={value || ""}
+          value={value ?? ""}
           autoComplete="off"
           placeholder={error ? "Este campo es obligatorio" : label}
           onChange={handleChange}

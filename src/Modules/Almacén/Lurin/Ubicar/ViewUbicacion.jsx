@@ -61,6 +61,10 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
     if (tieneVacios) {
       return sendMessage("Todos los productos deben tener una cantidad válida.", "Error");
     }
+    const cantidadCero = edit.bienes.some(b => Number(b.cantidadIngresada) === 0);
+    if (cantidadCero) {
+      return sendMessage("La cantidad ingresada no puede ser cero.", "Error");
+    }
 
     // 3. NORMALIZACIÓN PARA EL BACKEND
     if (Object.keys(cambios).length === 0) {
