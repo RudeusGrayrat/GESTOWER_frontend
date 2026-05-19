@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ReportAlmacen from "../../Almacen/Report/Report";
 import Input from "../../../../recicle/Inputs/Inputs";
 import InputDate from "../../../../recicle/Inputs/tipos/InputDate";
@@ -6,36 +6,42 @@ import modificarPlantillaExcel from "../../../../utils/convertToExcel";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
 
+const { VITE_PLANTILLA_INGRESO_ALMACEN_LURIN: archivo } = import.meta.env;
+
 const Ingresos = ({ contratos, contratosId, plantilla }) => {
+  const [ingresoOptions, setIngresoOptions] = useState([]);
+  const [disabled, setDisabled] = useState(true);
   const [form, setForm] = useState({
     contrato: "",
     codigoInterno: "",
-    numeroDeActa: "",
-    fechaIngreso: "",
+    // fechaIngreso: "",
   });
+  console.log("formulario de ingresos:", form);
   const sendMessage = useSendMessage();
-  const findContrato = contratosId?.find(
-    (contrato) => contrato.cliente === form.contrato
-  );
-  const response = async () => {
-    if (!findContrato) {
-      sendMessage("Seleccione un contrato válido", "Error");
-      return null;
-    }
-    await axios.get("/getStockByParams", {
-      params: {
-        contratoId: findContrato._id,
-      },
-    });
-  };
-  const findStock = response.data;
+  useEffect(() => {
+    const isValid =
+      form.contrato &&
+      form.correlativa
+    // form.fechaIngreso;
+    setDisabled(!isValid);
+  }, [form.contrato, form.correlativa,
+    //  form.fechaIngreso
+  ]);
+
   const enviar = async () => {
     sendMessage("Descargando archivo...", "Info");
     try {
-      if (findStock.length === 0)
-        return sendMessage("No hay datos para descargar", "Error");
-      const archivo = plantilla;
-      const datos = findStock?.map((item) => {
+      const response = await axios.get("/getAllMovimientosBySede", {
+        params: {
+          contratoId: form.contrato._id,
+          correlativa: form.correlativa.correlativa,
+          movimiento: "INGRESO",
+        },
+      });
+      console.log("Respuesta de la API para el reporte de ingreso:", response);
+      const data = response.data;
+      console.log("Datos recibidos para el reporte de ingreso:", data);
+      const datos = data?.data?.map((item) => {
         return {
           clase: item.clase,
           codigoInterno: item.codigoInterno,
@@ -83,28 +89,36 @@ const Ingresos = ({ contratos, contratosId, plantilla }) => {
       setForm={setForm}
       descargar={enviar}
       title="Reporte de Ingreso (WORD)"
-      options={contratos}
+      options={contratosId}
+      disable={disabled}
+      optionLabel={"cliente"}
     >
       <Input
-        label="Código Interno"
-        name="condigoInterno"
-        type="select"
-        value={form.codigoInterno}
-        setError={setForm}
+        label="Correlativa de Ingreso"
+        name="correlativa"
+        type="autocomplete"
+        fetchData={"/getMovimientoByCodigo"}
+        setOptions={setIngresoOptions}
+        extraParams={{ movimiento: "INGRESO", contratoId: form.contrato?._id }}
+        value={form.correlativa}
+        setForm={setForm}
+        placeholder="Escriba el código de ingreso para precargar datos"
+        field="correlativa"
+        disabled={!form.contrato}
+        options={ingresoOptions}
       />
       <Input
         label="Número de Acta"
         name="numeroDeActa"
-        type="select"
-        value={form.numeroDeActa}
-        setError={setForm}
+        value={form.correlativa?.numeroDeActa}
+        disabled
       />
-      <InputDate
+      {/* <InputDate
         label="Fecha de Ingreso"
         name="fechaIngreso"
         value={form.fechaIngreso}
         setForm={setForm}
-      />
+      /> */}
     </ReportAlmacen>
   );
 };

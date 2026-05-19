@@ -99,13 +99,24 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       const formValidacion = {
         ...form,
       }
+      console.log("Formulario antes de validación:", formValidacion);
       if (form.movimiento === "SALIDA") {
         formValidacion.codigoIngreso = form.codigoIngreso?.correlativa
         delete formValidacion.referenciaImagen
         form.codigoIngreso = form.codigoIngreso?.correlativa
       }
+      if (form.descripcionBienes.length === 0) return sendMessage("Debes agregar al menos un bien en la descripción de bienes", "Error");
+      if (form.movimiento === "INGRESO") {
+        delete formValidacion.descripcionBienes
+        delete formValidacion.horaSalida
+        delete formValidacion.fechaSalida
+        delete formValidacion.detallesDePeso
+        delete formValidacion.referenciaImagen
+        delete formValidacion.observaciones
+        delete formValidacion.codigoIngreso
+      }
       const { isValid, firstInvalidPath } = validateForm(formValidacion);
-
+      console.log("Resultado de la validación:", { isValid, firstInvalidPath });
       if (!isValid) {
         sendMessage(`Debes completar: ${firstInvalidPath}`, "Error");
         return;

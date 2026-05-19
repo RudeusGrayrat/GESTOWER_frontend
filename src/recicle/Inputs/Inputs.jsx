@@ -68,7 +68,7 @@ const Input = ({
     if (!isEmpty(value)) {
       if (type === "multiSelect") {
         setForm(value);
-      } else {
+      } else if (setForm && typeof setForm === "function") {
         setForm((prev) => ({ ...prev, [name]: value }));
       }
       setErrorState(false);
@@ -112,10 +112,16 @@ const Input = ({
       newValue = mayus ? newVal.toUpperCase() : newVal;
     }
 
+    // Actualizar el estado interno (si se usa setForm)
     if (type === "multiSelect") {
       setForm(e.value);
-    } else {
+    } else if (setForm && typeof setForm === "function") {
       setForm((prev) => ({ ...prev, [name]: newValue }));
+    }
+
+    // 👇 Llamar al onChange del padre si existe
+    if (OtherProps.onChange && typeof OtherProps.onChange === "function") {
+      OtherProps.onChange({ target: { value: newValue, name } });
     }
 
     // Validación de error: solo si está vacío (0 no se considera vacío)
@@ -158,7 +164,11 @@ const Input = ({
         <PhoneInput
           value={value}
           onChange={(val) => {
-            setForm((prev) => ({ ...prev, [name]: val }));
+            if (OtherProps.onChange) {
+              OtherProps.onChange({ target: { value: val, name } });
+            } else if (setForm) {
+              setForm((prev) => ({ ...prev, [name]: val }));
+            }
             if (!isEmpty(val)) {
               setErrorState(false);
               setAnimation(false);
@@ -243,10 +253,18 @@ const Input = ({
               onChange={(e) => {
                 if (e.value?.value === "OTRO") {
                   setOtroMode(true);
-                  setForm((prev) => ({ ...prev, [name]: "" }));
+                  if (OtherProps.onChange) {
+                    OtherProps.onChange({ target: { value: "", name } });
+                  } else if (setForm) {
+                    setForm((prev) => ({ ...prev, [name]: "" }));
+                  }
                 } else {
                   if (typeof OtherProps.field === "function" && e.value) {
-                    setForm((prev) => ({ ...prev, [name]: e.value }));
+                    if (OtherProps.onChange) {
+                      OtherProps.onChange({ target: { value: e.value, name } });
+                    } else if (setForm) {
+                      setForm((prev) => ({ ...prev, [name]: e.value }));
+                    }
                   } else {
                     handleChange(e);
                   }
@@ -267,7 +285,11 @@ const Input = ({
                     ? e.target.value.toUpperCase()
                     : e.target.value;
                   setOtroValor(upper);
-                  setForm((prev) => ({ ...prev, [name]: upper }));
+                  if (OtherProps.onChange) {
+                    OtherProps.onChange({ target: { value: upper, name } });
+                  } else if (setForm) {
+                    setForm((prev) => ({ ...prev, [name]: upper }));
+                  }
                 }}
                 disabled={disabled}
               />
@@ -277,7 +299,11 @@ const Input = ({
                 onClick={() => {
                   setOtroMode(false);
                   setOtroValor("");
-                  setForm((prev) => ({ ...prev, [name]: "" }));
+                  if (OtherProps.onChange) {
+                    OtherProps.onChange({ target: { value: "", name } });
+                  } else if (setForm) {
+                    setForm((prev) => ({ ...prev, [name]: "" }));
+                  }
                 }}
               >
                 ✕
@@ -293,7 +319,13 @@ const Input = ({
         <Dropdown
           className={estilo + " py-0!"}
           value={value}
-          onChange={handleChange}
+          onChange={(e) => {
+            if (OtherProps.onChange) {
+              OtherProps.onChange(e);
+            } else {
+              handleChange(e);
+            }
+          }}
           options={OtherProps.options}
           placeholder={label}
           editable={OtherProps.editable || true}
@@ -312,7 +344,11 @@ const Input = ({
             type="checkbox"
             checked={value || false}
             onChange={(e) => {
-              setForm((prev) => ({ ...prev, [name]: e.target.checked }));
+              if (OtherProps.onChange) {
+                OtherProps.onChange({ target: { checked: e.target.checked, name } });
+              } else if (setForm) {
+                setForm((prev) => ({ ...prev, [name]: e.target.checked }));
+              }
             }}
             className="h-5 w-5 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
             disabled={disabled}
@@ -324,24 +360,7 @@ const Input = ({
       );
       break;
 
-    case "number":
-      content = (
-        <input
-          type="number"
-          name={name}
-          value={value ?? ""}
-          autoComplete="off"
-          placeholder={error ? "Este campo es obligatorio" : label}
-          onChange={(e) => {
-            const num = e.target.value === "" ? "" : Number(e.target.value);
-            handleChange({ target: { value: num } });
-          }}
-          onBlur={handleBlur}
-          disabled={disabled}
-          className={estilo}
-        />
-      );
-      break;
+    // ✅ ELIMINAMOS EL case "number" → usamos el default
 
     default:
       content = (

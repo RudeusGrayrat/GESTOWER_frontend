@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Input from "../../../../recicle/Inputs/Inputs";
 import axios from "../../../../api/axios";
 import useSendMessage from "../../../../recicle/senMessage";
-import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
 
 const ProductosUbicacion = ({ set, error, initialData }) => {
   console.log("initialData en ProductosUbicacion", initialData);
@@ -120,9 +119,9 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
         <div className="w-full flex flex-wrap justify-center gap-2">
           <Input label="Descripción" value={data.descripcion} disabled />
           <Input label="Correlativa" value={data.correlativa} disabled />
-          <InputNormal
+          <Input
             label="Cant. a Ubicar"
-            name="cantidadIngresada"
+            name="  cantidadIngresada"
             ancho={"w-44 min-w-32"}
             type="number"
             // Añadimos el máximo disponible para que el navegador ayude

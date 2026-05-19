@@ -11,7 +11,9 @@ const ReportAlmacen = ({
   children,
   options,
   optionLabel,
+  disable,
 }) => {
+
   return (
     <div>
       <CardPlegable title={title}>
@@ -50,6 +52,7 @@ const ReportAlmacen = ({
             classe="mt-3"
             children="Generar Reporte"
             type="ok"
+            disabled={disable}
             onClick={descargar}
           />
         </div>
