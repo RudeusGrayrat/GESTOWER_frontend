@@ -29,7 +29,7 @@ const Ingreso_Salida = ({ contratos, contratosId }) => {
             const url = window.URL.createObjectURL(response.data);
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `${form.correlativa?.correlativa}-${form.correlativa?.numeroDeActa}.docx`);
+            link.setAttribute('download', `${form.correlativa?.correlativa}-${form.correlativa?.numeroDeActa}.pdf`);
             document.body.appendChild(link);
             link.click();
 
