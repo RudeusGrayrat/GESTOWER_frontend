@@ -10,6 +10,7 @@ const Otros = ({ form, setForm, error }) => {
           name="referenciaImagen"
           value={form.referenciaImagen}
           setForm={setForm}
+          multiple
         />
         <InputNormal
           label="Hora de Salida"

@@ -1,6 +1,5 @@
-import Ingresos from "./Ingreso";
+import Ingreso_Salida from "./Ingreso_Salida";
 import Movimientos from "./Movimientos";
-import Salidas from "./Salida";
 import Stock from "./Stock";
 const {
   VITE_REPORTE_STOCK_LURIN
@@ -15,9 +14,8 @@ const Reporte = ({ contratos, contratos_id, sedeId }) => {
         plantilla={plantillaSegura}
         sedeId={sedeId}
       />
-      <Movimientos contratos={contratos} contratosId={contratos_id} />
-      <Ingresos contratos={contratos} contratosId={contratos_id} />
-      <Salidas contratos={contratos} contratosId={contratos_id} />
+      {/* <Movimientos contratos={contratos} contratosId={contratos_id} /> */}
+      <Ingreso_Salida contratos={contratos} contratosId={contratos_id} />
     </div>
   );
 };

@@ -109,7 +109,9 @@ const DetailLurin = ({ setShowDetail, selected }) => {
           {referenciaImagen && (
             <div className="mt-4">
               <h4 className="text-xl font-semibold mb-2">REFERENCIA FOTOGRÁFICA</h4>
-              <img src={referenciaImagen} alt="Referencia Fotográfica" className="max-w-full h-auto" />
+              {referenciaImagen?.map((img, index) => (
+                <img key={index} src={img} alt={`Referencia Fotográfica ${index + 1}`} className="max-w-full h-auto mb-2" />
+              ))}
             </div>
           )}
         </div>

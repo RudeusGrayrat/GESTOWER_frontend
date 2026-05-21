@@ -21,6 +21,7 @@ const DatosBasicos = ({ form, setForm, contratoOptions, error, salida }) => {
           name="codigoIngreso"
           type="autocomplete"
           fetchData={"/getMovimientoByCodigo"}
+          extraParams={{ movimiento: "INGRESO" }}
           setOptions={setIngresoOptions}
           value={form.codigoIngreso}
           setForm={setForm}

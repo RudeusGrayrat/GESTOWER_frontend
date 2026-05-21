@@ -11,6 +11,7 @@ const InputFiles = ({
   type,
   toBase64 = true,
   value,
+  multiple = false, // Mantiene retrocompatibilidad con strings únicos
 }) => {
   const dispatch = useDispatch();
 
@@ -18,17 +19,15 @@ const InputFiles = ({
   const [error, setError] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-  const [preview, setPreview] = useState(null);
-  const [nameFile, setNameFile] = useState("");
-  // 🎨 estilos
+  const [previews, setPreviews] = useState([]);
+  const [nameFile, setNameFile] = useState(""); // Estado original para modo simple
+
   const styleError = "border-red-500 animate-shake";
   const styleNormal = "border-gray-300";
   const styleConstant =
     "mt-1 px-3 py-2 bg-white border rounded-md shadow-sm sm:text-sm focus:outline-none";
-  const estilo = `${styleConstant} ${ancho} ${animation ? styleError : styleNormal
-    }`;
+  const estilo = `${styleConstant} ${ancho} ${animation ? styleError : styleNormal}`;
 
-  // 🔁 error externo
   useEffect(() => {
     if (errorOnclick) {
       setAnimation(true);
@@ -39,47 +38,72 @@ const InputFiles = ({
     }
   }, [errorOnclick]);
 
-  // 🔥 sincronizar preview
+  // 🔥 Sincronizar previews dinámicamente conservando nombres originales
   useEffect(() => {
-    if (!value) {
-      setPreview(null);
-      setNameFile("");
+    if (!value || (multiple && Array.isArray(value) && value.length === 0)) {
+      setPreviews([]);
+      if (!multiple) setNameFile("");
       return;
     }
 
-    // URL de Cloudinary
-    if (typeof value === "string" && value.startsWith("http")) {
-      setPreview(value);
-      setNameFile(value.split("/").pop());
-      return;
-    }
+    if (multiple) {
+      // MODO ARRAY: Procesamos cada elemento del array
+      const currentPreviews = value.map((val, idx) => {
+        if (!val) return null;
 
-    // ✅ CAMBIO: base64 completo ya trae "data:image/...;base64,..."
-    if (typeof value === "string" && value.startsWith("data:image")) {
-      setPreview(value); // directo, sin concatenar prefijo
-      return;
-    }
+        // Si viene estructurado desde nuestro handleChange interno [{ fileData, fileName }]
+        if (typeof val === "object" && val.fileData) {
+          const url = val.fileData.startsWith("data:image") ? val.fileData : URL.createObjectURL(val.fileData);
+          return { id: idx, url, name: val.fileName, isFile: val.fileData instanceof File };
+        }
+        // Si viene directo como string de Cloudinary (ej: URLs existentes del back)
+        if (typeof val === "string") {
+          return { id: idx, url: val, name: val.split("/").pop(), isFile: false };
+        }
+        return null;
+      }).filter(Boolean);
 
-    // File object
-    if (value instanceof File) {
-      const url = URL.createObjectURL(value);
-      setPreview(url);
-      setNameFile(value.name);
-      return () => URL.revokeObjectURL(url);
+      setPreviews(currentPreviews);
+
+      return () => {
+        currentPreviews.forEach((p) => {
+          if (p.isFile) URL.revokeObjectURL(p.url);
+        });
+      };
+    } else {
+      // MODO TRADICIONAL (Un solo elemento)
+      if (typeof value === "string" && value.startsWith("http")) {
+        setPreviews([{ id: 0, url: value, name: value.split("/").pop() }]);
+        setNameFile(value.split("/").pop());
+        return;
+      }
+      if (typeof value === "string" && value.startsWith("data:image")) {
+        setPreviews([{ id: 0, url: value, name: nameFile || "Imagen.png" }]);
+        return;
+      }
+      if (value instanceof File) {
+        const url = URL.createObjectURL(value);
+        setPreviews([{ id: 0, url, name: value.name }]);
+        setNameFile(value.name);
+        return () => URL.revokeObjectURL(url);
+      }
     }
-  }, [value]);
-  // 📥 manejar archivo
-  const handleChange = async (e) => {
+  }, [value, multiple]);
+
+  // 📥 Manejar la carga de archivos conservando metadatos
+  const handleChange = async (e, indexToReplace = null) => {
     try {
       const file = e.target.files[0];
       if (!file) {
-        setError(true);
-        setAnimation(true);
-        setErrorMessage("Este campo es obligatorio");
+        if (!multiple) {
+          setError(true);
+          setAnimation(true);
+          setErrorMessage("Este campo es obligatorio");
+        }
         return;
       }
 
-      setNameFile(file.name);
+      if (!multiple) setNameFile(file.name);
       setIsLoading(true);
 
       const validFiles = type || ["image/jpeg", "image/png", "image/jpg"];
@@ -92,42 +116,41 @@ const InputFiles = ({
         return;
       }
 
-      if (preview) URL.revokeObjectURL(preview);
+      const processFile = () => {
+        return new Promise((resolve) => {
+          if (toBase64) {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.readAsDataURL(file);
+          } else {
+            resolve(file);
+          }
+        });
+      };
 
-      const objectUrl = URL.createObjectURL(file);
-      setPreview(objectUrl);
+      const fileData = await processFile();
 
-      if (toBase64) {
-        const reader = new FileReader();
+      setForm((prev) => {
+        if (multiple) {
+          const currentArray = Array.isArray(prev[name]) ? [...prev[name]] : [];
+          // Estructuramos el elemento para guardar tanto el base64/file como su nombre original
+          const payload = { fileData, fileName: file.name };
 
-        reader.onload = () => {
-          // ✅ CAMBIO: guardar result completo con prefijo "data:image/jpeg;base64,..."
-          const base64Completo = reader.result;
+          if (indexToReplace !== null) {
+            currentArray[indexToReplace] = payload;
+          } else {
+            currentArray.push(payload);
+          }
+          return { ...prev, [name]: currentArray };
+        } else {
+          return { ...prev, [name]: fileData };
+        }
+      });
 
-          setForm((prev) => ({
-            ...prev,
-            [name]: base64Completo,
-          }));
-
-          setIsLoading(false);
-          setError(false);
-          setAnimation(false);
-          setErrorMessage("");
-        };
-
-        reader.readAsDataURL(file);
-      } else {
-        setForm((prev) => ({
-          ...prev,
-          [name]: file,
-        }));
-
-        setIsLoading(false);
-        setError(false);
-        setAnimation(false);
-        setErrorMessage("");
-      }
-
+      setIsLoading(false);
+      setError(false);
+      setAnimation(false);
+      setErrorMessage("");
       e.target.value = null;
     } catch (err) {
       dispatch(setMessage("Error al cargar el archivo", "Error"));
@@ -135,101 +158,87 @@ const InputFiles = ({
     }
   };
 
-  // 🗑 eliminar
-  const handleDelete = () => {
-    if (preview) URL.revokeObjectURL(preview);
-
-    setForm((prev) => ({
-      ...prev,
-      [name]: null,
-    }));
-
-    setPreview(null);
-    setNameFile("");
-    setError(false);
-    setAnimation(false);
-    setErrorMessage("");
+  // 🗑 Eliminar archivos
+  const handleDelete = (index) => {
+    setForm((prev) => {
+      if (multiple) {
+        return {
+          ...prev,
+          [name]: prev[name].filter((_, i) => i !== index),
+        };
+      } else {
+        setNameFile("");
+        return {
+          ...prev,
+          [name]: null,
+        };
+      }
+    });
   };
 
   return (
-    <div className="flex flex-col mx-3 h-20">
+    <div className="flex flex-col mx-3 w-full min-h-24">
       {/* LABEL */}
-      <label
-        className={`text-base font-medium ${error ? "text-red-500" : "text-gray-700"
-          }`}
-      >
+      <label className={`text-base font-medium ${error ? "text-red-500" : "text-gray-700"}`}>
         {label}
       </label>
 
-      {/* 🔘 BOTÓN PERSONALIZADO */}
-      {!preview && (
-        <label
-          className={estilo + ` !p-2.5 flex items-center justify-center gap-4 cursor-pointer
-            ${animation ? "animate-shake border border-red-500" : ""}
-          `}
-        >
-          <i className="pi pi-plus"></i>
-          Nuevo archivo
-          <input
-            type="file"
-            className="hidden"
-            onChange={handleChange}
-            accept={
-              Array.isArray(type)
-                ? type.join(",")
-                : type || "image/*"
-            }
-          />
-        </label>
-      )}
+      <div className="flex flex-wrap gap-3 items-center mt-1">
+        {/* 🔘 BOTÓN DE CARGA (Ahora posicionado al inicio/adelante) */}
+        {(!previews.length || multiple) && (
+          <label className={`${estilo} !p-2.5 flex items-center justify-center gap-4 cursor-pointer w-64 border-dashed border-2`}>
+            <i className="pi pi-plus"></i>
+            {multiple ? "Añadir archivo" : "Nuevo archivo"}
+            <input
+              type="file"
+              className="hidden"
+              onChange={(e) => handleChange(e)}
+              accept={Array.isArray(type) ? type.join(",") : type || "image/*"}
+            />
+          </label>
+        )}
 
-      {/* 📄 PREVIEW */}
-      {preview && (
-        <div
-          className={`${estilo} flex items-center justify-between !p-2.5  w-64`}
-        >
-          <div className="flex items-center">
-            <a
-              href={preview}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-sm truncate max-w-[175px]"
-            >
-              {nameFile}
-            </a>
+        {/* 📄 RENDERIZADO DE PREVIEWS */}
+        {previews.map((preview, idx) => (
+          <div key={idx} className={`${estilo} flex items-center justify-between !p-2.5 w-64`}>
+            <div className="flex items-center">
+              <a
+                href={preview.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm truncate max-w-[160px]"
+              >
+                {preview.name}
+              </a>
+            </div>
 
+            <div className="gap-2 flex mx-1 items-center">
+              <span className={`mx-1 text-green ${isLoading ? "pi pi-spinner pi-spin" : ""}`}></span>
+              {!isLoading && (
+                <>
+                  {/* ✏️ Reemplazar */}
+                  <label className="cursor-pointer pi pi-pencil m-0">
+                    <input
+                      type="file"
+                      accept={Array.isArray(type) ? type.join(",") : type || "image/*"}
+                      className="hidden"
+                      onChange={(e) => handleChange(e, idx)}
+                    />
+                  </label>
+
+                  {/* 🗑 Eliminar */}
+                  <button
+                    type="button"
+                    className="pi pi-trash border-none bg-transparent cursor-pointer"
+                    onClick={() => handleDelete(idx)}
+                  ></button>
+                </>
+              )}
+            </div>
           </div>
+        ))}
+      </div>
 
-          <div className="gap-2 flex mx-1">
-            {/* ✏️ reemplazar */}
-            <span className={`mx-1 text-green ${isLoading ? "pi pi-spinner pi-spin" : ""}`}
-            ></span>
-            {!isLoading && (
-              <>
-                <label className="cursor-pointer pi pi-pencil">
-                  <input
-                    type="file"
-                    accept={
-                      Array.isArray(type)
-                        ? type.join(",")
-                        : type || "image/*"
-                    }
-                    className="hidden"
-                    onChange={handleChange}
-                  />
-                </label>
-
-                {/* 🗑 eliminar */}
-                <button
-                  className="pi pi-trash"
-                  onClick={handleDelete}
-                ></button>
-              </>
-            )
-            }
-          </div>
-        </div>
-      )}
       {/* ERROR */}
       {error && (
         <span className="text-red-500 text-xs mt-1">

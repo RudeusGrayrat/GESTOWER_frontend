@@ -22,6 +22,7 @@ const ReportAlmacen = ({
             label="Contrato"
             name="contrato"
             type="select"
+            ancho="w-40 !min-w-32"
             value={form.contrato}
             setForm={setForm}
             options={options}

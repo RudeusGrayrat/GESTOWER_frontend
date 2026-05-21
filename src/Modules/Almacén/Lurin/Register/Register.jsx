@@ -47,7 +47,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
     horaSalida: "",
     fechaSalida: "",
     detallesDePeso: "",
-    referenciaImagen: "",
+    referenciaImagen: [],
     observaciones: "",
     codigoIngreso: "",
   });
@@ -73,7 +73,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         detallesDePeso: ingreso.detallesDePeso || "",
         horaSalida: ingreso.horaSalida || "",
         fechaSalida: ingreso.fechaSalida || "",
-        referenciaImagen: ingreso.referenciaImagen || "",
+        referenciaImagen: ingreso.referenciaImagen || [],
       }));
       setDirectorioKey(k => k + 1);
     }
@@ -115,6 +115,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         delete formValidacion.observaciones
         delete formValidacion.codigoIngreso
       }
+
       const { isValid, firstInvalidPath } = validateForm(formValidacion);
       console.log("Resultado de la validación:", { isValid, firstInvalidPath });
       if (!isValid) {
