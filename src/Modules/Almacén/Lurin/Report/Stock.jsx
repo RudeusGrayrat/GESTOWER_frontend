@@ -9,11 +9,18 @@ import { getNaveBySede, getZonasByParams } from "../../../../redux/modules/Almac
 const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
   const [naves, setNaves] = useState([]);
   const [zonas, setZonas] = useState([]);
+  const [disable, setDisable] = useState(true);
   const [form, setForm] = useState({
     contrato: "",
     nave: "",
     zona: "",
   });
+  useEffect(() => {
+    const isValid =
+      form.contrato
+    setDisable(!isValid);
+  }, [form.contrato]);
+
   useEffect(() => {
     if (!form.contrato) {
       return
@@ -121,6 +128,7 @@ const Stock = ({ contratos, plantilla, contratosId, sedeId }) => {
       title="Reporte de Stock (EXCEL)"
       options={contratosId}
       optionLabel="cliente"
+      disable={disable}
     >
       <Input
         label="Nave"

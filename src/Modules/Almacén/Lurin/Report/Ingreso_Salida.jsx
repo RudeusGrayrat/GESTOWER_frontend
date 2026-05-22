@@ -43,6 +43,11 @@ const Ingreso_Salida = ({ contratos, contratosId }) => {
             sendMessage("Reporte generado correctamente", "Correcto");
         } catch (error) {
             sendMessage("Error al generar el reporte", "Error");
+        } finally {
+            setForm({
+                contrato: "",
+                correlativa: "",
+            });
         }
     }
     return (
