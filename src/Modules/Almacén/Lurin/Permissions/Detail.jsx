@@ -39,7 +39,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
 
       try {
         // Hacemos la petición al backend para que genere el PDF con LibreOffice
-        const response = await axios.get(`/almacenLurin/getPDFMovimiento/${selected.correlativa._id}`, {
+        const response = await axios.get(`/almacenLurin/getPDFMovimiento/${selected._id}`, {
           responseType: "blob",
         });
 
