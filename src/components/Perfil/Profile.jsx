@@ -30,7 +30,7 @@ const Profile = ({ user }) => {
             src={photo}
             width={300}
             height={300}
-            className="shadow-inner rounded-full object-cover w-[300px] h-[300px]"
+            className="shadow-inner rounded-full object-top w-[300px] h-[300px]"
             alt="Profile"
           />
         </div>
