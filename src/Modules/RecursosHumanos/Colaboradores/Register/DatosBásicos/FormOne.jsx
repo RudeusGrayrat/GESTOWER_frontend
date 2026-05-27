@@ -162,18 +162,18 @@ const FormOne = ({ setForm, error, form }) => {
         setForm={setForm}
         errorOnclick={error.sueldo}
       />
-      <Input
+      {/* <Input
         label="Usuario"
         name="user"
-        autoComplete={false}
         value={form.user}
         setForm={setForm}
         errorOnclick={error.user}
-      />
+      /> */}
       <Input
         label="Contraseña"
         name="password"
         type="password"
+        autoComplete="new-password"
         value={form.password}
         setForm={setForm}
         errorOnclick={error.password}
@@ -181,6 +181,7 @@ const FormOne = ({ setForm, error, form }) => {
       <InpuFiles
         label="Foto"
         name="photo"
+        value={form.photo}
         setForm={setForm}
         errorOnclick={error.photo}
       />

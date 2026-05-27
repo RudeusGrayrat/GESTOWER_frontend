@@ -187,6 +187,7 @@ const Input = ({
           toggleMask
           value={value}
           onChange={handleChange}
+          autoComplete="new-password"
           placeholder={label}
           className={estilo}
           disabled={disabled}

@@ -26,7 +26,7 @@ const EditEmployee = ({ setShowEdit, selected, reload }) => {
   });
 
   const formFinal = deepDiff(selected, edition);
-
+  console.log("🚀 formFinal:", formFinal)
   const diferenciaModules = validateModules(selected.modules, edition.modules);
   const validateSubModule = validateSubModules(formFinal?.modules);
   const cleanEmptyObjects = (modules) => {

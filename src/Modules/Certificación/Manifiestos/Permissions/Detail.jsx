@@ -10,6 +10,7 @@ import useSendMessage from "../../../../recicle/senMessage";
 
 
 const DetailManifiesto = ({ setShowDetail, selected }) => {
+  console.log("🚀 selected:", selected)
   const [loading, setLoading] = useState(true);
   const [pdfBlob, setPdfBlob] = useState(null);
   const sendMessage = useSendMessage();

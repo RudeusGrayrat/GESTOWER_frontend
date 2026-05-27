@@ -33,10 +33,8 @@ const DetailLurin = ({ setShowDetail, selected }) => {
   useEffect(() => {
     const fetchPdf = async () => {
       if (!selected) return;
-
       setLoading(true);
       setPdfBlob(null);
-
       try {
         // Hacemos la petición al backend para que genere el PDF con LibreOffice
         const response = await axios.get(`/almacenLurin/getPDFMovimiento/${selected._id}`, {
@@ -140,7 +138,7 @@ const DetailLurin = ({ setShowDetail, selected }) => {
           </div>
           <div>
             {!loading && pdfBlob ? (
-              <div className="flex gap-8 mt-6 ml-10">
+              <div className="flex gap-8 m-2">
                 {/* BOTÓN VISUALIZAR */}
                 <div
                   onClick={handlePreview}
@@ -161,10 +159,10 @@ const DetailLurin = ({ setShowDetail, selected }) => {
               </div>
             ) : (
               /* Spinner de carga mientras el i5-14600KF y LibreOffice hacen la magia */
-              <div className="flex flex-col items-center mt-10">
+              <div className="flex flex-col items-center m-2">
                 <span className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></span>
                 <p className="text-gray-500 animate-pulse">
-                  Generando documento PDF... Esto puede tardar unos segundos dependiendo de la complejidad del documento y el rendimiento del servidor.
+                  Generando documento PDF... Esto puede tardar unos segundos..
                 </p>
               </div>
             )}
