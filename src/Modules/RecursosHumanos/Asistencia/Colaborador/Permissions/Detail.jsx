@@ -50,7 +50,7 @@ const DetailAsistenciaColaborador = ({ setShowDetail, selected }) => {
           <PDetail content="FOTO: " value={<img
             src={photo ? photo : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
             alt="Foto del colaborador"
-            className="w-32 h-32  object-cover m-2"
+            className="w-52 h-52 rounded-full object-cover object-top m-2"
           />} />
         </div>
 

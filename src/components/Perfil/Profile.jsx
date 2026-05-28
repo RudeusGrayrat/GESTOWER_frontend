@@ -25,12 +25,12 @@ const Profile = ({ user }) => {
       style={{ fontFamily: "Roboto" }}
     >
       <div className="overflow-y-auto max-h-[400px] border-gray-50 shadow-xl border-2 rounded-xl  bg-white w-[95%] m-3 p-5 flex items-center justify-evenly">
-        <div className="flex w-96 items-center justify-center  rounded-full">
+        <div className="flex w-[300px] h-[300px] items-center justify-center  rounded-full">
           <img
             src={photo}
             width={300}
             height={300}
-            className="shadow-inner rounded-full object-cover object-top w-[300px] h-[300px]"
+            className="shadow-inner rounded-full object-cover object-top max-xl:w-[250px] max-xl:h-[250px] w-[300px] h-[300px]"
             alt="Profile"
           />
         </div>
