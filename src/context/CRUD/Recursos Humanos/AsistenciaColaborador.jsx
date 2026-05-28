@@ -26,7 +26,7 @@ const update_AsistenciaColaborador = async (
 ) => {
   try {
     const response = await axios.patch(
-      "/patchAsistenciaColaborador",
+      "/patchAsistenciaERP",
       AsistenciaColaborador
     );
     const data = response.data;
