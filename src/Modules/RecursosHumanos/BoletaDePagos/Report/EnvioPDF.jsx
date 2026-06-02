@@ -16,7 +16,7 @@ const EnvioWord = ({ form, setForm, options }) => {
   const findBoletas = async () => {
     try {
       const params = {
-        empresa: form.empresa !== "" ? form.empresa : undefined,
+        empresa: form.empresa?._id !== "" ? form.empresa._id : undefined,
         desde: dayjs(form.desde, "YYYY-MM").format("MM/YYYY"),
         hasta: dayjs(form.hasta, "YYYY-MM").format("MM/YYYY"),
       };
@@ -35,7 +35,7 @@ const EnvioWord = ({ form, setForm, options }) => {
     año = `${form.desde.split("-")[0]} - ${form.hasta.split("-")[0]}`;
   }
   const descargar = async () => {
-    sendMessage("Descargando archivo...", "Info");
+    sendMessage("Descargando archivo...", "Info", true);
     const boletas = await findBoletas();
     console.log("boletas", boletas);
 
@@ -63,7 +63,7 @@ const EnvioWord = ({ form, setForm, options }) => {
         boleta: fullBoletasEnvios,
       };
       let PLANTILLA_DOCUMENT;
-      switch (form.empresa) {
+      switch (form.empresa?.razonSocial) {
         case "INVERSIONES LURIN S.A.C.":
           PLANTILLA_DOCUMENT = VITE_REPORTE_ENVIO_BOLETA_WORD_INVERSIONES_LURIN;
           break;
@@ -92,7 +92,7 @@ const EnvioWord = ({ form, setForm, options }) => {
       const response = await convertDocx(
         predata,
         archivo,
-        `${form.empresa} - ${form.desde} - ${form.hasta}`
+        `${form.empresa?.razonSocial} - ${form.desde} - ${form.hasta}`
       );
 
       if (!response || !(response instanceof File))
@@ -104,7 +104,7 @@ const EnvioWord = ({ form, setForm, options }) => {
       const url = URL.createObjectURL(response);
       const link = document.createElement("a");
       link.href = url;
-      link.download = `${form.empresa} - ${form.desde} - ${form.hasta}.docx`;
+      link.download = `${form.empresa?.razonSocial} - ${form.desde} - ${form.hasta}.docx`;
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);

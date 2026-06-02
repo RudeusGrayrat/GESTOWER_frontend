@@ -81,7 +81,7 @@ const ListBoletaDePagos = ({
 
       <Column field="colaborador.lastname" header="Apellidos del Colaborador" />
       <Column field="colaborador.name" header="Nombres del Colaborador" />
-      <Column field="colaborador.business" header="Empresa" />
+      <Column field="empresaColaborador.razonSocial" header="Empresa" />
       <Column
         field="envio"
         body={(rowData) => {

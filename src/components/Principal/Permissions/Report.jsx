@@ -12,6 +12,7 @@ const Report = ({ descargar, form, setForm, title, options }) => {
             label="Empresa"
             name="empresa"
             type="select"
+            optionLabel={"razonSocial"}
             options={options}
             value={form.empresa}
             setForm={setForm}

@@ -11,7 +11,7 @@ const BoletaExcel = ({ form, setForm, options }) => {
   const findBoletas = async () => {
     try {
       const params = {
-        empresa: form.empresa !== "TODOS" ? form.empresa : undefined,
+        empresa: form.empresa !== "TODOS" ? form.empresa._id : undefined,
         desde: dayjs(form.desde, "YYYY-MM").format("MM/YYYY"),
         hasta: dayjs(form.hasta, "YYYY-MM").format("MM/YYYY"),
       };
@@ -36,7 +36,7 @@ const BoletaExcel = ({ form, setForm, options }) => {
           colaborador:
             item.colaborador?.lastname + " " + item.colaborador?.name,
           ndoc: item.colaborador?.documentNumber,
-          empresa: item.colaborador?.business,
+          empresa: item.empresaColaborador?.razonSocial || "N/A",
           estado: item.state,
           fechaBoletaDePago: item.fechaBoletaDePago,
           envio: item.envio,

@@ -35,7 +35,6 @@ const ReporteBoletasDePago = () => {
   useEffect(() => {
     if (allBusiness.length === 0) dispatch(getBusiness());
   }, [allBusiness.length, dispatch]);
-  const businessName = allBusiness?.map((item) => item.razonSocial);
 
   return (
     <div>
@@ -44,7 +43,7 @@ const ReporteBoletasDePago = () => {
         parseDate={parseDate}
         form={formExcel}
         setForm={setFormExcel}
-        options={["TODOS", ...businessName]}
+        options={["TODOS", ...allBusiness]}
       />
       <EnvioWord
         allBoletas={allBoletas}
@@ -52,7 +51,7 @@ const ReporteBoletasDePago = () => {
         parseDate={parseDate}
         form={formWord}
         setForm={setFormWord}
-        options={businessName}
+        options={allBusiness}
       />
     </div>
   );
