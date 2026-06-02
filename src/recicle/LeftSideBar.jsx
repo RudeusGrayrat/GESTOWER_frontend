@@ -12,7 +12,7 @@ const LeftSideBar = ({ options, handleSubmit, show }) => {
     <div
       className={`flex pt-8 p-4 flex-col items-start 
     shadow-[4px_0_8px_rgba(128,128,128,0)] shadow-gray-300 
-    absolute z-50 bg-gradient-to-b from-[#455a6f] to-[#263241]
+    absolute z-50 bg-gradient-to-b from-[#3e6286] to-[#012755]
      w-80 left-20 h-screen top-0 transition-all duration-500 ${
        mostrar
          ? "opacity-100 translate-x-0 visible"

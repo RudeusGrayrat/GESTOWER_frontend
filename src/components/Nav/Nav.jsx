@@ -40,7 +40,7 @@ const Nav = ({ notifications }) => {
           <Options
             content={
               <img
-                className="rounded-full h-16 w-16 shadow-md shadow-gray-200 active:shadow-inner object-cover"
+                className="rounded-full h-16 w-16 shadow-md shadow-gray-200 active:shadow-inner object-cover object-top"
                 src={user.photo}
                 alt={user.name?.split(" ")[0] || "foto"}
               />

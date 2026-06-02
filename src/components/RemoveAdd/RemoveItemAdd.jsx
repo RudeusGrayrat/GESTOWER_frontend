@@ -73,6 +73,7 @@ const Directorio = ({ ItemComponent, setForm, directory, estilos, error, data,
             initialData={form.initialData}
             set={(newData) => handleUpdateFormData(form.id, newData)}
             error={error}
+            setForm={setForm} 
             {...props}
           />
           <ButtonOk

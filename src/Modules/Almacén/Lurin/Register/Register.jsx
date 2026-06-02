@@ -53,6 +53,7 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
   });
 
   const [form, setForm] = useState(initialform);
+  console.log("🚀 ~ file: Register.jsx:64 ~ RegisterLurin ~ form:", form)
   const [directorioKey, setDirectorioKey] = useState(0);
 
   // En el useEffect del codigoIngreso, al final añades:
@@ -119,10 +120,11 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       const { isValid, firstInvalidPath } = validateForm(formValidacion);
       console.log("Resultado de la validación:", { isValid, firstInvalidPath });
       if (!isValid) {
+        // Antes tenías: firstInvalidPathRef.current?.split(".")[0] en el return del hook
+        // Ahora que el hook devuelve el path exacto y real, puedes mostrarlo directo:
         sendMessage(`Debes completar: ${firstInvalidPath}`, "Error");
         return;
       }
-
       // Buscamos IDs de Sede y Contrato
       const findSede = contratos_id[0]?.sedeId;
       const findContrato = contratos_id.find(c => c.cliente === form.contrato);
