@@ -13,45 +13,17 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   const [docxContent, setDocxContent] = useState("");
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
-
-  const business = useSelector((state) => state.recursosHumanos.business || []);
   const datosContables = useSelector((state) => state.recursosHumanos.datosContables || []);
 
-  // const convertirDate = (dateString) => {
-  //   const [day, month, year] = dateString.split("/");
-  //   const date = new Date(year, month - 1, day);
-  //   return date;
-  // };
-
   useEffect(() => {
-    if (!business.length) dispatch(getBusiness());
     if (!datosContables.length) dispatch(getDatosContables());
-  }, [dispatch, business.length, datosContables.length]);
-
-  const findBusiness = useMemo(() => {
-    if (!selected?.colaborador?.business) return null;
-    return business.find(
-      (empresa) => empresa?.razonSocial === selected?.colaborador?.business
-    );
-  }, [business, selected?.colaborador?.business]);
+  }, [dispatch, datosContables.length]);
   useEffect(() => {
     if (docxContent) return;
+    const business = selected.empresaColaborador;
     const renderDocx = async () => {
       try {
-        if (!selected || !findBusiness) return;
-        // const response = await axios.get(
-        //   `/contract/${selected.colaborador._id}`
-        // );
-        // const contratosColaborador = response.data;
-
-        // const findContrato = contratosColaborador
-        //   .map((contrato) => ({
-        //     ...contrato,
-        //     parsedDateStart: convertirDate(contrato.dateStart),
-        //   }))
-        //   .filter((c) => c.parsedDateStart)
-        //   .sort((a, b) => b.parsedDateStart - a.parsedDateStart)[0];
-
+        if (!selected || !business) return;
         const file = await renderDoc(
           {
             ...selected,
@@ -60,7 +32,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
             regimenPension: selected.colaborador?.regimenPension || "",
             codigoSpp: selected.colaborador?.codigoSPP || "",
           },
-          findBusiness,
+          business,
           datosContables
         );
         if (!file) {
@@ -83,7 +55,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
       }
     };
     renderDocx();
-  }, [findBusiness, selected, datosContables]);
+  }, [business, selected, datosContables]);
 
   const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
     docxContent
