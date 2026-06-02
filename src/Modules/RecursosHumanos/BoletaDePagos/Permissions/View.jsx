@@ -18,9 +18,9 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   useEffect(() => {
     if (!datosContables.length) dispatch(getDatosContables());
   }, [dispatch, datosContables.length]);
+  const business = selected.empresaColaborador;
   useEffect(() => {
     if (docxContent) return;
-    const business = selected.empresaColaborador;
     const renderDocx = async () => {
       try {
         if (!selected || !business) return;
