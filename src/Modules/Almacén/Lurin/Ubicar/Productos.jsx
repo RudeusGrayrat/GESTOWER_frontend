@@ -37,10 +37,10 @@ const ProductosUbicacion = ({ set, error, initialData }) => {
   const handleSelect = (stockItem) => {
     const newData = {
       stockId: stockItem._id,
-      descripcion: stockItem.bienId?.descripcion || stockItem.descripcion,
+      descripcion: stockItem?.bienId?.descripcion || stockItem.descripcion,
       cantidadIngresada: 0,
       cantidadDisponible: stockItem.cantidadDisponible || 0,
-      correlativa: stockItem.correlativaActa || ""
+      correlativa: stockItem.codigoIngreso || ""
     };
 
     setData(newData);

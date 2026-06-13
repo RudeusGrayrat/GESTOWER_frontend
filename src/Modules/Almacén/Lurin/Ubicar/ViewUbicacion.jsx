@@ -24,7 +24,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
       cantidadIngresada: b.cantidadIngresada,
       descripcion: b.descripcion,
       // Estos campos son cruciales para que el input del hijo no salga vacío
-      correlativa: b.stockId?.movimientoId?.correlativa || "",
+      correlativa: b.stockId?.codigoIngreso || "",
     })) || [],
   };
   console.log("formOriginal", formOriginal);
@@ -39,7 +39,7 @@ const ViewUbicacion = ({ ubicacionSeleccionada, setViewUbicacion, reload }) => {
       stockId: b.stockId?._id || b.stockId,
       cantidadIngresada: Number(b.cantidadIngresada),
       descripcion: b.descripcion,
-      correlativa: b.correlativa || b.stockId?.movimientoId?.correlativa || "",
+      correlativa: b.correlativa || b.stockId?.codigoIngreso || "",
     }))
   };
   console.log("editNormalizado", editNormalizado);

@@ -123,7 +123,6 @@ const ListLurin = ({
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
             fetchData={recargar}
-
             key={`${form.contrato}-${form.movimiento}`}
           >
             <Column

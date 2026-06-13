@@ -25,12 +25,12 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                     <PDetail content="Número de Acta:" value={numeroDeActa} />
                     <PDetail content="Correlativa:" value={correlativaActa} />
                     <PDetail content="Contrato / Cliente:" value={contrato} />
-                    <PDetail content="Descripción:" value={descripcion} />
                     <PDetail content="Stock Total Ingresado:" value={cantidadTotal} />
                     <PDetail content="Stock sin ubicar:" value={cantidadDisponible} />
                     <PDetail content="Peso Neto:" value={pesoNeto ? pesoNeto + " kg" : "N/A"} />
                     <PDetail content="Peso Bruto:" value={pesoBruto ? pesoBruto + " kg" : "N/A"} />
                     <PDetail content="Unidad de Medida:" value={unidadDeMedida} />
+                    <PDetail content="Descripción:" value={descripcion} />
                     <PDetail content="Estado:" value={estado} />
                 </div>
 
@@ -66,7 +66,7 @@ const DetaiStock = ({ setShowDetail, selected }) => {
                                                 {h.accion}
                                             </td>
                                             <td className="p-2 text-sm">
-                                                {h.actualizadoPor.name + " " + h.actualizadoPor.lastname}
+                                                {h.actualizadoPor ? h.actualizadoPor?.name + " " + h.actualizadoPor?.lastname : "-"}
                                             </td>
                                             <td className="p-2 text-sm font-bold">
                                                 {h.cantidadIngresada}

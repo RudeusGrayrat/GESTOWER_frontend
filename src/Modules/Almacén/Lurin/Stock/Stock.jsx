@@ -28,7 +28,7 @@ const StockAlmacenLurin = ({
       fetchData={fetchStock}
       key={"stock-almacen-lurin"}
     >
-      <Column field="correlativaActa" header="Correlativa Manifiesto" />
+      <Column field="codigoIngreso" header="Codigo de Ingreso" />
       <Column field="numeroDeActa" header="Número de Acta" />
       <Column field="contrato" header="Contrato" />
       <Column field="descripcion" header="Descripción" />

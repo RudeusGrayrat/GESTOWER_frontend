@@ -8,7 +8,7 @@ const SideBar = () => {
 
   return (
     <div
-      className=" border-r-2 border-slate-900 shadow-[4px_0_8px_rgba(128,128,128,0)] shadow-gray-300  bg-gradient-to-b from-[#3e6286] to-[#012755] fixed  z-50 items-center  flex flex-col 
+      className=" border-r-2 border-slate-700 shadow-[4px_0_8px_rgba(128,128,128,0)] shadow-gray-300  bg-gradient-to-b from-[#3e6286] to-[#012755] fixed  z-50 items-center  flex flex-col 
          w-20  min-h-screen"
     >
       <div className=" w-18 flex justify-center items-center h-18 my-8 rounded-full">
@@ -32,20 +32,20 @@ const SideBar = () => {
       >
         {userOptions.length > 0 && userOptions[0].module !== ""
           ? userOptions?.map((options, index) => (
-              <OptionSideBar
-                key={index}
-                icon={
-                  <img
-                    src={`/${options.module}.svg`}
-                    alt="icon"
-                    width={66}
-                    height={66}
-                  />
-                }
-                options={options}
-                module={options.module}
-              />
-            ))
+            <OptionSideBar
+              key={index}
+              icon={
+                <img
+                  src={`/${options.module}.svg`}
+                  alt="icon"
+                  width={66}
+                  height={66}
+                />
+              }
+              options={options}
+              module={options.module}
+            />
+          ))
           : null}
       </div>
     </div>

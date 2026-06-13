@@ -6,6 +6,7 @@ import SearchBar from "../Nav/SearchBar";
 import Notificon from "../../recicle/Buttons/Notification";
 import NotificationListener from "../../utils/NotificationListener";
 import { useState } from "react";
+import SwitchDark from "../../recicle/componentes ui/ModeDark";
 const imagen = "https://cdn-icons-png.freepik.com/512/10975/10975953.png";
 
 const Nav = ({ notifications }) => {
@@ -15,10 +16,19 @@ const Nav = ({ notifications }) => {
   //   setNotifications((prev) => [notification, ...prev]);
   // };
   return (
-    <div className="flex justify-between ml-20 bg-white items-center px-12 h-20  border-b border-b-stone-200">
-      <div className=" flex justify-around  items-center  m-2 rounded-lg h-14">
-        {/* <img src={imagen} alt="buscador" className="w-10 bg-white h-200" />
-        <SearchBar></SearchBar> */}
+    <div className="flex justify-between ml-20 dark:bg-slate-500 bg-white items-center px-12 h-20  border-b border-b-stone-200">
+      {/* <div className=" flex justify-around  items-center  m-2 rounded-lg h-14">
+        <img src={imagen} alt="buscador" className="w-10 bg-white h-200" />
+        <SearchBar></SearchBar>
+      </div> */}
+      <div>
+        {/* <SwitchDark onChange={(e) => {
+          if (e.target.checked) {
+            document.body.classList.add("noche");
+          } else {
+            document.body.classList.remove("noche");
+          }
+        }} /> */}
       </div>
       {user ? (
         <div className=" flex justify-around items-center m-2  h-1">
