@@ -18,7 +18,8 @@ const Register = ({ editForm, setEditForm }) => {
         representanteLegal: "",
         dniRepresentante: "",
         plantas: [],
-        responsablesTecnicos: []
+        responsablesTecnicos: [],
+        usuarioManifestower: false
     });
     const validateForm = () => {
         if (!form.razonSocial) return "Falta razón social";

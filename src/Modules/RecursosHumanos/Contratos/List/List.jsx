@@ -54,13 +54,13 @@ const List = ({
         style={{
           paddingLeft: "60px",
         }}
-        sortable
+        
       />
-      <Column field="colaborador.name" header="Nombres" sortable />
-      <Column field="colaborador.charge" header="Cargo" sortable />
-      <Column field="dateStart" header="Fecha de Inicio" sortable />
-      <Column field="dateEnd" header="Fecha de Finalización" sortable />
-      <Column field="state" header="Estado" sortable />
+      <Column field="colaborador.name" header="Nombres"  />
+      <Column field="colaborador.charge" header="Cargo"  />
+      <Column field="dateStart" header="Fecha de Inicio"  />
+      <Column field="dateEnd" header="Fecha de Finalización"  />
+      <Column field="state" header="Estado"  />
       <Column
         body={(rowData) => {
           const vencido = fechaActual > convertirDate(rowData.dateEnd);
@@ -75,7 +75,7 @@ const List = ({
           );
         }}
         header="Vigencia"
-        sortable
+        
       />
     </ListPrincipal>
   );

@@ -88,6 +88,14 @@ const DatosBasicos = ({ formData, setFormData }) => {
                 setForm={setFormData}
                 placeholder="Ej: 987654321"
             />
+            <Input
+                label="Usuario en Manifestower"
+                type="switch"
+                name="usuarioManifestower"
+                switchLabel="Activar usuario"
+                value={formData.usuarioManifestower}
+                setForm={setFormData}
+            />
         </div>
     );
 };

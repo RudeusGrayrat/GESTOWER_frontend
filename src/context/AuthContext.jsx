@@ -132,7 +132,7 @@ export const AuthProvider = ({ children }) => {
     await create_Employee(employee, setResponse, setErrors);
   };
   const updateEmployee = async (employee) => {
-    await update_Employee(employee, setResponse, setErrors);
+    await update_Employee({ ...employee, actualizadoPor: user._id }, setResponse, setErrors);
   };
 
   const createClient = async (user) => {
@@ -175,7 +175,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       setErrors(
         error?.response?.data?.message?._message ||
-          error?.response?.data?.message
+        error?.response?.data?.message
       );
     }
   };

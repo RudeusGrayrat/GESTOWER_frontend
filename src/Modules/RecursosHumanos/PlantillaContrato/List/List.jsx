@@ -33,9 +33,9 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
         field="createdAt"
          
         header="Fecha de Subida"
-        sortable
+        
       />
-      <Column field="tipoContrato" header="Tipo de Contrato" sortable />
+      <Column field="tipoContrato" header="Tipo de Contrato"  />
       <Column
         field="state"
         header="Estado"
@@ -53,7 +53,7 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
             </div>
           );
         }}
-        sortable
+        
       />
     </ListPrincipal>
   );

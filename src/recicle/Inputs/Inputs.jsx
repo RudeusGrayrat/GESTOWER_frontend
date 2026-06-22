@@ -8,6 +8,7 @@ import "./stilos.css";
 import "primeicons/primeicons.css";
 import axios from "../../api/axios";
 import { AutoComplete } from "primereact/autocomplete";
+import { InputSwitch } from "primereact/inputswitch";
 
 const Input = ({
   setForm,
@@ -192,6 +193,27 @@ const Input = ({
           className={estilo}
           disabled={disabled}
         />
+      );
+      break;
+
+    case "switch":
+      content = (
+        <div className="flex items-center gap-2 mt-2">
+          <InputSwitch
+            checked={value || false}
+            onChange={(e) => {
+              if (OtherProps.onChange) {
+                OtherProps.onChange({ target: { checked: e.value, name } });
+              } else if (setForm) {
+                setForm((prev) => ({ ...prev, [name]: e.value }));
+              }
+            }}
+            disabled={disabled}
+          />
+          <span className="text-sm text-gray-600">
+            {OtherProps.switchLabel || label}
+          </span>
+        </div>
       );
       break;
 

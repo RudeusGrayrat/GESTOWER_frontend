@@ -6,7 +6,7 @@ import PopUp from "../../recicle/popUps";
 
 const ReadOrCreate = ({ ItemRegister, ItemList, ItemReporte, submodule, module }) => {
   const { user } = useAuth();
-
+console.log("Usuario actual:", user);
   const hasPermission = () => {
     if (user) {
       const { modules } = user;

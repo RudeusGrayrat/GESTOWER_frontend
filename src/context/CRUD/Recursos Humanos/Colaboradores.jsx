@@ -6,7 +6,6 @@ const create_Employee = async (employee, setResponse, setErrors) => {
     const data = response.data;
     setResponse(data.message);
   } catch (error) {
-     ;
     setErrors(
       error?.response?.data?.message?._message || error?.response?.data?.message
     );
@@ -20,7 +19,6 @@ const update_Employee = async (employee, setResponse, setErrors) => {
     setResponse(data.message);
     return data;
   } catch (error) {
-     ;
     setErrors(error?.response?.data?.message);
   }
 };

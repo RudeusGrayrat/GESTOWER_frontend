@@ -27,6 +27,7 @@ const RegisterTransportistas = ({
         ubigeoId: '',
         correoElectronico: '',
         telefono: '',
+        usuarioManifestower: false,
         representanteLegal: {
             nombre: '',
             dni: '',
@@ -122,8 +123,10 @@ const RegisterTransportistas = ({
             }
             const newData = {
                 ...formData,
-                generadores: formData.generadores.map(gen => gen._id)
+                ubigeoId: formData.ubigeoId?._id || formData.ubigeoId,
+                generadores: formData.generadores?.map(gen => gen._id)
             }
+            console.log("Datos a enviar al backend", newData);
             const response = await axios.post("/certificaciones/postTransportista", newData);
             const data = response.data;
             sendMessage(data.message, data.type || "Correcto");

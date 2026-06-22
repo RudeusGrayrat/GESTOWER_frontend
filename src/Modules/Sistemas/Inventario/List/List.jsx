@@ -37,12 +37,12 @@ const ListInventario = ({
         field="codigo"
 
         header="Código"
-        sortable
+        
       />
-      <Column field="categoria" header="Categoría" sortable />
-      <Column field="marca" header="Marca" sortable />
-      <Column field="modelo" header="Modelo" sortable />
-      <Column field="cantidad" header="Cantidad" sortable />
+      <Column field="categoria" header="Categoría"  />
+      <Column field="marca" header="Marca"  />
+      <Column field="modelo" header="Modelo"  />
+      <Column field="cantidad" header="Cantidad"  />
       <Column
         field="estado"
         body={(rowData) => {
@@ -59,7 +59,7 @@ const ListInventario = ({
           );
         }}
         header="Estado"
-        sortable
+        
       />
     </ListPrincipal>
   );

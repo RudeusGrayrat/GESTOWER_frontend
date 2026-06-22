@@ -32,7 +32,7 @@ const ListAsignaciones = ({
       fetchData={fetchData}
       content={[]}
     >
-      <Column field="name" header="Nombre" sortable />
+      <Column field="name" header="Nombre"  />
     </ListPrincipal>
   );
 };

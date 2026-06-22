@@ -30,10 +30,10 @@ const List = ({ permissionEdit, permissionDelete }) => {
       <Column
         field="module"
         header="Modulo"
-        sortable
+        
          
       />
-      <Column field="name" header="Submodulo" sortable />
+      <Column field="name" header="Submodulo"  />
     </ListPrincipal>
   );
 };

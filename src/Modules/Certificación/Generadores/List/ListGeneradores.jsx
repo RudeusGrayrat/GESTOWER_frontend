@@ -52,7 +52,7 @@ const ListGeneradores = ({
                     );
                 }}
                 header="Estado"
-                sortable
+                
             />
         </ListPrincipal>
     )

@@ -147,56 +147,56 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
           <Column
             field="correlativa"
             header="N° Cotización"
-            sortable
+            
             style={{ minWidth: "6rem", paddingLeft: "30px", maxWidth: "8rem" }}
           />
           <Column
             field="fechaOperacion"
             header="Fec. Emisión"
-            sortable
+            
             style={{ minWidth: "8rem" }}
           ></Column>
           <Column
             field="ruc"
             header="RUC"
-            sortable
+            
             style={{ minWidth: "5rem" }}
           ></Column>
           <Column
             field="cliente"
             header="Cliente"
-            sortable
+            
             style={{ minWidth: "10rem" }}
           ></Column>
 
           <Column
             field="subTotal"
             header="SubTotal"
-            sortable
+            
             style={{ minWidth: "6rem" }}
           ></Column>
           <Column
             field="igv"
             header="IGV"
-            sortable
+            
             style={{ minWidth: "6rem" }}
           ></Column>
           <Column
             field="total"
             header="Total"
-            sortable
+            
             style={{ minWidth: "6rem" }}
           ></Column>
           <Column
             field="state"
             header="Estado"
-            sortable
+            
             style={{ minWidth: "6rem" }}
           ></Column>
           <Column
             field="contactDirectory"
             header="Registrado"
-            sortable
+            
             style={{ minWidth: "15rem" }}
           ></Column>
           {permissionRead && (

@@ -33,26 +33,26 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
       <Column
         field="ruc"
         header="RUC"
-        sortable
+        
         style={{ minWidth: "8rem", paddingLeft: "60px" }}
       ></Column>
       <Column
         field="razonSocial"
         header="Razón Social"
-        sortable
+        
         style={{ minWidth: "12rem" }}
       ></Column>
 
       <Column
         field="representative.name"
         header="Representante"
-        sortable
+        
         style={{ minWidth: "18rem" }}
       ></Column>
       <Column
         field="domicilioFiscal"
         header="Dirección"
-        sortable
+        
         style={{ minWidth: "8rem" }}
       ></Column>
     </ListPrincipal>

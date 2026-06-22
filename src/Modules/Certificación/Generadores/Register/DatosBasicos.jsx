@@ -1,3 +1,4 @@
+import { Checkbox } from "primereact/checkbox";
 import Input from "../../../../recicle/Inputs/Inputs";
 import InpuFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
@@ -19,6 +20,7 @@ const DatosBasicos = ({ form, setForm }) => {
                 }}
                 value={form.ruc}
                 name="ruc"
+                ancho=" !min-w-32 w-44"
                 maxLength={11}
                 setForm={setForm}
             />
@@ -26,6 +28,7 @@ const DatosBasicos = ({ form, setForm }) => {
                 label="Teléfono"
                 value={form.telefono}
                 name="telefono"
+                ancho=" !min-w-32 w-44"
                 setForm={setForm}
             />
             <Input
@@ -47,8 +50,17 @@ const DatosBasicos = ({ form, setForm }) => {
                         e.preventDefault();
                     }
                 }}
+                ancho=" !min-w-32 w-44"
                 name="dniRepresentante"
                 value={form.dniRepresentante}
+                setForm={setForm}
+            />
+            <Input
+                label="Usuario en Manifestower"
+                type="switch"
+                name="usuarioManifestower"
+                switchLabel="Activar usuario"
+                value={form.usuarioManifestower}
                 setForm={setForm}
             />
         </div>

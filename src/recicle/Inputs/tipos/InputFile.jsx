@@ -177,13 +177,13 @@ const InputFiles = ({
   };
 
   return (
-    <div className="flex flex-col mx-3 w-full min-h-24">
+    <div className={`flex flex-col mx-3 ${multiple ? "!w-full" : ""} min-h-24`}>
       {/* LABEL */}
       <label className={`text-base font-medium ${error ? "text-red-500" : "text-gray-700"}`}>
         {label}
       </label>
 
-      <div className="flex flex-wrap gap-3 items-center mt-1">
+      <div className="flex flex-wrap gap-3 items-center ">
         {/* 🔘 BOTÓN DE CARGA (Ahora posicionado al inicio/adelante) */}
         {(!previews.length || multiple) && (
           <label className={`${estilo} !p-2.5 flex items-center justify-center gap-4 cursor-pointer w-64 border-dashed border-2`}>

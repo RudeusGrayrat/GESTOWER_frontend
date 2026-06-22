@@ -3,7 +3,6 @@ import Input from "../../../../recicle/Inputs/Inputs";
 import InputFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
 const Responsables = ({ set, initialData }) => {
-    console.log("InitialData en Responsables:", initialData);
     const [formData, setFormData] = useState({
         nombre: initialData?.nombre || "",
         dni: initialData?.dni || "",
@@ -19,7 +18,7 @@ const Responsables = ({ set, initialData }) => {
         })
     }, [formData]);
     return (
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap px-1">
             <Input
                 ancho="!w-96"
                 label="Nombre del Responsable"
@@ -29,18 +28,19 @@ const Responsables = ({ set, initialData }) => {
                 placeholder="Nombres y apellidos"
             />
             <Input
-                label="DNI del Responsable"
-                name="dni"
-                value={formData.dni || ""}
-                setForm={setFormData}
-                placeholder="Ej: 12345678"
-            />
-            <Input
                 label="Cargo del Responsable"
                 name="cargo"
                 value={formData.cargo || ""}
                 setForm={setFormData}
                 placeholder="Ej: Gerente General"
+            />
+            <Input
+                label="DNI del Responsable"
+                name="dni"
+                value={formData.dni || ""}
+                setForm={setFormData}
+                ancho="!min-w-32 w-44"
+                placeholder="Ej: 12345678"
             />
             <InputFiles
                 label="Firma del Responsable"

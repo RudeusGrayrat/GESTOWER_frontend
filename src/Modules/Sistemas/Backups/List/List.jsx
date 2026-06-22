@@ -49,11 +49,11 @@ const ListBackups = ({
       permissionRead={permissionRead}
       content={backups}
     >
-      <Column field="name" header="Nombre" sortable />
-      <Column field="lastname" header="Apellido" sortable />
-      <Column field="entrega" header="Fecha de Entrega" sortable />
-      <Column field="mes" header="Mes" sortable />
-      <Column field="año" header="Año" sortable />
+      <Column field="name" header="Nombre"  />
+      <Column field="lastname" header="Apellido"  />
+      <Column field="entrega" header="Fecha de Entrega"  />
+      <Column field="mes" header="Mes"  />
+      <Column field="año" header="Año"  />
       <Column
         field="estado"
         header="Estado"
@@ -71,7 +71,7 @@ const ListBackups = ({
             </span>
           );
         }}
-        sortable
+        
       />
     </ListPrincipal>
   );

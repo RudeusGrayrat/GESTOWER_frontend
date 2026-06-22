@@ -231,7 +231,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         <div className="w-full p-4">
             {/* Barra de progreso */}
             <div className="mb-4 mx-4">
-                <ProgressBar style={{ borderRadius: "20px" }} value={parseFloat(((pasoActual / pasos.length) * 100).toFixed(2))} ></ProgressBar>
+                <ProgressBar style={{ borderRadius: "20px" }} value={parseFloat(((pasoActual / pasos.length) * 100).toFixed(0))} ></ProgressBar>
             </div>
 
             {/* Paso actual */}

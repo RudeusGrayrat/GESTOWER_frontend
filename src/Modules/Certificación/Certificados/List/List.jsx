@@ -32,9 +32,9 @@ const ListCertificados = ({
         field="name"
          
         header="Nombre"
-        sortable
+        
       ></Column>
-      <Column field="fecha" header="Fecha" sortable></Column>
+      <Column field="fecha" header="Fecha" ></Column>
     </ListPrincipal>
   );
 };

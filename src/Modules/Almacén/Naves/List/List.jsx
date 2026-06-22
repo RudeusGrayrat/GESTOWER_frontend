@@ -32,9 +32,9 @@ const ListNaves = ({ permissionRead, permissionEdit, permissionDelete }) => {
       <Column
         field="nombre"
         header="Nombre Nave"
-        sortable
+        
       />
-      <Column field="sedeId.nombre" header="Sede" sortable />
+      <Column field="sedeId.nombre" header="Sede"  />
     </ListPrincipal>
   );
 };

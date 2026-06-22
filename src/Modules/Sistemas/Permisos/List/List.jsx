@@ -28,14 +28,14 @@ const ListPermisos = ({ permissionEdit, permissionRead }) => {
       <Column
         field="lastname"
         header="Apellidos"
-        sortable
+        
 
       />
-      <Column field="name" header="Nombres" sortable />
-      <Column field="charge" header="Cargo" sortable />
+      <Column field="name" header="Nombres"  />
+      <Column field="charge" header="Cargo"  />
       <Column
         header="Permisos"
-        sortable
+        
         body={(rowData) => {
           const isEmpty = rowData.modules?.length > 0;
           const color = isEmpty ? "text-green-500" : "text-red-500";

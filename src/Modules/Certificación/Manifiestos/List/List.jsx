@@ -52,8 +52,8 @@ const ListManifiestos = ({
             EditItem={EditManifiesto}
             fetchData={fetchManifiestos}
         >
-            <Column field="numeroManifiesto" header="N° Manifiesto" sortable />
-            <Column field="generadorId" header="Generador" body={generadorTemplate} sortable />
+            <Column field="numeroManifiesto" header="N° Manifiesto"  />
+            <Column field="generadorId" header="Generador" body={generadorTemplate}  />
             <Column field="residuo.descripcion" header="Residuo" />
             <Column
                 field="transporte.fechaRecepcion"
@@ -64,7 +64,7 @@ const ListManifiestos = ({
                 field="createdAt"
                 header="Fecha Registro"
                 body={(row) => new Date(row.createdAt).toLocaleDateString()}
-                sortable
+                
             />
             <Column
                 field="estado"

@@ -84,17 +84,17 @@ const ListActivosDigitales = ({
       <Column
         field="name"
         header="name"
-        sortable
+        
 
       />
-      <Column field="tipo" header="Tipo" sortable />
-      <Column field="clave" header="Clave" sortable />
-      <Column field="cantidad_dispositivos" header="Cantidad" sortable />
-      <Column field="fecha_inicio" header="Fecha Inicio" sortable />
-      <Column field="fecha_vencimiento" header="Fecha Vencimiento" sortable />
-      <Column field="renovacion_automatica" header="Renovación" sortable />
-      <Column field="costo" header="Costo" sortable />
-      <Column field="moneda" header="Moneda" sortable />
+      <Column field="tipo" header="Tipo"  />
+      <Column field="clave" header="Clave"  />
+      <Column field="cantidad_dispositivos" header="Cantidad"  />
+      <Column field="fecha_inicio" header="Fecha Inicio"  />
+      <Column field="fecha_vencimiento" header="Fecha Vencimiento"  />
+      <Column field="renovacion_automatica" header="Renovación"  />
+      <Column field="costo" header="Costo"  />
+      <Column field="moneda" header="Moneda"  />
       <Column
         field="state"
         header="Estado"
@@ -112,7 +112,7 @@ const ListActivosDigitales = ({
             </div>
           );
         }}
-        sortable
+        
       />
     </ListPrincipal>
   );

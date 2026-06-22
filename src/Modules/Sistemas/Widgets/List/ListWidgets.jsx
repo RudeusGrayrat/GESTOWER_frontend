@@ -33,11 +33,11 @@ const ListWidgets = (permissionEdit, permissionDelete, permissionRead) => {
         field="name"
 
         header="Nombre"
-        sortable
+        
       />
-      <Column field="imagen" header="Url Imagen" sortable />
-      <Column field="grupo" header="Grupo" sortable />
-      <Column field="createdAt" header="Fecha de Creacion" sortable />
+      <Column field="imagen" header="Url Imagen"  />
+      <Column field="grupo" header="Grupo"  />
+      <Column field="createdAt" header="Fecha de Creacion"  />
     </ListPrincipal>
   );
 };

@@ -9,12 +9,9 @@ import { useState } from "react";
 import SwitchDark from "../../recicle/componentes ui/ModeDark";
 const imagen = "https://cdn-icons-png.freepik.com/512/10975/10975953.png";
 
-const Nav = ({ notifications }) => {
+const Nav = ({ unreadCount }) => {
+  console.log("🔔 Nav renderizado con unreadCount:", unreadCount);
   const { user } = useAuth();
-  // const [notifications, setNotifications] = useState([]);
-  // const handleNewNotification = (notification) => {
-  //   setNotifications((prev) => [notification, ...prev]);
-  // };
   return (
     <div className="flex justify-between ml-20 dark:bg-slate-500 bg-white items-center px-12 h-20  border-b border-b-stone-200">
       {/* <div className=" flex justify-around  items-center  m-2 rounded-lg h-14">
@@ -34,14 +31,11 @@ const Nav = ({ notifications }) => {
         <div className=" flex justify-around items-center m-2  h-1">
           <Link to="/notificaciones">
             <div className="relative bg-slate-200 flex justify-center items-center w-16 m-4 h-16 rounded-full">
-              {/* <NotificationListener
-                userId={user._id}
-                onNewNotification={handleNewNotification}
-              /> */}
               <Notificon />
-              {notifications.length > 0 && (
-                <div className="absolute top-0 -right-2 p-[14px] flex justify-center items-center w-4 h-4 bg-red-500 rounded-full text-white text-xs font-bold">
-                  {notifications.length}
+              {/* 🔥 Usa la prop unreadCount calculada de manera exacta por el servidor */}
+              {unreadCount > 0 && (
+                <div className="absolute top-0 -right-2 p-[14px] flex justify-center items-center w-4 h-4 bg-red-500 rounded-full text-white text-xs font-bold ready-badge">
+                  {unreadCount}
                 </div>
               )}
             </div>

@@ -16,7 +16,7 @@ const GeneradoresTransportistas = ({ set, initialData }) => {
         }
     }, [formData.razonSocial])
     return (
-        <div className="w-full flex flex-wrap p-2">
+        <div className="w-full h-full flex flex-wrap px-1">
             <Input
                 label="Razon Social"
                 name="razonSocial"
