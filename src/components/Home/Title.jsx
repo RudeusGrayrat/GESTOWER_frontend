@@ -60,6 +60,7 @@ const componentMap = {
     "activos digitales": ActivosDigitales,
     backups: Backups,
     permisos: Permissions,
+    "widgets": WidgetsSistemas,
   },
   herramientas: {
     novedades: Novedades,

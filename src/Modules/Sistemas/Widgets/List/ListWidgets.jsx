@@ -7,14 +7,20 @@ import EditWidget from "../Permissions/Edit";
 import DeleteWidget from "../Permissions/Delete";
 
 const ListWidgets = (permissionEdit, permissionDelete, permissionRead) => {
-  const allWidgets = useSelector((state) => state.sistemas.allWidgets);
+  const allWidgets = useSelector((state) => state.sistemas?.allWidgets);
 
   const dispatch = useDispatch();
   useEffect(() => {
-    if (allWidgets.length === 0) {
+    if (allWidgets?.length === 0) {
       dispatch(getAllWidgets());
     }
   }, [allWidgets, dispatch]);
+  const fetchData = () => {
+    return {
+      data: allWidgets || [],
+      total: allWidgets?.length || 0,
+    }
+  }
   return (
     <ListPrincipal
       permissionDelete={permissionDelete}
@@ -25,7 +31,7 @@ const ListWidgets = (permissionEdit, permissionDelete, permissionRead) => {
       DeleteItem={DeleteWidget}
       EditItem={EditWidget}
       DetailItem={null}
-      fetchData={() => dispatch(getAllWidgets())}
+      fetchData={fetchData}
       sortField="createdAt"
       sortOrder={-1}
     >
@@ -33,11 +39,11 @@ const ListWidgets = (permissionEdit, permissionDelete, permissionRead) => {
         field="name"
 
         header="Nombre"
-        
+
       />
-      <Column field="imagen" header="Url Imagen"  />
-      <Column field="grupo" header="Grupo"  />
-      <Column field="createdAt" header="Fecha de Creacion"  />
+      <Column field="imagen" header="Url Imagen" />
+      <Column field="grupo" header="Grupo" />
+      <Column field="createdAt" header="Fecha de Creacion" />
     </ListPrincipal>
   );
 };
