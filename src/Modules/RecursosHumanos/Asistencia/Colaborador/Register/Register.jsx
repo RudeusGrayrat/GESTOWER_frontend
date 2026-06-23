@@ -8,12 +8,13 @@ import { useAuth } from "../../../../../context/AuthContext";
 import { useDispatch, useSelector } from "react-redux";
 import useSendMessage from "../../../../../recicle/senMessage";
 import { getEmployees } from "../../../../../redux/modules/Recursos Humanos/actions";
+import dayjs from "dayjs";
 
 const RegisterAsistenciaColaborador = () => {
   const { createAsistenciaColaborador } = useAuth();
   const [form, setForm] = useState({
     colaborador: "",
-    fecha: "",
+    fecha: dayjs().format("DD/MM/YYYY"),
     ingreso: "",
     ingresoSede: "",
     salida: "",
@@ -24,6 +25,7 @@ const RegisterAsistenciaColaborador = () => {
     observaciones: "",
     estado: "PRESENTE",
   });
+  console.log("🚀 ~ file: Register.jsx:17 ~ RegisterAsistenciaColaborador ~ form:", form);
   const sendMessage = useSendMessage();
   const colaboradores = useSelector(
     (state) => state.recursosHumanos.allEmployees
@@ -36,6 +38,7 @@ const RegisterAsistenciaColaborador = () => {
 
   const register = async () => {
     sendMessage("Registrando Asistencia", "Espere");
+    if (!validateForm(form) && form.estado !== "PERMISO") return sendMessage("Formulario Incompleto", "error");
     try {
       const colaboradorId = await colaboradores.find(
         (colaborador) =>
@@ -56,7 +59,7 @@ const RegisterAsistenciaColaborador = () => {
   const resetForm = () => {
     setForm({
       colaborador: "",
-      fecha: "",
+      fecha: dayjs().format("DD/MM/YYYY"),
       ingreso: "",
       ingresoSede: "",
       salida: "",
@@ -69,7 +72,7 @@ const RegisterAsistenciaColaborador = () => {
     });
   };
   return (
-    <Register registrar={register} resetForm={() => resetForm()} validate={() => validateForm(form)}>
+    <Register registrar={register} resetForm={() => resetForm()} validate={() => validateForm(form.estado === "PERMISO" ? { colaborador: form.colaborador, fecha: form.fecha } : form)}>
       <CardPlegable title="Datos de Asistencia">
         <DatosDeAsistencia setForm={setForm} error={error} form={form} />
       </CardPlegable>
