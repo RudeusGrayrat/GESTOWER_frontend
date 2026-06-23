@@ -10,13 +10,13 @@ import PopUp from "../../recicle/popUps";
 const WidgetStore = ({ show, colaborador }) => {
   const [mostrar, setMostrar] = useState(false);
   const { links } = useModulesAndSubModules();
-  const allWidgets = useSelector((state) => state.herramientas.allWidgets);
-  const widgetsPreference = useSelector((state) => state.herramientas.widgetsPreference);
+  const allWidgets = useSelector((state) => state.herramientas?.allWidgets);
+  const widgetsPreference = useSelector((state) => state.herramientas?.widgetsPreference);
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
   const { addWidgetPreference } = useAuth();
   useEffect(() => {
-    if (allWidgets.length === 0) {
+    if (allWidgets?.length === 0) {
       dispatch(getAllWidgets());
     }
   }, [dispatch, allWidgets]);
@@ -58,7 +58,7 @@ const WidgetStore = ({ show, colaborador }) => {
     }
   };
   useEffect(() => {
-    if (options.length > 0 && !selectedOption && allWidgets.length > 0) {
+    if (options?.length > 0 && !selectedOption && allWidgets?.length > 0) {
       const firstOption = options[0];
       setSelectedOption(firstOption);
       const filteredWidgets = allWidgets.filter(
@@ -66,7 +66,7 @@ const WidgetStore = ({ show, colaborador }) => {
       );
       setSelects(filteredWidgets);
     }
-  }, [options, allWidgets.length > 0]);
+  }, [options, allWidgets?.length > 0]);
 
 
   return (
