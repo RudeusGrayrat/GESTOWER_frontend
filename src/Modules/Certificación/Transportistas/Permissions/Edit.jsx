@@ -21,7 +21,19 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
                 return;
             }
             if (diferencias.generadores) {
-                diferencias.generadores = formEdit.generadores.map(gen => gen.generadorId?._id);
+                // Mapeamos los generadores para que conserven la estructura de objeto 
+                // que requiere el sub-schema de Mongoose
+                diferencias.generadores = formEdit.generadores.map(gen => {
+                    // Validamos si generadorId viene populado (como objeto) o ya viene como string plano
+                    const idLimpio = typeof gen.generadorId === 'object'
+                        ? gen.generadorId?._id
+                        : gen.generadorId;
+
+                    return {
+                        generadorId: idLimpio, // <-- Enviamos solo el string ID limpio aquí
+                        tienePermisoLlenado: gen.tienePermisoLlenado ?? false // <-- Mantenemos su propiedad hermana
+                    };
+                });
             }
 
             const response = await axios.patch(`/certificaciones/editTransportista/${formEdit._id}`, diferencias);
