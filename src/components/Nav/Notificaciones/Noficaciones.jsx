@@ -104,7 +104,7 @@ const Notificaciones = () => {
       {/* CABECERA */}
       <div className="flex flex-col px-2 items-start gap-1 mb-4">
         <h2 className="text-2xl font-bold text-gray-900">Centro de Notificaciones</h2>
-        <p className="text-sm text-gray-500">Mantente al tanto de tus manifiestos y estados operativos</p>
+        <p className="text-sm text-gray-500">Recuerda que las notificaciones se eliminan automáticamente después de 60 días</p>
       </div>
 
       {/* FILTROS INTERACTIVOS (Buscador + Selector de Fecha) */}

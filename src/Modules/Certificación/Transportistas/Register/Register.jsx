@@ -12,11 +12,10 @@ import Conductores from "./Conductores";
 import Representante_y_Responsable from "./Representante_y_Responsable";
 import Responsables from "./Responsables";
 
-const RegisterTransportistas = ({
-    editData, setFormEdit
-}) => {
+const RegisterTransportistas = ({ editData, setFormEdit }) => {
     const [deshabilitar, setDeshabilitar] = useState(false);
     const sendMessage = useSendMessage();
+
     const [formData, setFormData] = useState({
         razonSocial: '',
         ruc: '',
@@ -28,117 +27,86 @@ const RegisterTransportistas = ({
         correoElectronico: '',
         telefono: '',
         usuarioManifestower: false,
-        representanteLegal: {
-            nombre: '',
-            dni: '',
-        },
-        responsableTecnico: {
-            nombre: '',
-            numeroColegiatura: '',
-        },
-        responsables: [
-            {
-                nombre: '',
-                dni: '',
-                cargo: '',
-                firmaResponsable: '',
-            }
-        ],
-        contingencias: {
-            derrame: '',
-            infiltracion: '',
-            incendio: '',
-            explosion: '',
-            otros: ''
-        },
+        representanteLegal: { nombre: '', dni: '' },
+        responsableTecnico: { nombre: '', numeroColegiatura: '' },
+        responsables: [{ nombre: '', dni: '', cargo: '', firmaResponsable: '' }],
+        contingencias: { derrame: '', infiltracion: '', incendio: '', explosion: '', otros: '' },
         generadores: [
             {
-                _id: "",
-                razonSocial: "",
+                generadorId: null, // Guardará el objeto completo seleccionado
+                tienePermisoLlenado: false
             }
         ],
-        conductores: [
-            {
-                nombre: "",
-                licencia: "",
-            }
-        ]
+        conductores: [{ nombre: "", licencia: "" }]
     });
+
     const validateForm = () => {
-        if (!formData.razonSocial) return "Falta razón social";
-        if (!formData.ruc) return "Falta RUC";
-        if (!formData.registroEors) return "Falta Registro EO-RS";
-        if (!formData.direccion) return "Falta dirección";
-        if (!formData.ubigeoId) return "Falta ubigeo";
-        if (!formData.correoElectronico) return "Falta correo electrónico";
-        if (!formData.telefono) return "Falta teléfono";
+        const data = editData || formData;
+        if (!data.razonSocial) return "Falta razón social";
+        if (!data.ruc) return "Falta RUC";
+        if (!data.registroEors) return "Falta Registro EO-RS";
+        if (!data.direccion) return "Falta dirección";
+        if (!data.ubigeoId) return "Falta ubigeo";
+        if (!data.correoElectronico) return "Falta correo electrónico";
+        if (!data.telefono) return "Falta teléfono";
         return null;
     };
+
     const resetForm = () => {
         setFormData({
-            razonSocial: '',
-            ruc: '',
-            registroEors: '',
-            autorizacionMunicipal: '',
-            documentoRuta: '',
-            direccion: '',
-            ubigeoId: '',
-            correoElectronico: '',
-            telefono: '',
-            representanteLegal: {
-                nombre: '',
-                dni: '',
-            },
-            responsableTecnico: {
-                nombre: '',
-                numeroColegiatura: '',
-            },
+            razonSocial: '', ruc: '', registroEors: '', autorizacionMunicipal: '', documentoRuta: '',
+            direccion: '', ubigeoId: '', correoElectronico: '', telefono: '', usuarioManifestower: false,
+            representanteLegal: { nombre: '', dni: '' },
+            responsableTecnico: { nombre: '', numeroColegiatura: '' },
             responsables: [],
-            contingencias: {
-                derrame: '',
-                infiltracion: '',
-                incendio: '',
-                explosion: '',
-                otros: ''
-            },
+            contingencias: { derrame: '', infiltracion: '', incendio: '', explosion: '', otros: '' },
             generadores: [],
             conductores: []
         });
-    }
+    };
+
     const register = async () => {
         setDeshabilitar(true);
         sendMessage("Registrando transportista...", "Cargando");
 
         try {
             const errorMsg = validateForm();
-            if (errorMsg) {
-                sendMessage(errorMsg, "Info");
-                return;
-            }
+            if (errorMsg) { sendMessage(errorMsg, "Info"); return; }
 
-            // Validar RUC (11 dígitos)
             if (!/^\d{11}$/.test(String(formData.ruc))) {
                 sendMessage("El RUC debe tener 11 dígitos numéricos", "Advertencia");
                 return;
             }
+
+            // 🌟 PROCESAMOS PARA EL BACKEND: Enviamos solo los IDs dentro de la estructura relacional
+            const generadoresPayload = (formData.generadores || [])
+                .map(g => {
+                    const id = g.generadorId?._id || g.generadorId;
+                    return id ? { generadorId: id, tienePermisoLlenado: g.tienePermisoLlenado || false } : null;
+                })
+                .filter(Boolean);
+
             const newData = {
                 ...formData,
                 ubigeoId: formData.ubigeoId?._id || formData.ubigeoId,
-                generadores: formData.generadores?.map(gen => gen._id)
-            }
+                generadores: generadoresPayload
+            };
+
             console.log("Datos a enviar al backend", newData);
             const response = await axios.post("/certificaciones/postTransportista", newData);
             const data = response.data;
             sendMessage(data.message, data.type || "Correcto");
-            if (data.type === "Correcto") {
-                resetForm();
-            }
+            if (data.type === "Correcto") resetForm();
         } catch (error) {
             sendMessage(error.response?.data?.message || "Error al registrar transportista", "Error");
         } finally {
             setDeshabilitar(false);
         }
     };
+
+    // Determinamos qué array de generadores renderizar basándonos en si estamos editando o creando
+    const currentGeneradores = editData ? (editData.generadores?.length > 0 ? editData.generadores : []) : formData.generadores;
+
     return (
         <div className="w-full p-4">
             <PopUp deshabilitar={deshabilitar} />
@@ -156,7 +124,7 @@ const RegisterTransportistas = ({
                     estilos="flex justify-center items-center"
                     data="responsables"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? (editData.responsables?.length > 0 ? editData.responsables : []) : (formData.responsables)}
+                    directory={editData ? (editData.responsables?.length > 0 ? editData.responsables : []) : formData.responsables}
                     ItemComponent={Responsables}
                 />
             </CardPlegable>
@@ -165,7 +133,7 @@ const RegisterTransportistas = ({
                     estilos="flex justify-center items-center"
                     data="generadores"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? (editData.generadores?.length > 0 ? editData.generadores : []) : (formData.generadores)}
+                    directory={currentGeneradores} // 🌟 Mandamos el objeto relacional íntegro
                     ItemComponent={GeneradoresTransportistas}
                 />
             </CardPlegable>
@@ -174,29 +142,18 @@ const RegisterTransportistas = ({
                     estilos="flex justify-center items-center"
                     data="conductores"
                     setForm={setFormEdit ? setFormEdit : setFormData}
-                    directory={editData ? (editData.conductores?.length > 0 ? editData.conductores : []) : (formData.conductores)}
+                    directory={editData ? (editData.conductores?.length > 0 ? editData.conductores : []) : formData.conductores}
                     ItemComponent={Conductores}
                 />
             </CardPlegable>
-            {!editData && (<div className="flex justify-center mt-6">
-                <ButtonOk
-                    children="Cancelar"
-                    classe="!w-32 mr-4"
-                    onClick={() => resetForm()}
-                    disabled={deshabilitar}
-                />
-                <ButtonOk
-                    type="ok"
-                    onClick={register}
-                    classe="!w-32"
-                    children="Registrar"
-                    disabled={deshabilitar}
-                />
-            </div>
+            {!editData && (
+                <div className="flex justify-center mt-6">
+                    <ButtonOk children="Cancelar" classe="!w-32 mr-4" onClick={() => resetForm()} disabled={deshabilitar} />
+                    <ButtonOk type="ok" onClick={register} classe="!w-32" children="Registrar" disabled={deshabilitar} />
+                </div>
             )}
-        </div >
-    )
+        </div>
+    );
+};
 
-}
-
-export default RegisterTransportistas
+export default RegisterTransportistas;

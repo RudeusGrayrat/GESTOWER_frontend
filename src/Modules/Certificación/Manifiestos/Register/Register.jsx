@@ -90,7 +90,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
             generadorResponsableManejo: '', cargoGeneradorResponsableManejo: '', dniGeneradorResponsableManejo: '', firmaGeneradorResponsableManejo: '', fecha: '', hora: ''
         },
 
-        estado: 'PENDIENTE'
+        estado: 'BORRADOR'
     });
     const pasos = [
         { id: 1, nombre: "Datos generales", componente: Paso1_DatosGenerales },
@@ -169,7 +169,7 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
                 //datos del generador responsable del manejo
                 generadorResponsableManejo: '', cargoGeneradorResponsableManejo: '', dniGeneradorResponsableManejo: '', firmaGeneradorResponsableManejo: '', fecha: '', hora: ''
             },
-            estado: 'PENDIENTE'
+            estado: 'BORRADOR'
         });
         setPasoActual(1);
     };
