@@ -21,7 +21,7 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
                 return;
             }
             if (diferencias.generadores) {
-                diferencias.generadores = formEdit.generadores.map(gen => gen._id);
+                diferencias.generadores = formEdit.generadores.map(gen => gen.generadorId?._id);
             }
 
             const response = await axios.patch(`/certificaciones/editTransportista/${formEdit._id}`, diferencias);
