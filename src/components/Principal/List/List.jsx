@@ -20,12 +20,14 @@ const ListPrincipal = ({
   permissionApprove,
   permissionDisapprove,
   permissionSend,
+  permissionVerify,
   ApproveItem,
   DisapproveItem,
   EnviarItem,
   DeleteItem,
   EditItem,
   DetailItem,
+  VerifyItem,
   contenido,
   children,
   rowClick,
@@ -40,6 +42,8 @@ const ListPrincipal = ({
   const [showEdit, setShowEdit] = useState(false);
   const [showApprove, setShowApprove] = useState(false);
   const [showDisapprove, setShowDisapprove] = useState(false);
+  const [showVerify, setShowVerify] = useState(false);
+
   const [showSend, setShowSend] = useState(false);
   const [showPopUp, setShowPopUp] = useState(false);
   const { setResponse, setErrors } = useAuth();
@@ -62,6 +66,11 @@ const ListPrincipal = ({
   const handleShowApprove = (item) => {
     setSelected(item);
     setShowApprove(true);
+    setSelectedRowId(item._id);
+  };
+  const handleShowVerify = (item) => {
+    setSelected(item);
+    setShowVerify(true);
     setSelectedRowId(item._id);
   };
   const handleShowDisapprove = (item) => {
@@ -143,6 +152,20 @@ const ListPrincipal = ({
               `}
             onClick={() => handleShowSend(rowData)}
             disabled={isSend}
+          />
+        )}
+        {/* Reemplaza los botones antiguos de Aprobar y Rechazar por este */}
+        {permissionVerify && VerifyItem && (
+          <Button
+            icon="pi pi-shield"
+            title="Verificar"
+            rounded
+            outlined
+            className={`text-purple-600 rounded-full mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
+            ${selectedRowId === rowData._id && showVerify ? "shadow-inner translate-y-[2px]" : "shadow-xl"}
+            ${rowData.estado === "APROBADO" || rowData.estado === "RECHAZADO" ? "cursor-not-allowed opacity-30" : ""} `}
+            onClick={() => handleShowVerify(rowData)}
+            disabled={rowData.estado === "APROBADO" || rowData.estado === "RECHAZADO"}
           />
         )}
         {permissionApprove && (
@@ -322,6 +345,13 @@ const ListPrincipal = ({
       {showSend && (
         <EnviarItem
           setShowSend={setShowSend}
+          selected={selected}
+          reload={() => fetchAll(pagina, limite, searchTerm)}
+        />
+      )}
+      {showVerify && VerifyItem && (
+        <VerifyItem
+          setShowVerify={setShowVerify}
           selected={selected}
           reload={() => fetchAll(pagina, limite, searchTerm)}
         />

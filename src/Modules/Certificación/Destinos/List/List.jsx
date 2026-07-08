@@ -62,7 +62,7 @@ const ListDestinos = ({
                     return (
                         <div
                             className={`text-center bg-gradient-to-tr from-white to-gray-100
-                shadow-inner rounded-xl font-semibold  px-5 py-1  ${color} `}
+                shadow-inner rounded-xl font-semibold w-36 px-5 py-1  ${color} `}
                         >
                             {rowData.estado}
                         </div>
