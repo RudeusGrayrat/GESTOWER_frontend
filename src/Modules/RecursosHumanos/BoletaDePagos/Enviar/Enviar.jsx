@@ -155,7 +155,7 @@ const Enviar = () => {
             ruc_empresa: findBusiness?.ruc || "",
             razonSocial_empresa: findBusiness?.razonSocial || "",
             fechaBoletaDePago: data.fechaBoletaDePago,
-            situacionEspecial: data?.situacionEspecial || "NINGUNA",
+            situacionEspecial: data.colaborador.situacionEspecial || "NINGUNA",
             tipoD: data.colaborador.documentType,
             numeroD: data.colaborador.documentNumber,
             colaborador: data.colaborador.lastname + " " + data.colaborador.name,

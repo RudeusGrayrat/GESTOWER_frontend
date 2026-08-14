@@ -228,6 +228,25 @@ const FormOne = ({ setForm, error, form }) => {
         setForm={setForm}
       />
       <Input
+        label="Situación Especial"
+        type="select"
+        name="situacionEspecial"
+        options={[
+          "NINGUNA",
+          "TRABAJADOR DE DIRECCIÓN - PRESENCIAL",
+          "TRABAJADOR DE CONFIANZA - PRESENCIAL",
+          "TRABAJADOR DE DIRECCIÓN - TELETRABAJO MIXTO",
+          "TRABAJADOR DE CONFIANZA - TELETRABAJO MIXTO",
+          "TRABAJADOR DE DIRECCIÓN - TELETRABAJO COMPLETO",
+          "TRABAJADOR DE CONFIANZA - TELETRABAJO COMPLETO",
+          "TELETRABAJO MIXTO",
+          "TELETRABAJO COMPLETO"
+        ]}
+        value={form.situacionEspecial || "NINGUNA"}
+        setForm={setForm}
+        errorOnclick={error?.situacionEspecial}
+      />
+      <Input
         label="Asistencia Automática"
         name="asistenciaAutomatica"
         type="select"

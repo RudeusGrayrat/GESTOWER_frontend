@@ -22,6 +22,7 @@ const Register = () => {
     lastname: "",
     documentType: "",
     documentNumber: "",
+    situacionEspecial: "NINGUNA",
     type: "COLABORADOR",
     dateOfBirth: "",
     dateStart: "",

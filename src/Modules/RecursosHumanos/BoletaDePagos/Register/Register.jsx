@@ -48,7 +48,6 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
       : {
         colaborador: "",
         diasTrabajados: "",
-        situacionEspecial: "NINGUNA",
         fechaBoletaDePago: "",
         diasSubsidiados: "0",
         horasTrabajadas: "192",
