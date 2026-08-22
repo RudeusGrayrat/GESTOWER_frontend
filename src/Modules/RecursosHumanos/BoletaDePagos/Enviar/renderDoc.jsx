@@ -1,4 +1,5 @@
 import convertDocx from "../../../../utils/convertDocx";
+import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
 const {
   VITE_PLANTILLA_INVERSIONES_LURIN,
   VITE_PLANTILLA_LADIAMB,
@@ -33,42 +34,27 @@ const renderDoc = async (boleta, business, datosContables) => {
   try {
     const transformData = (data) => {
       const ingresos = data.remuneraciones.map((remuneracion, index) => {
-        const conceptoObj = datosContables.find(
-          (item) => item.codigoPlame === remuneracion.datosContables
-        );
         return {
           isFirst: index === 0,
           codigo: remuneracion.datosContables,
-          concepto: conceptoObj
-            ? conceptoObj.concepto
-            : "Concepto no encontrado",
+          concepto: obtenerConceptoBoleta(remuneracion, datosContables),
           tipo: "INGRESOS",
           monto: parseFloat(remuneracion.monto),
         };
       });
       const descuentos = data.descuentosAlTrabajador.map((descuento, index) => {
-        const conceptoObj = datosContables.find(
-          (item) => item.codigoPlame === descuento.datosContables
-        );
         return {
           isFirst: index === 0,
           codigo: descuento.datosContables,
-          concepto: conceptoObj
-            ? conceptoObj.concepto
-            : "Concepto no encontrado",
+          concepto: obtenerConceptoBoleta(descuento, datosContables),
           tipo: "APORTES DEL TRABAJADOR",
           monto: parseFloat(descuento.monto),
         };
       });
       const aportes = data.aportacionesDelEmpleador.map((aporte) => {
-        const conceptoObj = datosContables.find(
-          (item) => item.codigoPlame === aporte.datosContables
-        );
         return {
           codigo: aporte.datosContables,
-          concepto: conceptoObj
-            ? conceptoObj.concepto
-            : "Concepto no encontrado",
+          concepto: obtenerConceptoBoleta(aporte, datosContables),
           monto: parseFloat(aporte.monto),
         };
       });

@@ -10,7 +10,8 @@ const Remuneraciones = ({
 }) => {
   const [formRemuneraciones, setFormRemuneraciones] = useState({
     codigoPlame: initialData.datosContables || "",
-    concepto: "",
+    concepto: initialData.concepto || "",
+    conceptoPersonalizado: Boolean(initialData.conceptoPersonalizado),
     tipo: "",
     monto: initialData.monto || "0",
   });
@@ -23,16 +24,20 @@ const Remuneraciones = ({
     if (findRemuneracion) {
       setFormRemuneraciones((prevData) => ({
         ...prevData,
-        concepto: findRemuneracion?.concepto,
+        concepto: prevData.conceptoPersonalizado
+          ? prevData.concepto
+          : findRemuneracion?.concepto,
         tipo: findRemuneracion?.tipo,
       }));
     }
-  }, [findRemuneracion]);
+  }, [findRemuneracion, formRemuneraciones.conceptoPersonalizado]);
 
   useEffect(() => {
     if (formRemuneraciones.monto && formRemuneraciones.codigoPlame) {
       set({
         datosContables: formRemuneraciones.codigoPlame,
+        concepto: formRemuneraciones.concepto,
+        conceptoPersonalizado: formRemuneraciones.conceptoPersonalizado,
         monto: formRemuneraciones.monto,
       });
     }

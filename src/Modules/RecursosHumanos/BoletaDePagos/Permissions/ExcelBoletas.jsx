@@ -57,6 +57,8 @@ const ExcelBoletas = () => {
             if (!map[doc]) map[doc] = [];
             map[doc].push({
               datosContables: row[keyCodigo]?.toString(),
+              concepto: row["Concepto"]?.toString(),
+              conceptoPersonalizado: Boolean(row["Concepto"]),
               monto: (() => {
                 const raw = row["Monto"];
                 if (raw === undefined || raw === null || raw === "") return 0;

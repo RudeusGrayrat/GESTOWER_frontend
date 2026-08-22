@@ -1,4 +1,3 @@
-import Input from "../../../../recicle/Inputs/Inputs";
 import { useEffect, useState } from "react";
 import Comun from "./Comun";
 
@@ -11,7 +10,8 @@ const DescuentosAlTrabajador = ({
   const [formDescuentosDelTrabajador, setFormDescuentosDelTrabajador] =
     useState({
       codigoPlame: initialData.datosContables || "",
-      concepto: "",
+      concepto: initialData.concepto || "",
+      conceptoPersonalizado: Boolean(initialData.conceptoPersonalizado),
       tipo: "",
       monto: initialData.monto || "",
     });
@@ -22,10 +22,12 @@ const DescuentosAlTrabajador = ({
     if (findDescuentos)
       setFormDescuentosDelTrabajador((prev) => ({
         ...prev,
-        concepto: findDescuentos?.concepto,
+        concepto: prev.conceptoPersonalizado
+          ? prev.concepto
+          : findDescuentos?.concepto,
         tipo: findDescuentos?.tipo,
       }));
-  }, [findDescuentos]);
+  }, [findDescuentos, formDescuentosDelTrabajador.conceptoPersonalizado]);
 
   useEffect(() => {
     if (
@@ -34,6 +36,9 @@ const DescuentosAlTrabajador = ({
     ) {
       set({
         datosContables: formDescuentosDelTrabajador.codigoPlame,
+        concepto: formDescuentosDelTrabajador.concepto,
+        conceptoPersonalizado:
+          formDescuentosDelTrabajador.conceptoPersonalizado,
         monto: formDescuentosDelTrabajador.monto,
       });
     }

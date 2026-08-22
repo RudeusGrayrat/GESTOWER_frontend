@@ -1,4 +1,3 @@
-import Input from "../../../../recicle/Inputs/Inputs";
 import { useEffect, useState } from "react";
 import Comun from "./Comun";
 
@@ -12,7 +11,8 @@ const AportacionesDelEmpleador = ({
   const [formAportacionesDelEmpleador, setFormAportacionesDelEmpleador] =
     useState({
       codigoPlame: initialData.datosContables || "",
-      concepto: "",
+      concepto: initialData.concepto || "",
+      conceptoPersonalizado: Boolean(initialData.conceptoPersonalizado),
       tipo: "",
       monto: initialData.monto || "",
     });
@@ -25,10 +25,12 @@ const AportacionesDelEmpleador = ({
     if (findAportacion)
       setFormAportacionesDelEmpleador((prev) => ({
         ...prev,
-        concepto: findAportacion?.concepto,
+        concepto: prev.conceptoPersonalizado
+          ? prev.concepto
+          : findAportacion?.concepto,
         tipo: findAportacion?.tipo,
       }));
-  }, [findAportacion]);
+  }, [findAportacion, formAportacionesDelEmpleador.conceptoPersonalizado]);
 
   useEffect(() => {
     setForm((prevForm) => ({
@@ -38,6 +40,9 @@ const AportacionesDelEmpleador = ({
           descuento.datosContables === formAportacionesDelEmpleador.codigoPlame
             ? {
                 datosContables: formAportacionesDelEmpleador.codigoPlame,
+                concepto: formAportacionesDelEmpleador.concepto,
+                conceptoPersonalizado:
+                  formAportacionesDelEmpleador.conceptoPersonalizado,
                 monto: formAportacionesDelEmpleador.monto,
               }
             : descuento
@@ -52,6 +57,9 @@ const AportacionesDelEmpleador = ({
     ) {
       set({
         datosContables: formAportacionesDelEmpleador.codigoPlame,
+        concepto: formAportacionesDelEmpleador.concepto,
+        conceptoPersonalizado:
+          formAportacionesDelEmpleador.conceptoPersonalizado,
         monto: formAportacionesDelEmpleador.monto,
       });
     }
