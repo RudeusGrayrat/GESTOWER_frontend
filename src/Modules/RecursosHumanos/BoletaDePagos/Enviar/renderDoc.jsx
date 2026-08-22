@@ -89,7 +89,7 @@ const renderDoc = async (boleta, business, datosContables) => {
         tipoD: data.colaborador.documentType,
         numeroD: data.colaborador.documentNumber,
         colaborador: data.colaborador.lastname + " " + data.colaborador.name,
-        situacionEspecial: data.colaborador.situacionEspecial || "NINGUNA",
+        situacionEspecial: data.situacionEspecial || "NINGUNA",
         situacion: data.colaborador.state,
         codigoSpp: data.codigoSpp,
         ingreso: data.colaborador.dateStart,
