@@ -1,5 +1,6 @@
 import convertDocx from "../../../../utils/convertDocx";
 import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
+import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
 const {
   VITE_PLANTILLA_INVERSIONES_LURIN,
   VITE_PLANTILLA_LADIAMB,
@@ -76,15 +77,20 @@ const renderDoc = async (boleta, business, datosContables) => {
         numeroD: data.colaborador.documentNumber,
         colaborador: data.colaborador.lastname + " " + data.colaborador.name,
         situacionEspecial: data.situacionEspecial || "NINGUNA",
-        situacion: data.colaborador.state,
-        codigoSpp: data.codigoSpp,
+        situacion: obtenerSituacionTrabajador(
+          data.situacionTrabajador || data.colaborador?.state
+        ),
+        codigoSpp: data.codigoSpp || data.colaborador?.codigoSpp || "",
         ingreso: data.colaborador.dateStart,
         regimen: data.colaborador.regimenPension,
         días: parseInt(data.diasTrabajados) || 0,
         horas: parseInt(data.horasTrabajadas) || 0,
-        tipoT: data.colaborador.type,
+        tipoT: data.tipoTrabajador || data.colaborador?.tipoTrabajador || "Empleado",
         noLaborados: parseInt(data.diasNoLaborales) || 0,
         diasSubsidiados: parseInt(data.diasSubsidiados) || 0,
+        tipoSuspension: data.tipoSuspensionLaboral || "NINGUNA",
+        motivoSuspension: data.motivoSuspensionLaboral || "NINGUNA",
+        diasSuspension: parseInt(data.diasSuspensionLaboral) || 0,
         ingresos,
         descuentos,
         aportes,

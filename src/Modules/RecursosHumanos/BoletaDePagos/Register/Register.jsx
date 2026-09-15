@@ -52,6 +52,10 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
         diasSubsidiados: "0",
         horasTrabajadas: "192",
         diasNoLaborales: "0",
+        tipoSuspensionLaboral: "NINGUNA",
+        motivoSuspensionLaboral: "NINGUNA",
+        diasSuspensionLaboral: "0",
+        tipoTrabajador: "Empleado",
         remuneraciones: [
           { datosContables: "0121", monto: "0" },
           { datosContables: "0201", monto: "0" },

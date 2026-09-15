@@ -5,6 +5,11 @@ import InputNormal from "../../../../../recicle/Inputs/tipos/Normal";
 import InpuFiles from "../../../../../recicle/Inputs/tipos/InputFile";
 import InputDate from "../../../../../recicle/Inputs/tipos/InputDate";
 import { getBusiness } from "../../../../../redux/modules/Recursos Humanos/actions";
+import { tipoTrabajadorOptions } from "../../../utils/tipoTrabajadorOptions";
+import {
+  motivoSuspensionLaboralOptions,
+  tipoSuspensionLaboralOptions,
+} from "../../../utils/suspensionLaboralOptions";
 const FormOne = ({ setForm, error, form }) => {
   const business = useSelector((state) => state.recursosHumanos.business);
   const dispatch = useDispatch();
@@ -202,6 +207,14 @@ const FormOne = ({ setForm, error, form }) => {
         errorOnclick={error.type}
       />
       <Input
+        label="Tipo de Trabajador"
+        name="tipoTrabajador"
+        type="select"
+        value={form.tipoTrabajador || "Empleado"}
+        options={tipoTrabajadorOptions}
+        setForm={setForm}
+      />
+      <Input
         label="Regimen de Pensión"
         name="regimenPension"
         type="select"
@@ -245,6 +258,34 @@ const FormOne = ({ setForm, error, form }) => {
         value={form.situacionEspecial || "NINGUNA"}
         setForm={setForm}
         errorOnclick={error?.situacionEspecial}
+      />
+      <Input
+        label="Tipo de Suspensión"
+        name="tipoSuspensionLaboral"
+        type="select"
+        value={form.tipoSuspensionLaboral || "NINGUNA"}
+        options={tipoSuspensionLaboralOptions}
+        setForm={setForm}
+      />
+      <Input
+        label="Concepto de Suspensión"
+        name="motivoSuspensionLaboral"
+        type="select"
+        value={form.motivoSuspensionLaboral || "NINGUNA"}
+        options={motivoSuspensionLaboralOptions}
+        setForm={setForm}
+      />
+      <Input
+        label="Días de Suspensión"
+        name="diasSuspensionLaboral"
+        inputMode="numeric"
+        onKeyPress={(e) => {
+          if (!/[0-9]/.test(e.key)) {
+            e.preventDefault();
+          }
+        }}
+        value={form.diasSuspensionLaboral || "0"}
+        setForm={setForm}
       />
       <Input
         label="Asistencia Automática"

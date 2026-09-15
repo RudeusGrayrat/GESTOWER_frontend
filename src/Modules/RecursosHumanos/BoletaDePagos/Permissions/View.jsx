@@ -30,7 +30,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
             // codigoSpp: findContrato?.codigoSpp,
             // regimenPension: findContrato?.regimenPension,
             regimenPension: selected.colaborador?.regimenPension || "",
-            codigoSpp: selected.colaborador?.codigoSPP || "",
+            codigoSpp: selected.codigoSpp || selected.colaborador?.codigoSpp || "",
           },
           business,
           datosContables

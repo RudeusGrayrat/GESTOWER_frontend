@@ -17,6 +17,7 @@ import {
 } from "../../../../redux/modules/Recursos Humanos/actions";
 import useSendMessage from "../../../../recicle/senMessage";
 import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
+import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
 
 const Enviar = () => {
   const [deshabilitar, setDeshabilitar] = useState(false);
@@ -141,19 +142,25 @@ const Enviar = () => {
             ruc_empresa: findBusiness?.ruc || "",
             razonSocial_empresa: findBusiness?.razonSocial || "",
             fechaBoletaDePago: data.fechaBoletaDePago,
-            situacionEspecial: data.colaborador.situacionEspecial || "NINGUNA",
+            situacionEspecial:
+              data.situacionEspecial || data.colaborador?.situacionEspecial || "NINGUNA",
             tipoD: data.colaborador.documentType,
             numeroD: data.colaborador.documentNumber,
             colaborador: data.colaborador.lastname + " " + data.colaborador.name,
-            situacion: data.colaborador.state,
-            codigoSpp: data.codigoSpp,
+            situacion: obtenerSituacionTrabajador(
+              data.situacionTrabajador || data.colaborador?.state
+            ),
+            codigoSpp: data.codigoSpp || data.colaborador?.codigoSpp || "",
             ingreso: data.colaborador.dateStart,
             regimen: data.colaborador.regimenPension,
             días: parseInt(data.diasTrabajados) || 0,
             horas: parseInt(data.horasTrabajadas) || 0,
-            tipoT: data.colaborador.type,
+            tipoT: data.tipoTrabajador || data.colaborador?.tipoTrabajador || "Empleado",
             noLaborados: parseInt(data.diasNoLaborales) || 0,
             diasSubsidiados: parseInt(data.diasSubsidiados) || 0,
+            tipoSuspension: data.tipoSuspensionLaboral || "NINGUNA",
+            motivoSuspension: data.motivoSuspensionLaboral || "NINGUNA",
+            diasSuspension: parseInt(data.diasSuspensionLaboral) || 0,
             ingresos,
             descuentos,
             aportes,
@@ -164,13 +171,7 @@ const Enviar = () => {
         };
 
         const datosBoleta = arrayBoletas.map((item) => {
-          const newForm = {
-            situacion: "ACTIVO O SUBSIDIADO",
-            tipoT: "EMPLEADO",
-            ...item,
-          }
-
-          const dataFull = transformData(newForm)
+          const dataFull = transformData(item)
           return {
             dataDocx: dataFull,
             email: item.colaborador.email,
