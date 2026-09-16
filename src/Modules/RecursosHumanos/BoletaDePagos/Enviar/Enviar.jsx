@@ -138,6 +138,11 @@ const Enviar = () => {
           );
           const findBusiness = business.find((b) => b.razonSocial === data.colaborador.business);
           const total = parseFloat((totalIngresos - totalDescuentos).toFixed(2));
+          const suspensiones = (data.suspensionesLaborales || []).map((suspension) => ({
+            tipoSuspension: suspension.tipoSuspension || "NINGUNA",
+            motivoSuspension: suspension.motivoSuspension || "NINGUNA",
+            diasSuspension: parseInt(suspension.diasSuspension) || 0,
+          }));
           const formattedData = {
             ruc_empresa: findBusiness?.ruc || "",
             razonSocial_empresa: findBusiness?.razonSocial || "",
@@ -158,9 +163,10 @@ const Enviar = () => {
             tipoT: data.tipoTrabajador || data.colaborador?.tipoTrabajador || "Empleado",
             noLaborados: parseInt(data.diasNoLaborales) || 0,
             diasSubsidiados: parseInt(data.diasSubsidiados) || 0,
-            tipoSuspension: data.tipoSuspensionLaboral || "NINGUNA",
-            motivoSuspension: data.motivoSuspensionLaboral || "NINGUNA",
-            diasSuspension: parseInt(data.diasSuspensionLaboral) || 0,
+            suspensiones,
+            tipoSuspension: suspensiones.map((item) => item.tipoSuspension).join("\n"),
+            motivoSuspension: suspensiones.map((item) => item.motivoSuspension).join("\n"),
+            diasSuspension: suspensiones.map((item) => item.diasSuspension).join("\n"),
             ingresos,
             descuentos,
             aportes,

@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import Remuneraciones from "./Remuneraciones";
 import DescuentosAlTrabajador from "./DescuentosTrabajador";
 import AportacionesDelEmpleador from "./AportacionsEmpleador";
+import SuspensionesLaborales from "./SuspensionesLaborales";
 import Directorio from "../../../../components/RemoveAdd/RemoveItemAdd";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -52,10 +53,8 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
         diasSubsidiados: "0",
         horasTrabajadas: "192",
         diasNoLaborales: "0",
-        tipoSuspensionLaboral: "NINGUNA",
-        motivoSuspensionLaboral: "NINGUNA",
-        diasSuspensionLaboral: "0",
         tipoTrabajador: "Empleado",
+        suspensionesLaborales: [],
         remuneraciones: [
           { datosContables: "0121", monto: "0" },
           { datosContables: "0201", monto: "0" },
@@ -173,6 +172,17 @@ const RegisterBoletaDePagos = ({ formInitial, setFormEdit }) => {
           error={error}
           data="aportacionesDelEmpleador"
           estilos="flex  "
+        />
+      </CardPlegable>
+      <CardPlegable title="Suspensiones Laborales">
+        <Directorio
+          ItemComponent={SuspensionesLaborales}
+          form={form.suspensionesLaborales}
+          setForm={setForm}
+          directory={form.suspensionesLaborales}
+          error={error}
+          data="suspensionesLaborales"
+          estilos="flex "
         />
       </CardPlegable>
 

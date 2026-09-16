@@ -1,9 +1,5 @@
 import Input from "../../../../recicle/Inputs/Inputs";
 import { tipoTrabajadorOptions } from "../../utils/tipoTrabajadorOptions";
-import {
-  motivoSuspensionLaboralOptions,
-  tipoSuspensionLaboralOptions,
-} from "../../utils/suspensionLaboralOptions";
 
 const DatosBasicos = ({ form, setForm, error, colaboradores }) => {
   return (
@@ -85,34 +81,6 @@ const DatosBasicos = ({ form, setForm, error, colaboradores }) => {
         type="select"
         options={tipoTrabajadorOptions}
         value={form.tipoTrabajador || "Empleado"}
-        setForm={setForm}
-      />
-      <Input
-        label="Tipo de Suspensión"
-        name="tipoSuspensionLaboral"
-        type="select"
-        options={tipoSuspensionLaboralOptions}
-        value={form.tipoSuspensionLaboral || "NINGUNA"}
-        setForm={setForm}
-      />
-      <Input
-        label="Concepto de Suspensión"
-        name="motivoSuspensionLaboral"
-        type="select"
-        options={motivoSuspensionLaboralOptions}
-        value={form.motivoSuspensionLaboral || "NINGUNA"}
-        setForm={setForm}
-      />
-      <Input
-        label="Días de Suspensión"
-        inputMode="numeric"
-        onKeyPress={(e) => {
-          if (!/[0-9]/.test(e.key)) {
-            e.preventDefault();
-          }
-        }}
-        name="diasSuspensionLaboral"
-        value={form.diasSuspensionLaboral || "0"}
         setForm={setForm}
       />
     </div>
