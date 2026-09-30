@@ -37,6 +37,7 @@ const Representante = ({ setForm, error, form }) => {
       <InpuFiles
         label="Firma Digital"
         name="signature"
+        value={form.representative?.signature}
         setForm={setActualForm}
         errorOnclick={error.representative.signature}
       />

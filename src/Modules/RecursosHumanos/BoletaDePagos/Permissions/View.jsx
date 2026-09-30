@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import renderDoc from "../Enviar/renderDoc";
 import { useDispatch, useSelector } from "react-redux";
 import Details from "../../../../components/Principal/Permissions/View";
@@ -7,6 +7,7 @@ import { getBusiness, getDatosContables } from "../../../../redux/modules/Recurs
 
 const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   const [estadoDocumento, setEstadoDocumento] = useState("Generando documento...");
+  const documentoGenerado = useRef("");
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
   const datosContables = useSelector((state) => state.recursosHumanos.datosContables || []);
@@ -18,7 +19,11 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   useEffect(() => {
     const renderDocx = async () => {
       try {
-        if (!selected || !business) return;
+        if (!selected || !business || !datosContables.length) return;
+        const claveDocumento = `${selected._id}-${business._id}-${datosContables.length}`;
+        if (documentoGenerado.current === claveDocumento) return;
+        documentoGenerado.current = claveDocumento;
+
         const file = await renderDoc(
           {
             ...selected,
@@ -43,11 +48,12 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
         URL.revokeObjectURL(url);
         setEstadoDocumento("Documento descargado correctamente.");
       } catch (error) {
-        sendMessage(error, "Error");
+        setEstadoDocumento("No se pudo generar el documento.");
+        sendMessage(error.message || String(error), "Error");
       }
     };
     renderDocx();
-  }, [business, selected, datosContables, sendMessage]);
+  }, [business?._id, selected?._id, datosContables.length]);
   return (
     <Details setShowDetail={setShowDetail} title="Boleta de Pago">
       <p>{estadoDocumento}</p>

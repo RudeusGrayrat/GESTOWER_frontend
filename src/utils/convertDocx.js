@@ -4,6 +4,8 @@ import Docxtemplater from "docxtemplater";
 import axios from "axios";
 import ImageModule from "docxtemplater-image-module-free";
 
+const imagenTransparente = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLkNwAAAABJRU5ErkJggg==";
+
 const convertDocx = async (predata, archivo, nameDoc) => {
   // Detectar entorno de desarrollo
 
@@ -39,13 +41,27 @@ const convertDocx = async (predata, archivo, nameDoc) => {
     const imageOptions = {
       centered: false,
       getImage: async (tagValue) => {
-        // window.location.origin asegura que busque en http://localhost:5173/
+        if (!tagValue) {
+          return Uint8Array.from(atob(imagenTransparente), (char) => char.charCodeAt(0)).buffer;
+        }
+
+        if (tagValue.startsWith("data:image")) {
+          const base64 = tagValue.split(",")[1];
+          const binary = atob(base64);
+          const bytes = new Uint8Array(binary.length);
+          for (let index = 0; index < binary.length; index += 1) {
+            bytes[index] = binary.charCodeAt(index);
+          }
+          return bytes.buffer;
+        }
+
+        // Las imágenes antiguas pueden ser URL externas y las nuevas son locales/base64.
         const baseUrl = window.location.origin;
         const imageUrl = tagValue.startsWith('http') ? tagValue : `${baseUrl}/${tagValue.replace(/^\//, '')}`;
         const res = await axios.get(imageUrl, { responseType: "arraybuffer" });
         return res.data;
       },
-      getSize: () => [140, 70], // Tamaño [ancho, alto] por defecto en píxeles
+      getSize: () => [140, 70],
     };
 
     const imageModule = new ImageModule(imageOptions);

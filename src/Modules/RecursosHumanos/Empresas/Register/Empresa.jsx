@@ -34,6 +34,7 @@ const DatosEmpresa = ({ error, setForm, form }) => {
       <InpuFiles
         label="Logo"
         name="logo"
+        value={form.logo}
         setForm={setForm}
         errorOnclick={error.logo}
       />
