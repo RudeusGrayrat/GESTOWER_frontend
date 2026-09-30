@@ -1,16 +1,12 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import renderDoc from "../Enviar/renderDoc";
 import { useDispatch, useSelector } from "react-redux";
 import Details from "../../../../components/Principal/Permissions/View";
 import useSendMessage from "../../../../recicle/senMessage";
-import documentoCloudinary from "../../../../api/cloudinaryDocument";
-import ButtonOk from "../../../../recicle/Buttons/Buttons";
-import axios from "../../../../api/axios";
 import { getBusiness, getDatosContables } from "../../../../redux/modules/Recursos Humanos/actions";
 
 const ViewBoletaDePago = ({ setShowDetail, selected }) => {
-  const [showDoc, setShowDoc] = useState(false);
-  const [docxContent, setDocxContent] = useState("");
+  const [estadoDocumento, setEstadoDocumento] = useState("Generando documento...");
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
   const datosContables = useSelector((state) => state.recursosHumanos.datosContables || []);
@@ -20,7 +16,6 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   }, [dispatch, datosContables.length]);
   const business = selected.empresaColaborador;
   useEffect(() => {
-    if (docxContent) return;
     const renderDocx = async () => {
       try {
         if (!selected || !business) return;
@@ -40,37 +35,22 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
           return;
         }
         const fechaConGuion = selected.fechaBoletaDePago.replace(/\//g, "-");
-        const pathCloudinary = await documentoCloudinary(
-          file,
-          `${selected.colaborador?.lastname}_${selected.colaborador?.name}_${fechaConGuion}`
-        );
-        setDocxContent(pathCloudinary.secure_url);
-        setShowDoc(true);
-        await axios.delete("/deleteDocument", {
-          data: { public_id: pathCloudinary.public_id },
-        });
-        return
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = `${selected.colaborador?.lastname}_${selected.colaborador?.name}_${fechaConGuion}.docx`;
+        link.click();
+        URL.revokeObjectURL(url);
+        setEstadoDocumento("Documento descargado correctamente.");
       } catch (error) {
         sendMessage(error, "Error");
       }
     };
     renderDocx();
-  }, [business, selected, datosContables]);
-
-  const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-    docxContent
-  )}`;
+  }, [business, selected, datosContables, sendMessage]);
   return (
     <Details setShowDetail={setShowDetail} title="Boleta de Pago">
-      {showDoc ? (
-        <ButtonOk type="ok">
-          <a href={officeViewerUrl} target="_blank" rel="noopener noreferrer">
-            Abrir documento de Word en el visor de Office
-          </a>
-        </ButtonOk>
-      ) : (
-        <p>Cargando...</p>
-      )}
+      <p>{estadoDocumento}</p>
     </Details>
   );
 };

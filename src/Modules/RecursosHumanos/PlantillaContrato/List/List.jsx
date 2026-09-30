@@ -1,19 +1,21 @@
-import { useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import ListPrincipal from "../../../../components/Principal/List/List";
 import DeletePlantillaContrato from "../Permisos/Delete";
 import EditPlantillaContrato from "../Permisos/Edit";
 import ViewPlantillaContrato from "../Permisos/View";
-import { useDispatch, useSelector } from "react-redux";
 import { Column } from "primereact/column";
 import dayjs from "dayjs";
-import { getPlantillasContrato } from "../../../../redux/modules/Recursos Humanos/actions";
+import axios from "../../../../api/axios";
 
 const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
-  const plantillas = useSelector((state) => state.recursosHumanos.allPlantillasContrato);
-  const dispatch = useDispatch();
+  const [plantillas, setPlantillas] = useState([]);
+  const cargarPlantillas = useCallback(async () => {
+    const response = await axios.get("/plantillas");
+    setPlantillas(response.data);
+  }, []);
   useEffect(() => {
-    if (plantillas.length === 0) dispatch(getPlantillasContrato());
-  }, [dispatch]);
+    cargarPlantillas();
+  }, [cargarPlantillas]);
   const formattedPlantillas = plantillas.map((plantilla) => ({
     ...plantilla,
     createdAt: dayjs(plantilla.createdAt).format("DD/MM/YYYY"),
@@ -26,8 +28,8 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
       DeleteItem={DeletePlantillaContrato}
       EditItem={EditPlantillaContrato}
       DetailItem={ViewPlantillaContrato}
-      content={formattedPlantillas}
-      reload={() => dispatch(getPlantillasContrato())}
+      contenido={formattedPlantillas}
+      reload={cargarPlantillas}
     >
       <Column
         field="createdAt"
@@ -35,7 +37,9 @@ const List = ({ permissionEdit, permissionDelete, permissionRead }) => {
         header="Fecha de Subida"
         
       />
-      <Column field="tipoContrato" header="Tipo de Contrato"  />
+      <Column field="nombre" header="Plantilla" />
+      <Column field="tipo" header="Tipo" />
+      <Column field="tipoContrato" header="Tipo de Contrato" />
       <Column
         field="state"
         header="Estado"

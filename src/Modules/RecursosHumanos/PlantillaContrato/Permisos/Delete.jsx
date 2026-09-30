@@ -1,17 +1,14 @@
-import { useDispatch } from "react-redux";
 import Delete from "../../../../components/Principal/Permissions/Delete";
-import { useAuth } from "../../../../context/AuthContext";
-import { getPlantillasContrato } from "../../../../redux/modules/Recursos Humanos/actions";
 import useSendMessage from "../../../../recicle/senMessage";
+import axios from "../../../../api/axios";
 
-const DeletePlantillaContrato = ({ setShowDelete, selected }) => {
-  const { deletePlantillaContrato } = useAuth();
-  const dispatch = useDispatch();
+const DeletePlantillaContrato = ({ setShowDelete, selected, reload }) => {
   const sendMessage = useSendMessage();
   const onclick = async () => {
     try {
-      await deletePlantillaContrato(selected._id);
-      dispatch(getPlantillasContrato());
+      await axios.delete(`/plantillas/${selected._id}`);
+      reload?.();
+      setShowDelete(false);
     } catch (error) {
       sendMessage(error.message, "Error");
     }

@@ -5,19 +5,40 @@ const  Datos = ({ formData, setFormData, error }) => {
   return (
     <div className="flex flex-wrap">
       <Input
-        name="tipoContrato"
+        name="nombre"
         ancho="w-96"
-        label="Tipo de Contrato"
-        value={formData.tipoContrato}
+        label="Nombre de la Plantilla"
+        value={formData.nombre}
         setForm={setFormData}
-        errorOnclick={error.tipoContrato}
+        errorOnclick={error.nombre}
       />
+      <Input
+        name="tipo"
+        label="Tipo de Plantilla"
+        type="select"
+        options={["CONTRATO", "BOLETA"]}
+        value={formData.tipo}
+        setForm={setFormData}
+        errorOnclick={error.tipo}
+      />
+      {formData.tipo === "CONTRATO" && (
+        <Input
+          name="tipoContrato"
+          ancho="w-96"
+          label="Tipo de Contrato"
+          value={formData.tipoContrato}
+          setForm={setFormData}
+          errorOnclick={error.tipoContrato}
+        />
+      )}
       <InpuFiles
         name="archivo"
         label="Plantilla Docx"
         type="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         setForm={setFormData}
         errorOnclick={error.archivo}
+        toBase64={false}
+        value={formData.archivo}
       />
       <Input
         name="state"

@@ -1,6 +1,8 @@
 import convertDocx from "../../../../utils/convertDocx";
 import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
 import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
+import axios from "../../../../api/axios";
+import { obtenerUrlArchivo } from "../../../../utils/archivoLocal";
 const {
   VITE_PLANTILLA_INVERSIONES_LURIN,
   VITE_PLANTILLA_LADIAMB,
@@ -11,6 +13,18 @@ const {
 
 const renderDoc = async (boleta, business, datosContables) => {
   let PLANTILLA_DOCUMENT;
+  try {
+    const response = await axios.get("/plantillas");
+    const plantillaGlobal = response.data.find(
+      (plantilla) => plantilla.tipo === "BOLETA" && plantilla.state === "ACTIVO"
+    );
+    if (plantillaGlobal) PLANTILLA_DOCUMENT = obtenerUrlArchivo(plantillaGlobal.archivo);
+  } catch (error) {
+    console.warn("No se pudo obtener la plantilla global de boleta", error);
+  }
+
+  // Compatibilidad temporal mientras se carga la primera plantilla global.
+  if (!PLANTILLA_DOCUMENT) {
   switch (business.razonSocial) {
     case "INVERSIONES LURIN S.A.C.":
       PLANTILLA_DOCUMENT = VITE_PLANTILLA_INVERSIONES_LURIN;
@@ -30,6 +44,7 @@ const renderDoc = async (boleta, business, datosContables) => {
     default:
       PLANTILLA_DOCUMENT = VITE_PLANTILLA_TOWERANDTOWER;
       break;
+  }
   }
   console.log("Plantilla seleccionada:", PLANTILLA_DOCUMENT);
   try {
@@ -77,6 +92,8 @@ const renderDoc = async (boleta, business, datosContables) => {
       const formattedData = {
         ruc_empresa: business.ruc,
         razonSocial_empresa: business.razonSocial,
+        logo_empresa: business.logo || "",
+        firma: business.representative?.signature || "",
         fechaBoletaDePago: data.fechaBoletaDePago,
         tipoD: data.colaborador.documentType,
         numeroD: data.colaborador.documentNumber,

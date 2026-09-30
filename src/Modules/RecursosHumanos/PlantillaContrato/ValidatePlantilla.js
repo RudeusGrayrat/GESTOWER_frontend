@@ -2,6 +2,8 @@ import { useState } from "react";
 
 const useValidation = () => {
   const [error, setError] = useState({
+    nombre: false,
+    tipo: false,
     tipoContrato: false,
     archivo: false,
     state: false,
@@ -10,7 +12,9 @@ const useValidation = () => {
   // Función de validación
   const validateForm = (formData) => {
     const newError = {
-      tipoContrato: formData.tipoContrato === "",
+      nombre: formData.nombre === "",
+      tipo: formData.tipo === "",
+      tipoContrato: formData.tipo === "CONTRATO" && formData.tipoContrato === "",
       archivo: !formData.archivo,
       state: formData.state === "",
     };

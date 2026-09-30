@@ -1,25 +1,19 @@
 import { useEffect, useMemo, useState } from "react";
 import Details from "../../../../components/Principal/Permissions/View";
-import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import PDetail from "../../../../recicle/PDtail";
 import PopUp from "../../../../recicle/popUps";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "../../../../api/axios";
 import renderDoc from "./renderDoc";
 import useSendMessage from "../../../../recicle/senMessage";
-import documentoCloudinary from "../../../../api/cloudinaryDocument";
-import {
-  getBusiness,
-  getPlantillasContrato,
-} from "../../../../redux/modules/Recursos Humanos/actions";
+import { getBusiness, getPlantillasContrato } from "../../../../redux/modules/Recursos Humanos/actions";
+import { obtenerUrlArchivo } from "../../../../utils/archivoLocal";
 
 const ViewContract = ({ setShowDetail, selected }) => {
-  const [showDoc, setShowDoc] = useState(false);
   const dispatch = useDispatch();
-  const [docxContent, setDocxContent] = useState("");
-  const plantilla = useSelector(
-    (state) => state.recursosHumanos.allPlantillasContrato
-  );
+  const [plantillas, setPlantillas] = useState([]);
+  const [plantillasCargadas, setPlantillasCargadas] = useState(false);
+  const plantillasContrato = useSelector((state) => state.recursosHumanos.allPlantillasContrato);
   const empresas = useSelector((state) => state.recursosHumanos.business);
   const sendMessage = useSendMessage();
   useEffect(() => {
@@ -29,14 +23,21 @@ const ViewContract = ({ setShowDetail, selected }) => {
   }, [dispatch, empresas]);
 
   useEffect(() => {
-    if (plantilla.length === 0) {
-      dispatch(getPlantillasContrato());
-    }
-  }, [dispatch, plantilla]);
+    axios.get("/plantillas")
+      .then((response) => setPlantillas(response.data))
+      .catch(() => setPlantillas([]))
+      .finally(() => setPlantillasCargadas(true));
+  }, []);
+  useEffect(() => {
+    if (!plantillasContrato.length) dispatch(getPlantillasContrato());
+  }, [dispatch, plantillasContrato.length]);
 
-  const findPlantilla = plantilla.find(
-    (plantilla) => plantilla.tipoContrato === selected?.typeContract
+  const findPlantillaLocal = plantillas.find(
+    (plantilla) => plantilla.tipo === "CONTRATO" && plantilla.tipoContrato === selected?.typeContract && plantilla.state === "ACTIVO"
   );
+  const findPlantilla = findPlantillaLocal || (plantillasCargadas && plantillasContrato.find(
+    (plantilla) => plantilla.tipoContrato === selected?.typeContract && plantilla.state === "ACTIVO"
+  ));
 
   const findBusiness = useMemo(() => {
     if (!selected?.colaborador?.business) return null;
@@ -52,18 +53,18 @@ const ViewContract = ({ setShowDetail, selected }) => {
         const file = await renderDoc(
           selected,
           findBusiness,
-          findPlantilla?.archivo
+          findPlantillaLocal ? obtenerUrlArchivo(findPlantilla.archivo) : findPlantilla?.archivo
         );
         if (!file) {
           sendMessage("Error al cargar el archivo", "Error");
           return;
         }
-        const pathCloudinary = await documentoCloudinary(file);
-        setDocxContent(pathCloudinary.secure_url);
-        setShowDoc(true);
-        await axios.delete("/deleteDocument", {
-          data: { public_id: pathCloudinary.public_id },
-        });
+        const url = URL.createObjectURL(file);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = file.name;
+        link.click();
+        URL.revokeObjectURL(url);
       } catch (error) {
         sendMessage(error, "Error");
       }
@@ -72,20 +73,9 @@ const ViewContract = ({ setShowDetail, selected }) => {
     renderDocx();
   }, [findBusiness, findPlantilla, selected]);
 
-  const officeViewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(
-    docxContent
-  )}`;
   return (
     <Details setShowDetail={setShowDetail} title="Contrato">
-      {showDoc ? (
-        <ButtonOk type="ok">
-          <a href={officeViewerUrl} target="_blank" rel="noopener noreferrer">
-            Abrir documento de Word en el visor de Office
-          </a>
-        </ButtonOk>
-      ) : (
-        <p>Cargando...</p>
-      )}
+      <p>{findPlantilla ? "Generando descarga del documento..." : "No hay plantilla activa para este contrato."}</p>
     </Details>
   );
 };

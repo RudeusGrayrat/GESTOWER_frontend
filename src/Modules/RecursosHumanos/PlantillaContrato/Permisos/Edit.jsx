@@ -3,19 +3,13 @@ import Edit from "../../../../components/Principal/Permissions/Edit";
 import Datos from "../Register/Datos";
 import useValidation from "../ValidatePlantilla";
 import PopUp from "../../../../recicle/popUps";
-import { useDispatch } from "react-redux";
-import { useAuth } from "../../../../context/AuthContext";
 import { deepDiff } from "../../../validateEdit";
 import axios from "../../../../api/axios";
-import documentoPlantilla from "../../../../api/cloudinaryPlantilla";
-import { getPlantillasContrato } from "../../../../redux/modules/Recursos Humanos/actions";
 import useSendMessage from "../../../../recicle/senMessage";
 
-const EditPlantillaContrato = ({ setShowEdit, selected }) => {
+const EditPlantillaContrato = ({ setShowEdit, selected, reload }) => {
   const [formData, setFormData] = useState({ ...selected });
 
-  const { updatePlantillaContrato } = useAuth();
-  const dispatch = useDispatch();
   const { error } = useValidation();
   const formFinal = deepDiff(selected, formData);
   const sendMessage = useSendMessage();
@@ -24,27 +18,19 @@ const EditPlantillaContrato = ({ setShowEdit, selected }) => {
     sendMessage("Cargando...", "Espere");
     try {
       if (Object.keys(formFinal).length > 0) {
-        const pathDocumento = await documentoPlantilla(
-          formData.archivo,
-          dispatch
-        );
-        if (!pathDocumento) {
-          sendMessage("Error al subir el documento", "Error");
-          return;
-        }
-
-        await updatePlantillaContrato({
-          ...formData,
-          archivo: pathDocumento.secure_url,
-        });
-        dispatch(getPlantillasContrato());
+        const data = new FormData();
+        data.append("nombre", formData.nombre);
+        data.append("tipoContrato", formData.tipoContrato || "");
+        data.append("state", formData.state);
+        if (formData.archivo instanceof File) data.append("archivo", formData.archivo);
+        const response = await axios.patch(`/plantillas/${selected._id}`, data);
+        sendMessage(response.data.message, "Ok");
+        reload?.();
+        setShowEdit(false);
       } else {
         sendMessage("No se han realizado cambios", "Error");
       }
     } catch (error) {
-      await axios.delete("/deleteDocument", {
-        data: { public_id: pathPhoto.public_id },
-      });
       sendMessage(error || error.message, "Error");
     }
   };

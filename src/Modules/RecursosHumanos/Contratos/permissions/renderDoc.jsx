@@ -20,6 +20,8 @@ const renderDoc = async (selected, empresa, archivo) => {
         empresa.representative.documentType || "No disponible",
       representante_numero_documento:
         empresa.representative.documentNumber || "No disponible",
+      logo_empresa: empresa.logo || "",
+      firma: empresa.representative?.signature || "",
       colaborador_nombres:
         colaborador.lastname + " " + colaborador.name || "No disponible",
       colaborador_tipo_documento: colaborador.documentType || "No disponible",

@@ -8,7 +8,6 @@ import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import dayjs from "dayjs";
 import { useAuth } from "../../../../context/AuthContext";
 import renderDoc from "./renderDoc";
-import documentoCloudinary from "../../../../api/cloudinaryDocument";
 import PopUp from "../../../../recicle/popUps";
 import axios from "../../../../api/axios";
 import {
@@ -146,6 +145,8 @@ const Enviar = () => {
           const formattedData = {
             ruc_empresa: findBusiness?.ruc || "",
             razonSocial_empresa: findBusiness?.razonSocial || "",
+            logo_empresa: findBusiness?.logo || "",
+            firma: findBusiness?.representative?.signature || "",
             fechaBoletaDePago: data.fechaBoletaDePago,
             situacionEspecial:
               data.situacionEspecial || data.colaborador?.situacionEspecial || "NINGUNA",

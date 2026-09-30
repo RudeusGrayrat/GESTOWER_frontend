@@ -35,7 +35,7 @@ const componentMap = {
     colaboradores: Colaboradores,
     empresas: Empresas,
     contratos: Contratos,
-    "plantillas contrato": PlantillaContrato, //voy a volverlo solo plantillas y añadiré las plantillas de excel y word de asistencias boletas de pago y más
+    "plantillas contrato": () => <PlantillaContrato submodule="PLANTILLAS CONTRATO" />,
     asistencia: AsistenciaColaborador,
     "boleta de pagos": BoletaDePagos,
     permisos: Permisos,
@@ -66,6 +66,7 @@ const componentMap = {
     novedades: Novedades,
     widgets: WidgetsSistemas,
     "modulos y submodulos": ModulosYSubmodulos,
+    plantillas: PlantillaContrato,
   },
   almacen: {
     chincha: "Chincha",

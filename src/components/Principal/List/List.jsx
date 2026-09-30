@@ -375,14 +375,14 @@ const ListPrincipal = ({
           setShowPopUp={setShowPopUp}
           setShowEdit={setShowEdit}
           selected={selected}
-          reload={() => fetchAll(pagina, limite, searchTerm)}
+          reload={OtheProps.reload || (() => fetchAll(pagina, limite, searchTerm))}
         />
       )}
       {showDelete && (
         <DeleteItem
           setShowDelete={setShowDelete}
           selected={selected}
-          reload={() => fetchAll(pagina, limite, searchTerm)}
+          reload={OtheProps.reload || (() => fetchAll(pagina, limite, searchTerm))}
         />
       )}
       <div className="w-full border-2 m-2 mt-0 border-gray-100 rounded-xl shadow-lg bg-white">

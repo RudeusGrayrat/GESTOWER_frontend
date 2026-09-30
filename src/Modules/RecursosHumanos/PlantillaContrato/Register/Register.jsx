@@ -1,49 +1,44 @@
-import { useDispatch } from "react-redux";
 import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import PopUp from "../../../../recicle/popUps";
-import { setMessage } from "../../../../redux/actions";
-import { useAuth } from "../../../../context/AuthContext";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable";
 import { useState } from "react";
 import useValidation from "../ValidatePlantilla";
 import Datos from "./Datos";
-import documentoPlantilla from "../../../../api/cloudinaryPlantilla";
+import axios from "../../../../api/axios";
+import useSendMessage from "../../../../recicle/senMessage";
 
 const Register = () => {
-  const { createPlantillaContrato, response, errors } = useAuth();
   const [deshabilitar, setDeshabilitar] = useState(false);
-  const dispatch = useDispatch();
+  const sendMessage = useSendMessage();
   const [formData, setFormData] = useState({
+    nombre: "",
+    tipo: "",
     tipoContrato: "",
     archivo: "",
-    state: "",
+    state: "ACTIVO",
   });
 
   const { error, validateForm } = useValidation(formData);
 
   const onclick = async () => {
     setDeshabilitar(true);
-    dispatch(setMessage("Cargando...", "Espere"));
     try {
       const formIsValid = validateForm(formData);
       if (formIsValid) {
-        const pathDocumento = await documentoPlantilla(
-          formData.archivo,
-          dispatch
-        );
-        if (!pathDocumento.secure_url) {
-          dispatch(setMessage("Error al subir el documento", "Error"));
-          return;
-        }
-        await createPlantillaContrato({
-          ...formData,
-          archivo: pathDocumento.secure_url,
-        });
+        const data = new FormData();
+        data.append("nombre", formData.nombre);
+        data.append("tipo", formData.tipo);
+        data.append("tipoContrato", formData.tipoContrato);
+        data.append("state", formData.state);
+        data.append("archivo", formData.archivo);
+        const response = await axios.post("/plantillas", data);
+        sendMessage(response.data.message, "Ok");
+        setFormData({ nombre: "", tipo: "", tipoContrato: "", archivo: "", state: "ACTIVO" });
       } else {
-        dispatch(setMessage("Faltan datos", "Error"));
+        sendMessage("Faltan datos", "Error");
       }
     } catch (error) {
-      dispatch(setMessage(error, "Error"));
+      sendMessage(error.response?.data?.message || error.message, "Error");
     } finally {
       setDeshabilitar(false);
     }

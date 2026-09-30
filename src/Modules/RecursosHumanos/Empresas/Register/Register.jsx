@@ -8,12 +8,10 @@ import {
 import { useAuth } from "../../../../context/AuthContext.jsx";
 import PopUp from "../../../../recicle/popUps.jsx";
 import ButtonOk from "../../../../recicle/Buttons/Buttons.jsx";
-import imageCloudinary from "../../../../api/cloudinaryImage.jsx";
 import CardPlegable from "../../../../recicle/Divs/CardPlegable.jsx";
 import DatosEmpresa from "./Empresa.jsx";
 import Representante from "./Representante.jsx";
 import useValidation from "../validateEmpresas.js";
-import axios from "../../../../api/axios.js";
 
 const Register = () => {
   const { postBusiness, response } = useAuth();
@@ -64,26 +62,11 @@ const Register = () => {
   const enviar = async () => {
     dispatch(setMessage("Cargando...", "Espere", true));
     setDeshabilitar(true);
-    let pathLogo = null;
-    let pathSignature = null;
     try {
       const formIsValid = validateForm(form);
 
       if (formIsValid) {
-        if (form.logo) {
-          pathLogo = await imageCloudinary(form.logo);
-          pathSignature = await imageCloudinary(form.representative.signature);
-        }
-        const newForm = {
-          ...form,
-          logo: pathLogo?.secure_url,
-          representative: {
-            ...form.representative,
-            signature: pathSignature?.secure_url,
-          },
-        };
-
-        await postBusiness(newForm);
+        await postBusiness(form);
         if (response) {
           dispatch(setMessage(response, "Ok"));
         }
@@ -92,16 +75,6 @@ const Register = () => {
       }
     } catch (error) {
       dispatch(setMessage(error, "Error"));
-      if (pathLogo && pathLogo?.public_id) {
-        await axios.delete("/deleteDocument", {
-          data: { public_id: pathLogo?.public_id },
-        });
-      }
-      if (pathSignature && pathSignature?.public_id) {
-        await axios.delete("/deleteDocument", {
-          data: { public_id: pathSignature?.public_id },
-        });
-      }
     } finally {
       setDeshabilitar(false);
       dispatch(setMessage("", ""));
