@@ -17,6 +17,7 @@ import {
 import useSendMessage from "../../../../recicle/senMessage";
 import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
 import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
+import { imagenTransparente } from "../../../../utils/imagenTransparente";
 
 const Enviar = () => {
   const [deshabilitar, setDeshabilitar] = useState(false);
@@ -145,8 +146,8 @@ const Enviar = () => {
           const formattedData = {
             ruc_empresa: findBusiness?.ruc || "",
             razonSocial_empresa: findBusiness?.razonSocial || "",
-            logo_empresa: findBusiness?.logo || "",
-            firma: findBusiness?.representative?.signature || "",
+            logo_empresa: findBusiness?.logo || imagenTransparente,
+            firma: findBusiness?.representative?.signature || imagenTransparente,
             fechaBoletaDePago: data.fechaBoletaDePago,
             situacionEspecial:
               data.situacionEspecial || data.colaborador?.situacionEspecial || "NINGUNA",

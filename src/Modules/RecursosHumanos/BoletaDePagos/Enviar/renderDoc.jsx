@@ -3,6 +3,7 @@ import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
 import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
 import axios from "../../../../api/axios";
 import { obtenerUrlArchivo } from "../../../../utils/archivoLocal";
+import { imagenTransparente } from "../../../../utils/imagenTransparente";
 const {
   VITE_PLANTILLA_INVERSIONES_LURIN,
   VITE_PLANTILLA_LADIAMB,
@@ -92,8 +93,8 @@ const renderDoc = async (boleta, business, datosContables) => {
       const formattedData = {
         ruc_empresa: business.ruc,
         razonSocial_empresa: business.razonSocial,
-        logo_empresa: business.logo || "",
-        firma: business.representative?.signature || "",
+        logo_empresa: business.logo || imagenTransparente,
+        firma: business.representative?.signature || imagenTransparente,
         fechaBoletaDePago: data.fechaBoletaDePago,
         tipoD: data.colaborador.documentType,
         numeroD: data.colaborador.documentNumber,

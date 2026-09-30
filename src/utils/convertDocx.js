@@ -4,8 +4,6 @@ import Docxtemplater from "docxtemplater";
 import axios from "axios";
 import ImageModule from "docxtemplater-image-module-free";
 
-const imagenTransparente = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQIHWP4z8DwHwAFgAI/ScLkNwAAAABJRU5ErkJggg==";
-
 const convertDocx = async (predata, archivo, nameDoc) => {
   // Detectar entorno de desarrollo
 
@@ -42,7 +40,7 @@ const convertDocx = async (predata, archivo, nameDoc) => {
       centered: false,
       getImage: async (tagValue) => {
         if (!tagValue) {
-          return Uint8Array.from(atob(imagenTransparente), (char) => char.charCodeAt(0)).buffer;
+          throw new Error("La plantilla recibió una imagen sin valor");
         }
 
         if (tagValue.startsWith("data:image")) {
