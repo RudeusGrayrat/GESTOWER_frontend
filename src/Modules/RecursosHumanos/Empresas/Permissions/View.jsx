@@ -1,8 +1,19 @@
 import Details from "../../../../components/Principal/Permissions/View";
 import PDetail from "../../../../recicle/PDtail";
+import { useEffect, useState } from "react";
+import axios from "../../../../api/axios";
 
 const View = ({ setShowDetail, selected }) => {
-  const representante = selected.representative || {};
+  const [empresa, setEmpresa] = useState(selected);
+
+  useEffect(() => {
+    setEmpresa(selected);
+    axios.get(`/business/${selected._id}`)
+      .then((response) => setEmpresa(response.data))
+      .catch(() => {});
+  }, [selected]);
+
+  const representante = empresa.representative || {};
   const Imagen = ({ src, alt, emptyText }) => (
     <div className="flex min-h-44 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 p-3">
       {src ? (
@@ -23,14 +34,14 @@ const View = ({ setShowDetail, selected }) => {
         <section className="rounded-xl border border-slate-100 bg-white p-5 shadow-sm">
           <h3 className="mb-4 text-xl font-bold text-sky-700">Datos de la empresa</h3>
           <div className="space-y-3 break-words">
-            <PDetail content="Razón social:" value={selected.razonSocial || "No registrada"} />
-            <PDetail content="RUC:" value={selected.ruc || "No registrado"} />
-            <PDetail content="Domicilio fiscal:" value={selected.domicilioFiscal || "No registrado"} />
+            <PDetail content="Razón social:" value={empresa.razonSocial || "No registrada"} />
+            <PDetail content="RUC:" value={empresa.ruc || "No registrado"} />
+            <PDetail content="Domicilio fiscal:" value={empresa.domicilioFiscal || "No registrado"} />
           </div>
         </section>
         <section className="rounded-xl border border-slate-100 bg-white p-5 shadow-sm">
           <h3 className="mb-4 text-xl font-bold text-sky-700">Logo</h3>
-          <Imagen src={selected.logo} alt={`Logo de ${selected.razonSocial}`} emptyText="La empresa no tiene logo registrado." />
+          <Imagen src={empresa.logo} alt={`Logo de ${empresa.razonSocial}`} emptyText="La empresa no tiene logo registrado." />
         </section>
         <section className="rounded-xl border border-slate-100 bg-white p-5 shadow-sm">
           <h3 className="mb-4 text-xl font-bold text-sky-700">Representante</h3>

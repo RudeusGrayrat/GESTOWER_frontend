@@ -98,9 +98,11 @@ const convertDocx = async (predata, archivo, nameDoc) => {
           return bytes.buffer;
         }
 
-        // Las imágenes antiguas pueden ser URL externas y las nuevas son locales/base64.
-        const baseUrl = window.location.origin;
-        const imageUrl = tagValue.startsWith('http') ? tagValue : `${baseUrl}/${tagValue.replace(/^\//, '')}`;
+        // Las imágenes locales se publican desde la API, no desde el host del frontend.
+        const apiUrl = import.meta.env.VITE_SERVER_URL || window.location.origin;
+        const imageUrl = tagValue.startsWith("http")
+          ? tagValue
+          : `${apiUrl.replace(/\/$/, "")}/${tagValue.replace(/^\//, "")}`;
         const res = await axios.get(imageUrl, { responseType: "arraybuffer" });
         return res.data;
       },

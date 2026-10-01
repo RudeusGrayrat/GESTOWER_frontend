@@ -1,6 +1,7 @@
 import convertDocx from "../../../../utils/convertDocx";
 import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
 import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
+import { obtenerNombreEmpresaBoleta } from "../utils/nombreEmpresa";
 import axios from "../../../../api/axios";
 import { obtenerUrlArchivo } from "../../../../utils/archivoLocal";
 import { imagenTransparente } from "../../../../utils/imagenTransparente";
@@ -93,6 +94,7 @@ const renderDoc = async (boleta, business, datosContables) => {
       const formattedData = {
         ruc_empresa: business.ruc,
         razonSocial_empresa: business.razonSocial,
+        nombre_empresa: obtenerNombreEmpresaBoleta(business.razonSocial),
         logo_empresa: business.logo || imagenTransparente,
         firma: business.representative?.signature || imagenTransparente,
         fechaBoletaDePago: data.fechaBoletaDePago,

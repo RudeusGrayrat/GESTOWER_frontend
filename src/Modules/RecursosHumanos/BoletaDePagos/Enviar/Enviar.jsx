@@ -16,6 +16,7 @@ import {
 } from "../../../../redux/modules/Recursos Humanos/actions";
 import useSendMessage from "../../../../recicle/senMessage";
 import { obtenerConceptoBoleta } from "../utils/conceptoBoleta";
+import { obtenerNombreEmpresaBoleta } from "../utils/nombreEmpresa";
 import { obtenerSituacionTrabajador } from "../utils/situacionTrabajador";
 import { imagenTransparente } from "../../../../utils/imagenTransparente";
 
@@ -146,6 +147,7 @@ const Enviar = () => {
           const formattedData = {
             ruc_empresa: findBusiness?.ruc || "",
             razonSocial_empresa: findBusiness?.razonSocial || "",
+            nombre_empresa: obtenerNombreEmpresaBoleta(findBusiness?.razonSocial),
             logo_empresa: findBusiness?.logo || imagenTransparente,
             firma: findBusiness?.representative?.signature || imagenTransparente,
             fechaBoletaDePago: data.fechaBoletaDePago,

@@ -10,21 +10,33 @@ import DatosEmpresa from "../Register/Empresa";
 import Representante from "../Register/Representante";
 import { getBusiness } from "../../../../redux/modules/Recursos Humanos/actions";
 import useSendMessage from "../../../../recicle/senMessage";
+import axios from "../../../../api/axios";
 
 const EditBusiness = ({ setShowEdit, selected, reload }) => {
   const _id = selected._id;
   const [form, setForm] = useState({ ...selected });
+  const [formInicial, setFormInicial] = useState({ ...selected });
   const { updateBusiness, response } = useAuth();
   const dispatch = useDispatch();
   const { error } = useValidation();
   const [hasChanges, setHasChanges] = useState({});
   useEffect(() => {
-    setHasChanges(deepDiff(selected, form));
-  }, [form, selected]);
+    axios.get(`/business/${_id}`)
+      .then((response) => {
+        setForm(response.data);
+        setFormInicial(response.data);
+      })
+      .catch(() => {});
+  }, [_id]);
+  useEffect(() => {
+    setHasChanges(deepDiff(formInicial, form));
+  }, [form, formInicial]);
   const sendMessage = useSendMessage();
   const upDate = async () => {
     sendMessage("Cargando cambios...", "Info");
-    if (!hasChanges) return sendMessage("No hay cambios", "Error!!");
+    if (!hasChanges || Object.keys(hasChanges).length === 0) {
+      return sendMessage("No hay cambios", "Error!!");
+    }
     const upDateForm = {
       ...hasChanges,
       _id,

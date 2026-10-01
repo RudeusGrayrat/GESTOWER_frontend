@@ -1,13 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { renderAsync } from "docx-preview";
 import renderDoc from "../Enviar/renderDoc";
 import { useDispatch, useSelector } from "react-redux";
 import Details from "../../../../components/Principal/Permissions/View";
 import useSendMessage from "../../../../recicle/senMessage";
-import { getBusiness, getDatosContables } from "../../../../redux/modules/Recursos Humanos/actions";
+import { getDatosContables } from "../../../../redux/modules/Recursos Humanos/actions";
 
 const ViewBoletaDePago = ({ setShowDetail, selected }) => {
-  const [estadoDocumento, setEstadoDocumento] = useState("Generando documento...");
-  const documentoGenerado = useRef("");
+  const [estadoDocumento, setEstadoDocumento] = useState("Genera la vista previa cuando la necesites.");
+  const [documento, setDocumento] = useState(null);
+  const [generando, setGenerando] = useState(false);
+  const vistaPreviaRef = useRef(null);
   const dispatch = useDispatch();
   const sendMessage = useSendMessage();
   const datosContables = useSelector((state) => state.recursosHumanos.datosContables || []);
@@ -15,48 +18,120 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   useEffect(() => {
     if (!datosContables.length) dispatch(getDatosContables());
   }, [dispatch, datosContables.length]);
-  const business = selected.empresaColaborador;
-  useEffect(() => {
-    const renderDocx = async () => {
-      try {
-        if (!selected || !business || !datosContables.length) return;
-        const claveDocumento = `${selected._id}-${business._id}-${datosContables.length}`;
-        if (documentoGenerado.current === claveDocumento) return;
-        documentoGenerado.current = claveDocumento;
+  const business = selected?.empresaColaborador;
 
-        const file = await renderDoc(
-          {
-            ...selected,
-            // codigoSpp: findContrato?.codigoSpp,
-            // regimenPension: findContrato?.regimenPension,
-            regimenPension: selected.colaborador?.regimenPension || "",
-            codigoSpp: selected.codigoSpp || selected.colaborador?.codigoSpp || "",
-          },
-          business,
-          datosContables
-        );
-        if (!file) {
-          sendMessage("Error al cargar el archivo", "Error");
-          return;
-        }
-        const fechaConGuion = selected.fechaBoletaDePago.replace(/\//g, "-");
-        const url = URL.createObjectURL(file);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `${selected.colaborador?.lastname}_${selected.colaborador?.name}_${fechaConGuion}.docx`;
-        link.click();
-        URL.revokeObjectURL(url);
-        setEstadoDocumento("Documento descargado correctamente.");
-      } catch (error) {
-        setEstadoDocumento("No se pudo generar el documento.");
-        sendMessage(error.message || String(error), "Error");
-      }
-    };
-    renderDocx();
-  }, [business?._id, selected?._id, datosContables.length]);
+  useEffect(() => {
+    setDocumento(null);
+    setEstadoDocumento("Genera la vista previa cuando la necesites.");
+  }, [selected?._id]);
+
+  useEffect(() => {
+    if (!documento || !vistaPreviaRef.current) return;
+
+    const container = vistaPreviaRef.current;
+    container.innerHTML = "";
+    renderAsync(documento, container, undefined, {
+      inWrapper: true,
+      breakPages: true,
+      renderHeaders: true,
+      renderFooters: true,
+    }).catch((error) => {
+      setEstadoDocumento("No se pudo mostrar la vista previa.");
+      sendMessage(error.message || String(error), "Error");
+    });
+  }, [documento, sendMessage]);
+
+  const nombreArchivo = () => {
+    const fechaConGuion = selected?.fechaBoletaDePago?.replace(/\//g, "-") || "boleta";
+    return `${selected?.colaborador?.lastname || ""}_${selected?.colaborador?.name || ""}_${fechaConGuion}.docx`;
+  };
+
+  const generarDocumento = async () => {
+    if (documento) return documento;
+    if (!selected || !business || !datosContables.length) {
+      setEstadoDocumento("Aún se están cargando los datos necesarios para la boleta.");
+      return null;
+    }
+
+    setGenerando(true);
+    setEstadoDocumento("Generando boleta...");
+    try {
+      const file = await renderDoc(
+        {
+          ...selected,
+          regimenPension: selected.colaborador?.regimenPension || "",
+          codigoSpp: selected.codigoSpp || selected.colaborador?.codigoSpp || "",
+        },
+        business,
+        datosContables
+      );
+      if (!file) throw new Error("No se pudo generar el documento.");
+
+      setDocumento(file);
+      setEstadoDocumento("Vista previa lista.");
+      return file;
+    } catch (error) {
+      setEstadoDocumento("No se pudo generar el documento.");
+      sendMessage(error.message || String(error), "Error");
+      return null;
+    } finally {
+      setGenerando(false);
+    }
+  };
+
+  const descargarWord = async () => {
+    const file = await generarDocumento();
+    if (!file) return;
+
+    const url = URL.createObjectURL(file);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = nombreArchivo();
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <Details setShowDetail={setShowDetail} title="Boleta de Pago">
-      <p>{estadoDocumento}</p>
+      <section className="min-h-0 h-full flex flex-col gap-4">
+        <header className="flex flex-col gap-1">
+          <h2 className="text-2xl font-bold text-slate-800">Boleta de pago</h2>
+          <p className="text-sm text-slate-500">{estadoDocumento}</p>
+        </header>
+
+        <div className="flex flex-wrap gap-3">
+          <button
+            type="button"
+            onClick={generarDocumento}
+            disabled={generando}
+            className="rounded-xl bg-gradient-to-r from-[#2b5993] to-[#418fda] px-5 py-2.5 font-semibold text-white shadow-md transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <i className="pi pi-eye mr-2" />
+            {generando ? "Generando..." : documento ? "Ver vista previa" : "Ver boleta"}
+          </button>
+          <button
+            type="button"
+            onClick={descargarWord}
+            disabled={generando}
+            className="rounded-xl border border-slate-300 bg-white px-5 py-2.5 font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            <i className="pi pi-file-word mr-2 text-[#2b5993]" />
+            Descargar Word
+          </button>
+        </div>
+
+        <div className="min-h-0 flex-1 overflow-auto rounded-2xl border border-slate-200 bg-slate-200/70 p-4 shadow-inner">
+          {documento ? (
+            <div ref={vistaPreviaRef} className="min-w-max" />
+          ) : (
+            <div className="flex h-full min-h-[18rem] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white/70 p-8 text-center text-slate-500">
+              Usa <strong className="mx-1 text-slate-700">Ver boleta</strong> para revisar el documento antes de descargarlo.
+            </div>
+          )}
+        </div>
+      </section>
     </Details>
   );
 };
