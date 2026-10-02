@@ -109,6 +109,7 @@ const convertDocx = async (predata, archivo, nameDoc) => {
       getSize: (imageData, _tagValue, tagName) => {
         // Cada imagen ocupa su espacio máximo sin perder su proporción original.
         if (tagName === "logo_empresa") return calcularTamanoProporcional(imageData, 506, 238);
+        if (tagName === "logo_encabezado") return calcularTamanoProporcional(imageData, 108, 48);
         if (tagName === "firma") return calcularTamanoProporcional(imageData, 106, 72);
         return [100, 100];
       },

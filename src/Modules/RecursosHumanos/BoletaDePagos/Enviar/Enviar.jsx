@@ -149,6 +149,7 @@ const Enviar = () => {
             razonSocial_empresa: findBusiness?.razonSocial || "",
             nombre_empresa: obtenerNombreEmpresaBoleta(findBusiness?.razonSocial),
             logo_empresa: findBusiness?.logo || imagenTransparente,
+            logo_encabezado: findBusiness?.logo || imagenTransparente,
             firma: findBusiness?.representative?.signature || imagenTransparente,
             fechaBoletaDePago: data.fechaBoletaDePago,
             situacionEspecial:

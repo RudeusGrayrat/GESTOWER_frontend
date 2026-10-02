@@ -96,6 +96,7 @@ const renderDoc = async (boleta, business, datosContables) => {
         razonSocial_empresa: business.razonSocial,
         nombre_empresa: obtenerNombreEmpresaBoleta(business.razonSocial),
         logo_empresa: business.logo || imagenTransparente,
+        logo_encabezado: business.logo || imagenTransparente,
         firma: business.representative?.signature || imagenTransparente,
         fechaBoletaDePago: data.fechaBoletaDePago,
         tipoD: data.colaborador.documentType,
