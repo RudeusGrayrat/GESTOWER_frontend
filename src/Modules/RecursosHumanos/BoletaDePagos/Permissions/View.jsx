@@ -95,7 +95,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
           </div>
         </header>
 
-        <div className="min-h-0 flex-1 overflow-auto rounded-2xl border border-slate-200 bg-slate-100 shadow-inner">
+        <div className="min-h-0 flex-1 overflow-auto rounded-2xl bg-slate-100 shadow-inner">
           {cargandoOffice && <div className="flex h-full min-h-[24rem] flex-col items-center justify-center gap-3 text-slate-500"><i className="pi pi-spin pi-spinner text-3xl text-[#2b5993]" /><span>Preparando vista previa de Office...</span></div>}
           {!cargandoOffice && errorOffice && <div className="flex h-full min-h-[24rem] flex-col items-center justify-center gap-4 p-8 text-center text-slate-500"><i className="pi pi-exclamation-triangle text-3xl text-amber-500" /><span>{errorOffice}</span><button type="button" onClick={() => cargarOffice(selected?._id)} className="rounded-xl bg-[#2b5993] px-4 py-2 font-semibold text-white">Reintentar</button></div>}
           {!cargandoOffice && office?.embedUrl && <iframe title="Vista previa de boleta en Office" src={office.embedUrl} className="h-full min-h-[38rem] w-full border-0" allowFullScreen />}
