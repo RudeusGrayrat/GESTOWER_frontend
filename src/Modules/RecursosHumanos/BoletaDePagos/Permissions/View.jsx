@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
-import renderDoc from "../Enviar/renderDoc";
-import { useDispatch, useSelector } from "react-redux";
 import Details from "../../../../components/Principal/Permissions/View";
 import useSendMessage from "../../../../recicle/senMessage";
-import { getDatosContables } from "../../../../redux/modules/Recursos Humanos/actions";
 import axios from "../../../../api/axios";
 
 const ViewBoletaDePago = ({ setShowDetail, selected }) => {
@@ -11,14 +8,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   const [cargandoOffice, setCargandoOffice] = useState(true);
   const [errorOffice, setErrorOffice] = useState("");
   const [generandoWord, setGenerandoWord] = useState(false);
-  const dispatch = useDispatch();
   const sendMessage = useSendMessage();
-  const datosContables = useSelector((state) => state.recursosHumanos.datosContables || []);
-  const business = selected?.empresaColaborador;
-
-  useEffect(() => {
-    if (!datosContables.length) dispatch(getDatosContables());
-  }, [dispatch, datosContables.length]);
 
   const cargarOffice = async (boletaId, activo = () => true) => {
     if (!boletaId) return;
@@ -59,19 +49,13 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   };
 
   const descargarWord = async () => {
-    if (!selected || !business || !datosContables.length) {
-      sendMessage("Aún se están cargando los datos necesarios para generar Word.", "Error");
-      return;
-    }
+    if (!selected?._id) return;
     setGenerandoWord(true);
     try {
-      const file = await renderDoc({
-        ...selected,
-        regimenPension: selected.colaborador?.regimenPension || "",
-        codigoSpp: selected.codigoSpp || selected.colaborador?.codigoSpp || "",
-      }, business, datosContables);
-      if (!file) throw new Error("No se pudo generar el documento Word.");
-      const url = URL.createObjectURL(file);
+      const response = await axios.get(`/boletas/${selected._id}/docx`, { responseType: "blob" });
+      const url = URL.createObjectURL(new Blob([response.data], {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      }));
       descargar(url, nombreArchivo());
       URL.revokeObjectURL(url);
     } catch (error) {
@@ -83,9 +67,14 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
 
   const abrirOffice = () => {
     if (!office?.viewUrl) return;
-    if (!window.open(office.viewUrl, "_blank", "noopener,noreferrer")) {
+    // `noopener` hace que algunos navegadores devuelvan null aunque la pestaña sí abra.
+    const nuevaPestana = window.open("", "_blank");
+    if (!nuevaPestana) {
       sendMessage("Permite las ventanas emergentes para abrir la boleta en Office.", "Error");
+      return;
     }
+    nuevaPestana.opener = null;
+    nuevaPestana.location.replace(office.viewUrl);
   };
 
   return (

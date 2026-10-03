@@ -49,6 +49,12 @@ const calcularTamanoProporcional = (imageData, maxWidth, maxHeight) => {
   return [Math.round(dimensions.width * scale), Math.round(dimensions.height * scale)];
 };
 
+const calcularAnchoProporcional = (imageData, width) => {
+  const dimensions = obtenerDimensionesImagen(imageData);
+  if (!dimensions?.width || !dimensions?.height) return [width, width];
+  return [width, Math.round((dimensions.height * width) / dimensions.width)];
+};
+
 const convertDocx = async (predata, archivo, nameDoc) => {
   // Detectar entorno de desarrollo
 
@@ -108,7 +114,8 @@ const convertDocx = async (predata, archivo, nameDoc) => {
       },
       getSize: (imageData, _tagValue, tagName) => {
         // Cada imagen ocupa su espacio máximo sin perder su proporción original.
-        if (tagName === "logo_empresa") return calcularTamanoProporcional(imageData, 506, 238);
+        // La marca de agua ocupa siempre el ancho definido por su cuadro de texto.
+        if (tagName === "logo_empresa") return calcularAnchoProporcional(imageData, 506);
         if (tagName === "logo_encabezado") return calcularTamanoProporcional(imageData, 108, 48);
         if (tagName === "firma") return calcularTamanoProporcional(imageData, 106, 72);
         return [100, 100];
