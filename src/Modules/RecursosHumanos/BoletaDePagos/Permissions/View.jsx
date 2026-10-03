@@ -8,6 +8,7 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
   const [cargandoOffice, setCargandoOffice] = useState(true);
   const [errorOffice, setErrorOffice] = useState("");
   const [generandoWord, setGenerandoWord] = useState(false);
+  const [generandoPdf, setGenerandoPdf] = useState(false);
   const sendMessage = useSendMessage();
 
   const cargarOffice = async (boletaId, activo = () => true) => {
@@ -77,6 +78,45 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
     nuevaPestana.location.replace(office.viewUrl);
   };
 
+  const obtenerPdf = async () => {
+    if (!selected?._id) return null;
+    setGenerandoPdf(true);
+    try {
+      const response = await axios.get(`/boletas/${selected._id}/pdf`, { responseType: "blob" });
+      return new Blob([response.data], { type: "application/pdf" });
+    } catch (error) {
+      sendMessage("No se pudo generar el PDF de la boleta.", "Error");
+      return null;
+    } finally {
+      setGenerandoPdf(false);
+    }
+  };
+
+  const descargarPdf = async () => {
+    const pdf = await obtenerPdf();
+    if (!pdf) return;
+    const url = URL.createObjectURL(pdf);
+    descargar(url, nombreArchivo().replace(/\.docx$/i, ".pdf"));
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const verPdf = async () => {
+    const nuevaPestana = window.open("", "_blank");
+    if (!nuevaPestana) {
+      sendMessage("Permite las ventanas emergentes para ver el PDF.", "Error");
+      return;
+    }
+    const pdf = await obtenerPdf();
+    if (!pdf) {
+      nuevaPestana.close();
+      return;
+    }
+    const url = URL.createObjectURL(pdf);
+    nuevaPestana.opener = null;
+    nuevaPestana.location.replace(url);
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  };
+
   return (
     <Details setShowDetail={setShowDetail} title="Boleta de Pago">
       <section className="min-h-0 h-full flex flex-col gap-4">
@@ -88,6 +128,12 @@ const ViewBoletaDePago = ({ setShowDetail, selected }) => {
           <div className="flex flex-wrap gap-2">
             <button type="button" onClick={abrirOffice} disabled={!office} className="rounded-xl bg-gradient-to-r from-[#2b5993] to-[#418fda] px-4 py-2 font-semibold text-white shadow-md transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
               <i className="pi pi-external-link mr-2" />Abrir en Office
+            </button>
+            <button type="button" onClick={verPdf} disabled={generandoPdf} className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60">
+              <i className="pi pi-eye mr-2 text-red-600" />{generandoPdf ? "Generando PDF..." : "Ver PDF"}
+            </button>
+            <button type="button" onClick={descargarPdf} disabled={generandoPdf} className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60">
+              <i className="pi pi-file-pdf mr-2 text-red-600" />Descargar PDF
             </button>
             <button type="button" onClick={descargarWord} disabled={generandoWord} className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm transition hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60">
               <i className="pi pi-file-word mr-2 text-[#2b5993]" />{generandoWord ? "Generando Word..." : "Descargar Word"}
