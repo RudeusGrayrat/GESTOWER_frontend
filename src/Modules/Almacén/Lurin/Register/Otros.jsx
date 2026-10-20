@@ -1,5 +1,7 @@
 import InputFiles from "../../../../recicle/Inputs/tipos/InputFile";
 import InputNormal from "../../../../recicle/Inputs/tipos/Normal";
+import DetalleCompuesto from "./DetalleCompuesto";
+import ActasEscaneadas from "./ActasEscaneadas";
 
 const Otros = ({ form, setForm, error }) => {
   return (
@@ -28,30 +30,9 @@ const Otros = ({ form, setForm, error }) => {
         />
       </div>
       <div className="w-full flex flex-wrap justify-center p-2 gap-4">
-        <div className=" flex flex-col  w-[49%] ">
-          <label className={`text-base font-medium  "text-gray-700" `}>
-            Observaciones
-          </label>
-          <textarea
-            label="Observaciones"
-            className="mt-1 py-2 border px-3 w-[100%] !text-base rounded-md shadow-sm sm:text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            name="observaciones"
-            value={form.observaciones}
-            onChange={(e) => setForm({ ...form, observaciones: e.target.value })}
-          />
-        </div>
-        <div className=" flex flex-col w-[49%] ">
-          <label className={`text-base font-medium  "text-gray-700" `}>
-            Detalles de Peso
-          </label>
-          <textarea
-            label="Detalles de Peso"
-            className="mt-1 py-2 border px-3 w-[100%] !text-base rounded-md shadow-sm sm:text-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-            name="detallesDePeso"
-            value={form.detallesDePeso}
-            onChange={(e) => setForm({ ...form, detallesDePeso: e.target.value })}
-          />
-        </div>
+        <DetalleCompuesto label="Detalles de peso" kind="peso" value={form.detallePeso || { texto: form.detallesDePeso || "", filas: [] }} onChange={(detallePeso) => setForm({ ...form, detallePeso, detallesDePeso: detallePeso.texto })} />
+        <DetalleCompuesto label="Observaciones" kind="observacion" value={form.detalleObservaciones || { texto: form.observaciones || "", filas: [] }} onChange={(detalleObservaciones) => setForm({ ...form, detalleObservaciones, observaciones: detalleObservaciones.texto })} />
+        <ActasEscaneadas value={form.actasPendientes || []} existing={form.actasEscaneadas || []} onChange={(actasPendientes) => setForm({ ...form, actasPendientes })} />
       </div>
 
     </div>

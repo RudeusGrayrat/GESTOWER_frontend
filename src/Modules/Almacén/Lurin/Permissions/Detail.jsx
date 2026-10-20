@@ -3,6 +3,7 @@ import Details from "../../../../components/Principal/Permissions/View";
 import PDetail from "../../../../recicle/PDtail";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
+import PostApprovalActions from "./PostApprovalActions";
 
 const DetailLurin = ({ setShowDetail, selected }) => {
   if (!selected) return null;
@@ -23,6 +24,10 @@ const DetailLurin = ({ setShowDetail, selected }) => {
     fechaSalida,
     horaSalida,
     detallesDePeso,
+    detallePeso,
+    detalleObservaciones,
+    actasEscaneadas,
+    comentarios,
   } = selected;
   console.log(selected)
   const [loading, setLoading] = useState(true);
@@ -132,7 +137,9 @@ const DetailLurin = ({ setShowDetail, selected }) => {
             <PDetail content="FECHA DE SALIDA: " value={fechaSalida} />
             <PDetail content="HORA DE SALIDA: " value={horaSalida} />
             <PDetail content="DETALLES DE PESO: " value={detallesDePeso} />
+            {detallePeso?.filas?.length > 0 && <table className="w-full text-sm mt-2"><thead><tr><th>Concepto</th><th>Neto</th><th>Bruto</th><th>Observación</th></tr></thead><tbody>{detallePeso.filas.map((row, index) => <tr key={index}><td>{row.concepto}</td><td>{row.pesoNeto}</td><td>{row.pesoBruto}</td><td>{row.observacion}</td></tr>)}</tbody></table>}
             <PDetail content="OBSERVACIONES: " value={observaciones} />
+            {detalleObservaciones?.filas?.length > 0 && <table className="w-full text-sm mt-2"><thead><tr><th>Asunto</th><th>Descripción</th></tr></thead><tbody>{detalleObservaciones.filas.map((row, index) => <tr key={index}><td>{row.asunto}</td><td>{row.descripcion}</td></tr>)}</tbody></table>}
             <PDetail content="CREADO POR: " value={`${selected?.creadoPor?.name || ""} ${selected?.creadoPor?.lastname || ""}`} />
             <PDetail content="APROBADO POR: " value={`${selected?.aprobadoPor?.name || ""} ${selected?.aprobadoPor?.lastname || ""}`} />
           </div>
@@ -167,6 +174,9 @@ const DetailLurin = ({ setShowDetail, selected }) => {
               </div>
             )}
           </div>
+          {actasEscaneadas?.length > 0 && <div className="mt-4"><h4 className="font-semibold">ACTAS ESCANEADAS</h4>{actasEscaneadas.map((acta) => <a key={acta._id || acta.url} className="block text-sky-700 underline" href={acta.url} target="_blank" rel="noreferrer">{acta.nombre}</a>)}</div>}
+          {comentarios?.length > 0 && <div className="mt-4"><h4 className="font-semibold">COMENTARIOS</h4>{comentarios.map((comentario) => <p key={comentario._id} className="border-b py-1">{comentario.texto}</p>)}</div>}
+          <PostApprovalActions movimiento={selected} />
         </div>
 
         <div className="flex-1 overflow-y-auto rounded-2xl shadow-md bg-white p-4">

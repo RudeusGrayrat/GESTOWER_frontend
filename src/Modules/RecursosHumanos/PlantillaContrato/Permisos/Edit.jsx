@@ -31,7 +31,7 @@ const EditPlantillaContrato = ({ setShowEdit, selected, reload }) => {
         sendMessage("No se han realizado cambios", "Error");
       }
     } catch (error) {
-      sendMessage(error || error.message, "Error");
+      sendMessage(error.response?.data?.message || error.message, "Error");
     }
   };
 
@@ -39,7 +39,7 @@ const EditPlantillaContrato = ({ setShowEdit, selected, reload }) => {
     <Edit setShowEdit={setShowEdit} upDate={upDate}>
       <PopUp />
       <div className="flex h-full items-center justify-center">
-        <Datos formData={formData} setFormData={setFormData} error={error} />
+        <Datos formData={formData} setFormData={setFormData} error={error} editando />
       </div>
     </Edit>
   );

@@ -46,7 +46,7 @@ const Register = () => {
   return (
     <div className="flex flex-col w-full p-6">
       <PopUp deshabilitar={deshabilitar} />
-      <CardPlegable title="Datos del Contrato">
+      <CardPlegable title="Datos de la Plantilla">
         <Datos formData={formData} setFormData={setFormData} error={error} />
       </CardPlegable>
       <div>

@@ -10,8 +10,15 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
 
     const { user } = useAuth(); // 🌟 Obtenemos el usuario logueado
     const sendMessage = useSendMessage();
+    const pendienteGenerador = selected?.estado === "PENDIENTE";
+    const puedeEvaluarDestino = ["ENVIADO", "EN REVISION"].includes(selected?.estado);
+    const puedeObservar = pendienteGenerador || puedeEvaluarDestino;
 
     const handleDecision = async (nuevoEstado) => {
+        if (nuevoEstado === "OBSERVADO" ? !puedeObservar : !puedeEvaluarDestino) {
+            sendMessage("Esta acción no está disponible para el estado actual del manifiesto.", "Advertencia");
+            return;
+        }
         if ((nuevoEstado === "OBSERVADO" || nuevoEstado === "RECHAZADO") && !comentario.trim()) {
             sendMessage("El comentario es obligatorio para observar o rechazar.", "Advertencia");
             return;
@@ -91,6 +98,16 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
                         </div>
                     </div>
 
+                    {pendienteGenerador && (
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                            Pendiente de revisión del generador. Puedes observarlo para su corrección; para aprobarlo o rechazarlo, el generador debe aprobarlo y enviarlo al destino.
+                        </div>
+                    )}
+                    {!pendienteGenerador && !puedeEvaluarDestino && (
+                        <div className="rounded-lg border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700">
+                            Este manifiesto no está disponible para revisión en su estado actual.
+                        </div>
+                    )}
                     <div className="flex flex-col gap-2">
                         <label className="font-semibold text-gray-700 flex items-center gap-1.5 text-md">
                             <span className="pi pi-comment text-gray-400"></span>
@@ -108,7 +125,7 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
 
                 <div className="p-4 border-t border-gray-200/60 bg-white/60 flex flex-wrap justify-around gap-3">
                     <button
-                        disabled={loading}
+                        disabled={loading || !puedeEvaluarDestino}
                         onClick={() => handleDecision("RECHAZADO")}
                         className="bg-gradient-to-tr from-rose-500 to-red-600 text-white font-semibold text-md px-5 py-2.5 rounded-lg shadow-md flex justify-center items-center cursor-pointer hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
                     >
@@ -117,7 +134,7 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
                     </button>
 
                     <button
-                        disabled={loading}
+                        disabled={loading || !puedeObservar}
                         onClick={() => handleDecision("OBSERVADO")}
                         className="bg-gradient-to-tr from-amber-500 to-orange-600 text-white font-semibold text-md px-5 py-2.5 rounded-lg shadow-md flex justify-center items-center cursor-pointer hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
                     >
@@ -126,7 +143,7 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
                     </button>
 
                     <button
-                        disabled={loading}
+                        disabled={loading || !puedeEvaluarDestino}
                         onClick={() => handleDecision("APROBADO")}
                         className="bg-gradient-to-tr from-[#4378b9] to-[#57a0e6] text-white font-semibold text-md px-5 py-2.5 rounded-lg shadow-md flex justify-center items-center cursor-pointer hover:opacity-90 active:scale-95 transition-all disabled:opacity-40"
                     >

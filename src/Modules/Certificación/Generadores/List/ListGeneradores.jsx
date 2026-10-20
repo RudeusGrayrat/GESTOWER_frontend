@@ -3,11 +3,13 @@ import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DetailGenerador from "../Permissions/Permissions";
 import EditGenerador from "../Permissions/Edit";
+import SolicitudesGenerador from "./SolicitudesGenerador";
 
 const ListGeneradores = ({
     permissionRead,
     permissionEdit,
-    permissionDelete
+    permissionDelete,
+    permissionApprove
 }) => {
     const fecthGeneradores = async ({ limit, page, search }) => {
         try {
@@ -24,7 +26,7 @@ const ListGeneradores = ({
         }
     }
     return (
-        <ListPrincipal
+        <><SolicitudesGenerador permissionApprove={permissionApprove} /><ListPrincipal
             permissionRead={permissionRead}
             permissionEdit={permissionEdit}
             permissionDelete={permissionDelete}
@@ -54,7 +56,7 @@ const ListGeneradores = ({
                 header="Estado"
                 
             />
-        </ListPrincipal>
+        </ListPrincipal></>
     )
 }
 

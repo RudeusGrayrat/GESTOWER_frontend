@@ -47,8 +47,11 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
     horaSalida: "",
     fechaSalida: "",
     detallesDePeso: "",
+    detallePeso: { texto: "", filas: [] },
     referenciaImagen: [],
     observaciones: "",
+    detalleObservaciones: { texto: "", filas: [] },
+    actasPendientes: [],
     codigoIngreso: "",
   });
 
@@ -72,9 +75,11 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
         descripcionBienes: ingreso.descripcionBienes || [],
         observaciones: ingreso.observaciones || "",
         detallesDePeso: ingreso.detallesDePeso || "",
+        detallePeso: ingreso.detallePeso || { texto: ingreso.detallesDePeso || "", filas: [] },
         horaSalida: ingreso.horaSalida || "",
         fechaSalida: ingreso.fechaSalida || "",
         referenciaImagen: ingreso.referenciaImagen || [],
+        detalleObservaciones: ingreso.detalleObservaciones || { texto: ingreso.observaciones || "", filas: [] },
       }));
       setDirectorioKey(k => k + 1);
     }
@@ -145,15 +150,25 @@ const RegisterLurin = ({ contratos, contratos_id }) => {
       }));
 
       // Petición única: Crea Movimiento y genera los documentos de Stock
-      await axios.post("/postMovimientoAlmacen", {
-        ...form,
+      const { actasPendientes, ...movimientoSinActas } = form;
+      const response = await axios.post("/postMovimientoAlmacen", {
+        ...movimientoSinActas,
         contratoId: findContrato._id,
         sedeId: findSede._id,
         descripcionBienes,
         creadoPor: user._id,
       });
 
-      sendMessage("Registrado correctamente en Movimientos y Stock", "Bien");
+      if (actasPendientes.length) {
+        const payload = new FormData();
+        actasPendientes.forEach((file) => payload.append("actas", file));
+        payload.append("subidoPor", user._id);
+        await axios.post(`/movimientos/${response.data.data._id}/actas`, payload, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+
+      sendMessage("Movimiento registrado y acta(s) adjuntada(s) correctamente", "Bien");
       resetForm();
     } catch (error) {
       console.error(error);

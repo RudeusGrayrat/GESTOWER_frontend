@@ -127,6 +127,8 @@ const Lurin = () => {
     case "Stock":
       children = (
         <StockAlmacenLurin
+          sedeId={sedeId}
+          contratos={contratoSede}
           permissionRead={permissionRead}
           permissionEdit={permissionEdit}
           permissionDelete={permissionDelete}

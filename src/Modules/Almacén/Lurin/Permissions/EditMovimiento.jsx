@@ -39,17 +39,30 @@ const EditMovimiento = ({ setShowEdit, selected, reload }) => {
   console.log("🚀 diferencias:", diferencias)
   const actualizar = async () => {
     try {
-      if (Object.keys(diferencias).length === 0) {
+      const hasActasPendientes = Boolean(form.actasPendientes?.length);
+      if (Object.keys(diferencias).length === 0 && !hasActasPendientes) {
         sendMessage("No se realizaron cambios", "Info");
         return;
       }
       sendMessage("Actualizando movimiento...", "Cargando", true);
-      await axios.patch("/patchMovimientoAlmacen", {
-        _id: idSelected,
-        actualizadoPor: user._id,
-        correlativa: form.correlativa,
-        ...diferencias,
-      });
+      const { actasPendientes, ...cambiosSinAdjuntos } = diferencias;
+      if (Object.keys(cambiosSinAdjuntos).length) {
+        await axios.patch("/patchMovimientoAlmacen", {
+          _id: idSelected,
+          actualizadoPor: user._id,
+          correlativa: form.correlativa,
+          ...cambiosSinAdjuntos,
+        });
+      }
+
+      if (form.actasPendientes?.length) {
+        const payload = new FormData();
+        form.actasPendientes.forEach((file) => payload.append("actas", file));
+        payload.append("subidoPor", user._id);
+        await axios.post(`/movimientos/${idSelected}/actas`, payload, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
 
       sendMessage("Movimiento actualizado correctamente", "Bien");
     } catch (error) {
