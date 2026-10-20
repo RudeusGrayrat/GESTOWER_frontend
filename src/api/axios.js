@@ -5,4 +5,15 @@ const instance = axios.create({
   withCredentials: true,
 });
 
+// La sesión interna se conserva como JWT en localStorage. Adjuntarlo aquí evita
+// que cada formulario tenga que reconstruir manualmente el encabezado autenticado.
+instance.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers = config.headers || {};
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 export default instance;
