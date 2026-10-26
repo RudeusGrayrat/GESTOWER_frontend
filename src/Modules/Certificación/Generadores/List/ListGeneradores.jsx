@@ -3,8 +3,7 @@ import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DetailGenerador from "../Permissions/Permissions";
 import EditGenerador from "../Permissions/Edit";
-import useSendMessage from "../../../../recicle/senMessage";
-import { useState } from "react";
+import ApproveGenerador from "../Permissions/Approve";
 
 const ListGeneradores = ({
     permissionRead,
@@ -12,9 +11,6 @@ const ListGeneradores = ({
     permissionDelete,
     permissionApprove
 }) => {
-    const [refreshKey, setRefreshKey] = useState(0);
-    const [activando, setActivando] = useState("");
-    const sendMessage = useSendMessage();
     const fecthGeneradores = async ({ limit, page, search }) => {
         try {
             const response = await axios.get("/certificaciones/getGeneradoresPaginacion", {
@@ -29,24 +25,16 @@ const ListGeneradores = ({
             throw error;
         }
     }
-    const activar = async (row) => {
-        if (!window.confirm(`¿Activar a ${row.razonSocial}? Se habilitará su cuenta y vínculo con el transportista que lo registró.`)) return;
-        setActivando(row._id);
-        try {
-            const { data } = await axios.post(`/manifesTower/generadores/${row._id}/activar`);
-            sendMessage(data.message, "Correcto");
-            setRefreshKey((value) => value + 1);
-        } catch (error) { sendMessage(error.response?.data?.message || "No se pudo activar el generador.", "Error"); }
-        finally { setActivando(""); }
-    };
     return (
-        <><ListPrincipal
-            key={refreshKey}
+        <ListPrincipal
             permissionRead={permissionRead}
             permissionEdit={permissionEdit}
             permissionDelete={permissionDelete}
+            permissionApprove={permissionApprove}
+            canApprove={(row) => row.estado === "PENDIENTE"}
             DetailItem={DetailGenerador}
             EditItem={EditGenerador}
+            ApproveItem={ApproveGenerador}
             fetchData={fecthGeneradores}
         >
             <Column field="razonSocial" header="Razon Social" />
@@ -72,10 +60,7 @@ const ListGeneradores = ({
                 header="Estado"
                 
             />
-            <Column header="Activación" body={(row) => row.estado === "PENDIENTE" ? (
-                permissionEdit ? <button type="button" disabled={activando === row._id} onClick={() => activar(row)} className="rounded bg-green-700 px-3 py-1 text-sm text-white disabled:opacity-50">{activando === row._id ? "Activando…" : "Activar"}</button> : <span className="text-sm text-amber-700">Pendiente</span>
-            ) : "—"} />
-        </ListPrincipal></>
+        </ListPrincipal>
     )
 }
 

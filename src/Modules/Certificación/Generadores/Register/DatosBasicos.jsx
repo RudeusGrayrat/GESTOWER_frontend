@@ -1,4 +1,3 @@
-import { Checkbox } from "primereact/checkbox";
 import Input from "../../../../recicle/Inputs/Inputs";
 import InpuFiles from "../../../../recicle/Inputs/tipos/InputFile";
 
@@ -53,14 +52,6 @@ const DatosBasicos = ({ form, setForm }) => {
                 ancho=" !min-w-32 w-44"
                 name="dniRepresentante"
                 value={form.dniRepresentante}
-                setForm={setForm}
-            />
-            <Input
-                label="Usuario en Manifestower"
-                type="switch"
-                name="usuarioManifestower"
-                switchLabel="Activar usuario"
-                value={form.usuarioManifestower}
                 setForm={setForm}
             />
         </div>

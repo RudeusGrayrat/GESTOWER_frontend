@@ -21,6 +21,7 @@ const ListPrincipal = ({
   permissionDisapprove,
   permissionSend,
   permissionVerify,
+  canApprove,
   ApproveItem,
   DisapproveItem,
   EnviarItem,
@@ -116,6 +117,9 @@ const ListPrincipal = ({
     const isRejected =
       rowData.state === "RECHAZADO" || rowData.estado === "RECHAZADO";
     const isSend = rowData.estado !== "PENDIENTE" && rowData.estado !== "OBSERVADO";
+    const approveDisabled = typeof canApprove === "function"
+      ? !canApprove(rowData)
+      : (isApproved || isActivated);
     return (
       <React.Fragment>
         {permissionRead && (
@@ -175,7 +179,7 @@ const ListPrincipal = ({
             rounded
             outlined
             className={` text-green-500 rounded-full
-              ${(isApproved || isActivated) ? "cursor-not-allowed opacity-30" : ""}
+              ${approveDisabled ? "cursor-not-allowed opacity-30" : ""}
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
               ${selectedRowId === rowData._id && showApprove
                 ? "shadow-inner translate-y-[2px]"
@@ -183,7 +187,7 @@ const ListPrincipal = ({
               }
               `}
             onClick={() => handleShowApprove(rowData)}
-            disabled={isApproved || isActivated}
+            disabled={approveDisabled}
           />
         )}
         {permissionDisapprove && (
