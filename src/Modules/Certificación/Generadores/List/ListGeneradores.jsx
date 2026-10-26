@@ -4,12 +4,14 @@ import axios from "../../../../api/axios";
 import DetailGenerador from "../Permissions/Permissions";
 import EditGenerador from "../Permissions/Edit";
 import ApproveGenerador from "../Permissions/Approve";
+import DisapproveGenerador from "../Permissions/Disapprove";
 
 const ListGeneradores = ({
     permissionRead,
     permissionEdit,
     permissionDelete,
-    permissionApprove
+    permissionApprove,
+    permissionDisapprove
 }) => {
     const fecthGeneradores = async ({ limit, page, search }) => {
         try {
@@ -31,10 +33,13 @@ const ListGeneradores = ({
             permissionEdit={permissionEdit}
             permissionDelete={permissionDelete}
             permissionApprove={permissionApprove}
-            canApprove={(row) => row.estado === "PENDIENTE"}
+            permissionDisapprove={permissionDisapprove}
+            canApprove={(row) => ["PENDIENTE", "SUSPENDIDO"].includes(row.estado)}
+            canDisapprove={(row) => ["PENDIENTE", "ACTIVO"].includes(row.estado)}
             DetailItem={DetailGenerador}
             EditItem={EditGenerador}
             ApproveItem={ApproveGenerador}
+            DisapproveItem={DisapproveGenerador}
             fetchData={fecthGeneradores}
         >
             <Column field="razonSocial" header="Razon Social" />

@@ -22,6 +22,7 @@ const ListPrincipal = ({
   permissionSend,
   permissionVerify,
   canApprove,
+  canDisapprove,
   ApproveItem,
   DisapproveItem,
   EnviarItem,
@@ -120,6 +121,9 @@ const ListPrincipal = ({
     const approveDisabled = typeof canApprove === "function"
       ? !canApprove(rowData)
       : (isApproved || isActivated);
+    const disapproveDisabled = typeof canDisapprove === "function"
+      ? !canDisapprove(rowData)
+      : (isRejected && !isActivated);
     return (
       <React.Fragment>
         {permissionRead && (
@@ -197,7 +201,7 @@ const ListPrincipal = ({
             title="Anular o Rechazar"
             outlined
             className={`text-orange-600 rounded-full
-              ${(isRejected && !isActivated) ? "cursor-not-allowed opacity-30" : ""}
+              ${disapproveDisabled ? "cursor-not-allowed opacity-30" : ""}
               mx-1 bg-[#f7f6f6bb] transition-all duration-150 ease-in-out 
               ${selectedRowId === rowData._id && showDisapprove
                 ? "shadow-inner translate-y-[2px]"
@@ -205,7 +209,7 @@ const ListPrincipal = ({
               }
               `}
             onClick={() => handleShowDisapprove(rowData)}
-            disabled={isRejected && !isActivated}
+            disabled={disapproveDisabled}
           />
         )}
         {permissionEdit && (
