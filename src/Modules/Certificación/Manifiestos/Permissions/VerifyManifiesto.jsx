@@ -6,6 +6,7 @@ import useSendMessage from "../../../../recicle/senMessage";
 
 const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
     const [comentario, setComentario] = useState("");
+    const [destinoFinal, setDestinoFinal] = useState({ tipoManejo: "", cantidadEntregada: "", observaciones: "" });
     const [loading, setLoading] = useState(false);
 
     const { user } = useAuth(); // 🌟 Obtenemos el usuario logueado
@@ -23,6 +24,10 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
             sendMessage("El comentario es obligatorio para observar o rechazar.", "Advertencia");
             return;
         }
+        if (nuevoEstado === "APROBADO" && (!destinoFinal.tipoManejo || destinoFinal.cantidadEntregada === "" || Number(destinoFinal.cantidadEntregada) < 0)) {
+            sendMessage("Completa el tipo de manejo y la cantidad entregada por el destino.", "Advertencia");
+            return;
+        }
 
         setLoading(true);
         try {
@@ -30,7 +35,7 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
             const response = await axios.patch(`/certificaciones/verificarManifiesto/${selected._id}`, {
                 estado: nuevoEstado,
                 observaciones: comentario,
-                usuarioId: user?._id // Enviamos el ID del operador/asistente
+                destinoFinal,
             });
 
             // Sincronizado con tu formato: response.data.message y response.data.type
@@ -75,6 +80,16 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
                     </h3>
                     <p className="text-md text-gray-400 mt-1">N° Documento: {selected?.numeroManifiesto}</p>
                 </div>
+                    {puedeEvaluarDestino && (
+                        <section className="rounded-xl border border-blue-200 bg-blue-50/60 p-4 space-y-3">
+                            <div><h4 className="font-semibold text-blue-950">Destino final — Tower</h4><p className="text-sm text-blue-800">Esta información la completa Tower al aprobar; no la ingresa el generador ni el transportista.</p></div>
+                            <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                                <label className="text-sm font-medium text-slate-700">Tipo de manejo<select value={destinoFinal.tipoManejo} onChange={(event) => setDestinoFinal((prev) => ({ ...prev, tipoManejo: event.target.value }))} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white p-2"><option value="">Seleccionar</option><option value="TRATAMIENTO">Tratamiento</option><option value="DISPOSICIÓN FINAL">Disposición final</option><option value="VALORIZACIÓN">Valorización</option></select></label>
+                                <label className="text-sm font-medium text-slate-700">Cantidad entregada (toneladas)<input type="number" min="0" step="0.01" value={destinoFinal.cantidadEntregada} onChange={(event) => setDestinoFinal((prev) => ({ ...prev, cantidadEntregada: event.target.value }))} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white p-2" /></label>
+                            </div>
+                            <label className="block text-sm font-medium text-slate-700">Observaciones del destino<textarea value={destinoFinal.observaciones} onChange={(event) => setDestinoFinal((prev) => ({ ...prev, observaciones: event.target.value }))} rows={3} className="mt-1 block w-full rounded-lg border border-slate-300 bg-white p-2" /></label>
+                        </section>
+                    )}
 
                 <div className="p-6 overflow-y-auto flex-1 space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white/80 p-5 rounded-xl border border-gray-100 shadow-inner text--lg">
