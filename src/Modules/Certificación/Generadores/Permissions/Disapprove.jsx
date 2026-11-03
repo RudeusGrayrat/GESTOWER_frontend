@@ -24,7 +24,7 @@ const DisapproveGenerador = ({ setShowDisapprove, selected, reload }) => {
             onclick={ejecutar}
             text={esPendiente
                 ? "¿Rechazar este registro? La cuenta y su vínculo no podrán utilizarse."
-                : "¿Suspender este generador? Se bloqueará ManifesTower y los nuevos envíos; el historial se conservará."}
+                : "¿Suspender comercialmente este generador? Se bloquearán los nuevos manifiestos y vínculos. Para bloquear solo ManifesTower usa el panel de acceso dentro de Editar."}
         />
     );
 };

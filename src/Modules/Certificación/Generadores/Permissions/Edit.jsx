@@ -4,6 +4,7 @@ import Register from "../Register/Register";
 import { deepDiff } from "../../../validateEdit";
 import useSendMessage from "../../../../recicle/senMessage";
 import axios from "../../../../api/axios";
+import AccesoManifestower from "../../components/AccesoManifestower";
 
 const EditGenerador = ({ setShowEdit, selected, reload }) => {
     console.log("Selected para editar:", selected);
@@ -38,6 +39,7 @@ const EditGenerador = ({ setShowEdit, selected, reload }) => {
         border-gray-100 border shadow-2xl fixed top-5 z-40 rounded-xl">
             <div className=" flex flex-col h-[90%] space-y-4 p-2 overflow-y-auto">
                 <Register editForm={editForm} setEditForm={setEditForm} />
+                <AccesoManifestower tipo="GENERADOR" empresa={selected} onChanged={reload} />
             </div>
             <div className="flex justify-end border-t ">
                 <ButtonOk

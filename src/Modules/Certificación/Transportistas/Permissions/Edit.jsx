@@ -5,6 +5,7 @@ import ButtonOk from "../../../../recicle/Buttons/Buttons";
 import axios from "../../../../api/axios";
 import { deepDiff } from "../../../validateEdit";
 import Edit from "../../../../components/Principal/Permissions/Edit";
+import AccesoManifestower from "../../components/AccesoManifestower";
 
 const EditTransportistas = ({ setShowEdit, selected, reload }) => {
     const sendMessage = useSendMessage();
@@ -50,6 +51,7 @@ const EditTransportistas = ({ setShowEdit, selected, reload }) => {
     return (
         <Edit setShowEdit={setShowEdit} upDate={upDate}>
             <RegisterTransportistas editData={formEdit} setFormEdit={setFormEdit} />
+            <AccesoManifestower tipo="TRANSPORTISTA" empresa={selected} onChanged={reload} />
         </Edit>
     )
 }
