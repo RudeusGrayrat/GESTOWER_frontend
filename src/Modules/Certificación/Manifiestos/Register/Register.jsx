@@ -9,8 +9,6 @@ import axios from "../../../../api/axios";
 import { useAuth } from "../../../../context/AuthContext";
 import { ProgressBar } from "primereact/progressbar";
 import Paso4_Transporte from "./Transporte";
-import Paso5_Destino from "./Destino";
-import Paso6_OtrasObligaciones from "./OtrasObligaciones";
 import dayjs from "dayjs";
 
 const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) => {
@@ -97,8 +95,6 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
         { id: 2, nombre: "Residuos peligroso", componente: Paso2_Residuo },
         { id: 3, nombre: "Características de peligrosidad", componente: Paso3_Peligrosidad },
         { id: 4, nombre: "Transporte", componente: Paso4_Transporte },
-        { id: 5, nombre: "Destino final", componente: Paso5_Destino },
-        { id: 6, nombre: "Otras obligaciones", componente: Paso6_OtrasObligaciones },
     ];
 
     const PasoComponente = pasos[pasoActual - 1]?.componente;
@@ -199,17 +195,10 @@ const RegisterManifiestos = ({ formEdit, setFormEdit, editUpdate, editCancel }) 
                 return;
             }
 
-            // Validar paso 5
-            if (!formData.destinoId) {
-                sendMessage("Seleccione el destino final", "Advertencia");
-                setPasoActual(5);
-                return;
-            }
             const datosEnvio = {
                 ...formData,
                 generadorId: formData.generadorId?._id || formData.generadorId,
                 transportistaId: formData.transportistaId?._id || formData.transportistaId,
-                destinoId: formData.destinoId?._id || formData.destinoId,
                 creadoPor: user._id
             };
             const response = await axios.post("/certificaciones/postManifiesto", datosEnvio);
