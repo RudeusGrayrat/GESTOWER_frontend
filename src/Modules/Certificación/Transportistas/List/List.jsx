@@ -3,6 +3,7 @@ import ListPrincipal from "../../../../components/Principal/List/List";
 import axios from "../../../../api/axios";
 import DetailTransportista from "../Permissions/Detail";
 import EditTransportistas from "../Permissions/Edit";
+import DeleteTransportista from "../Permissions/Delete";
 
 const ListTransportistas = ({
     permissionRead, permissionApprove, permissionEdit, permissionDelete, permissionDisapprove
@@ -36,6 +37,7 @@ const ListTransportistas = ({
             DetailItem={DetailTransportista}
             fetchData={fetchData}
             EditItem={EditTransportistas}
+            DeleteItem={DeleteTransportista}
             title="transportistas_certificacion"
         >
             <Column field="razonSocial" header="Razón Social" />

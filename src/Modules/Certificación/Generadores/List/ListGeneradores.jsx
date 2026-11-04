@@ -5,6 +5,7 @@ import DetailGenerador from "../Permissions/Permissions";
 import EditGenerador from "../Permissions/Edit";
 import ApproveGenerador from "../Permissions/Approve";
 import DisapproveGenerador from "../Permissions/Disapprove";
+import DeleteGenerador from "../Permissions/Delete";
 
 const ListGeneradores = ({
     permissionRead,
@@ -40,6 +41,7 @@ const ListGeneradores = ({
             EditItem={EditGenerador}
             ApproveItem={ApproveGenerador}
             DisapproveItem={DisapproveGenerador}
+            DeleteItem={DeleteGenerador}
             fetchData={fecthGeneradores}
         >
             <Column field="razonSocial" header="Razon Social" />

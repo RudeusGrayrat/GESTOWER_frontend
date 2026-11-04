@@ -7,6 +7,7 @@ import AprobarManifiesto from "../Permissions/Aprobar";
 import EditManifiesto from "../Permissions/EditManifiesto";
 import RechazarManifiesto from "../Permissions/Rechazar";
 import VerificarManifiesto from "../Permissions/VerifyManifiesto";
+import DeleteManifiesto from "../Permissions/Delete";
 
 const ListManifiestos = ({
     permissionRead,
@@ -41,7 +42,7 @@ const ListManifiestos = ({
         <ListPrincipal
             permissionRead={permissionRead}
             // permissionEdit={permissionEdit}
-            // permissionDelete={permissionDelete}
+            permissionDelete={permissionDelete}
             // permissionApprove={permissionApprove}
             // permissionDisapprove={permissionDisapprove}
             // permissionSend={permissionSend}
@@ -51,6 +52,7 @@ const ListManifiestos = ({
             DisapproveItem={RechazarManifiesto}
             DetailItem={DetailManifiesto}
             EditItem={EditManifiesto}
+            DeleteItem={DeleteManifiesto}
             fetchData={fetchManifiestos}
         >
             <Column field="numeroManifiesto" header="N° Manifiesto" />

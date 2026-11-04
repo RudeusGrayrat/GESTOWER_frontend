@@ -55,6 +55,10 @@ function AppContent() {
       }
     };
 
+    // El cliente se configura con autoConnect=false. Sin este connect el
+    // conteo se actualizaba recién al consultar la BD, pero nunca llegaba el
+    // evento en vivo que dispara el toast.
+    if (!socket.connected) socket.connect();
     socket.on("connect", registrarEnSalas);
     if (socket.connected) registrarEnSalas();
 
@@ -69,17 +73,17 @@ function AppContent() {
       dispatch({ type: "ADD_REALTIME_NOTIFICATION", payload: data });
       toast.current?.show({
         severity: 'info',
-        summary: data.title,
-        // detail: data.message,
+        summary: data.title || "Nueva notificación",
+        detail: data.message,
         life: 6000
       });
-      if (Notification.permission === "granted") {
+      if (window.Notification?.permission === "granted") {
         new Notification(data.title, { body: data.message });
       }
     };
 
     socket.on("nuevaNotificacion", handleIncomingNotification);
-    Notification.requestPermission();
+    if (window.Notification?.permission === "default") window.Notification.requestPermission();
 
     return () => {
       socket.off("nuevaNotificacion", handleIncomingNotification);
@@ -90,7 +94,7 @@ function AppContent() {
 
   return (
     <div>
-      <Toast ref={toast} position="bottom-right" />
+      <Toast ref={toast} position="bottom-right" baseZIndex={10000} />
       {!path && <SideBar />}
       {!path && <Nav unreadCount={unreadCount} />}
 
