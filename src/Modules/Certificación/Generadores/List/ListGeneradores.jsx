@@ -35,8 +35,8 @@ const ListGeneradores = ({
             permissionDelete={permissionDelete}
             permissionApprove={permissionApprove}
             permissionDisapprove={permissionDisapprove}
-            canApprove={(row) => ["PENDIENTE", "SUSPENDIDO"].includes(row.estado)}
-            canDisapprove={(row) => ["PENDIENTE", "ACTIVO"].includes(row.estado)}
+            canApprove={(row) => row.estado === "SUSPENDIDO"}
+            canDisapprove={(row) => row.estado === "ACTIVO"}
             DetailItem={DetailGenerador}
             EditItem={EditGenerador}
             ApproveItem={ApproveGenerador}
@@ -53,7 +53,7 @@ const ListGeneradores = ({
                 body={(rowData) => {
                     const color = rowData.estado === "ACTIVO"
                         ? " text-green-500 "
-                        : rowData.estado === "PENDIENTE" ? " text-amber-500 " : " text-red-500 ";
+                        : rowData.estado === "SUSPENDIDO" ? " text-amber-500 " : " text-red-500 ";
 
                     return (
                         <div

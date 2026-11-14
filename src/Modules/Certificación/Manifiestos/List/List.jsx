@@ -68,7 +68,10 @@ const ListManifiestos = ({
             <Column
                 field="transporte.fechaRecepcion"
                 header="Fecha Recepción"
-                body={(row) => row.transporte?.fechaRecepcion ? new Date(row.transporte.fechaRecepcion).toLocaleDateString() : '-'}
+                body={(row) => {
+                    const [anio, mes, dia] = String(row.transporte?.fechaRecepcion || "").slice(0, 10).split("-");
+                    return anio && mes && dia ? `${dia}/${mes}/${anio}` : "-";
+                }}
             />
             <Column
                 field="estado"

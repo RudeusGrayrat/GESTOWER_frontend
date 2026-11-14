@@ -8,10 +8,17 @@ const otrosVacios = {
     comercializacion: false, exportacion: false, otro: false, tipoManejo: "", direccionDestino: "", documentoAprueba: "",
 };
 
+const fechaActualLima = () => {
+    const partes = new Intl.DateTimeFormat("en-US", { timeZone: "America/Lima", year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+    const valor = (tipo) => partes.find((parte) => parte.type === tipo)?.value;
+    return `${valor("year")}-${valor("month")}-${valor("day")}`;
+};
+
 const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
     const [comentario, setComentario] = useState("");
     const [destinoFinal, setDestinoFinal] = useState({ tipoManejo: "", cantidadEntregada: "", observaciones: "" });
     const [otrosManejos, setOtrosManejos] = useState(otrosVacios);
+    const [fechaDevolucion, setFechaDevolucion] = useState(fechaActualLima);
     const [responsableDestinoId, setResponsableDestinoId] = useState("");
     const [mostrarCierreDestino, setMostrarCierreDestino] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -68,7 +75,7 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
         setLoading(true);
         try {
             const response = await axios.patch(`/certificaciones/verificarManifiesto/${selected._id}`, {
-                estado: nuevoEstado, observaciones: comentario, destinoFinal, otrosManejos, responsableDestinoId,
+                estado: nuevoEstado, observaciones: comentario, destinoFinal, otrosManejos, responsableDestinoId, fechaDevolucion,
             });
             sendMessage(response.data.message, response.data.type || "Correcto");
             reload();
@@ -106,6 +113,7 @@ const VerificarManifiesto = ({ setShowVerify, selected, reload }) => {
                             <label className="text-sm font-medium text-slate-700">Tipo de manejo *<select value={destinoFinal.tipoManejo} onChange={(event) => actualizarDestino("tipoManejo", event.target.value)} className={inputClass}><option value="">Seleccionar</option><option value="TRATAMIENTO">Tratamiento</option><option value="DISPOSICIÓN FINAL">Disposición final</option><option value="VALORIZACIÓN">Valorización</option></select></label>
                             <label className="text-sm font-medium text-slate-700">Cantidad entregada (toneladas) *<input type="number" min="0" step="0.01" value={destinoFinal.cantidadEntregada} onChange={(event) => actualizarDestino("cantidadEntregada", event.target.value)} className={inputClass} /></label>
                         </div>
+                        <label className="block text-sm font-medium text-slate-700">Fecha de devolución *<input type="date" value={fechaDevolucion} onChange={(event) => setFechaDevolucion(event.target.value)} className={inputClass} /></label>
                         <label className="block text-sm font-medium text-slate-700">Observaciones del destino<textarea value={destinoFinal.observaciones} onChange={(event) => actualizarDestino("observaciones", event.target.value)} rows={3} className={inputClass} /></label>
                         <div className="border-t border-blue-200 pt-4"><label className="block text-sm font-medium text-slate-700">Responsable EO-RS que firma la recepción *<select value={responsableDestinoId} onChange={(event) => setResponsableDestinoId(event.target.value)} className={inputClass}><option value="">Seleccionar</option>{responsablesConFirma.map((responsable) => <option key={responsable._id} value={responsable._id}>{responsable.nombre} · DNI {responsable.dni || "—"} · {responsable.cargo || "Sin cargo"}</option>)}</select></label>{!responsablesConFirma.length && <p className="mt-2 text-sm text-rose-600">El destino no tiene responsables con firma vigente. Registra la firma en Destinos antes de aprobar.</p>}</div>
                         <div className="border-t border-blue-200 pt-4 space-y-3">

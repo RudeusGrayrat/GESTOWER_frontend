@@ -11,7 +11,7 @@ const ApproveGenerador = ({ setShowApprove, selected, reload }) => {
             sendMessage(data.message, data.type || "Correcto");
             reload();
         } catch (error) {
-            sendMessage(error.response?.data?.message || "No se pudo aprobar y activar el generador.", "Error");
+            sendMessage(error.response?.data?.message || "No se pudo reactivar el generador.", "Error");
         } finally {
             setShowApprove(false);
         }
