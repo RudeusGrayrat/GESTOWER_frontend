@@ -7,6 +7,14 @@ import axios from "../../../../api/axios";
 import { limpiarPlantilla } from "./LimpiarPlantilla";
 import renderManifiesto from "./RenderManifiesto";
 import useSendMessage from "../../../../recicle/senMessage";
+import { Dropdown } from "primereact/dropdown";
+
+const COPIAS_MANIFIESTO = [
+  { value: "AUTORIDAD", label: "Original — Autoridad competente", color: "#D9EAD3" },
+  { value: "GENERADOR", label: "Primera copia — Generador", color: "#FFFFFF" },
+  { value: "TRANSPORTISTA", label: "Segunda copia — EPS-RS transportista", color: "#FFF2CC" },
+  { value: "DESTINO_FINAL", label: "Tercera copia — Disposición final", color: "#DDEBF7" },
+];
 
 
 const DetailManifiesto = ({ setShowDetail, selected }) => {
@@ -69,15 +77,9 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
   };
   return (
     <Details setShowDetail={setShowDetail} title={`Manifiesto ${selected?.numeroManifiesto || ''}`}>
-      <div className="mx-6 mt-4 rounded-lg border border-slate-200 bg-slate-50 p-3 text-sm">
-        <label className="font-semibold text-slate-700">Copia del manifiesto
-          <select value={tipoCopia} onChange={(event) => setTipoCopia(event.target.value)} className="ml-3 rounded border border-slate-300 bg-white px-2 py-1">
-            <option value="AUTORIDAD">Verde — Autoridad competente (original)</option>
-            <option value="GENERADOR">Blanca — Generador</option>
-            <option value="TRANSPORTISTA">Amarillo claro — EPS-RS transportista</option>
-            <option value="DESTINO_FINAL">Celeste claro — Tratamiento / disposición final</option>
-          </select>
-        </label>
+      <div className="mx-6 mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+        <label className="mb-2 block text-sm font-semibold text-slate-700">Tipo de hoja</label>
+        <Dropdown value={tipoCopia} onChange={(event) => setTipoCopia(event.value)} options={COPIAS_MANIFIESTO} optionLabel="label" optionValue="value" placeholder="Selecciona la copia" className="w-full sm:w-[430px]" itemTemplate={(opcion) => <div className="flex items-center gap-3"><span className="h-4 w-4 rounded border border-slate-300" style={{ backgroundColor: opcion.color }} />{opcion.label}</div>} valueTemplate={(opcion) => opcion ? <div className="flex items-center gap-3"><span className="h-4 w-4 rounded border border-slate-300" style={{ backgroundColor: opcion.color }} />{opcion.label}</div> : "Selecciona la copia"} />
       </div>
       {!loading && pdfBlob ? (
         <div className="flex gap-8 mt-6 ml-10">
