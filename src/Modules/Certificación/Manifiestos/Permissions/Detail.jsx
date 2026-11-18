@@ -21,6 +21,7 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
   console.log("🚀 selected:", selected)
   const [loading, setLoading] = useState(true);
   const [pdfBlob, setPdfBlob] = useState(null);
+  const [pdfError, setPdfError] = useState(false);
   const [tipoCopia, setTipoCopia] = useState("GENERADOR");
   const sendMessage = useSendMessage();
 
@@ -28,29 +29,36 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
   const fileName = `${selected?.numeroManifiesto || 'Reporte'}_${selected?.transporte?.fechaRecepcion?.replace(/\//g, "-") || ''}`;
 
   useEffect(() => {
+    const controller = new AbortController();
     const fetchPdf = async () => {
       if (!selected) return;
 
       setLoading(true);
       setPdfBlob(null);
+      setPdfError(false);
 
       try {
         // Hacemos la petición al backend para que genere el PDF con LibreOffice
         const response = await axios.get(`/certificaciones/getpdfManifiesto/${selected._id}?copia=${tipoCopia}`, {
-          responseType: 'blob' // CRÍTICO: Recibir el PDF como binario
+          responseType: "blob",
+          signal: controller.signal,
         });
 
         // Guardamos el archivo en el estado (como hacías con fileGenerated)
+        if (controller.signal.aborted) return;
         setPdfBlob(response.data);
         setLoading(false);
       } catch (error) {
+        if (controller.signal.aborted) return;
         console.error("Error al obtener el PDF:", error);
         sendMessage("Error al generar la vista previa del PDF", "Error");
+        setPdfError(true);
         setLoading(false);
       }
     };
 
     fetchPdf();
+    return () => controller.abort();
   }, [selected, tipoCopia]);
 
   const handleDownload = () => {
@@ -101,7 +109,7 @@ const DetailManifiesto = ({ setShowDetail, selected }) => {
             <span className="ml-2 pi pi-download"></span>
           </div>
         </div>
-      ) : (
+      ) : pdfError ? <p className="m-6 text-red-600">No se pudo generar el PDF. Selecciona otra copia o vuelve a abrir el detalle para intentarlo nuevamente.</p> : (
         /* Spinner de carga mientras el i5-14600KF y LibreOffice hacen la magia */
         <div className="flex flex-col items-center mt-10">
           <span className="pi pi-spin pi-spinner text-4xl text-blue-500 mb-4"></span>
